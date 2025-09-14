@@ -62,7 +62,7 @@ const login = (req, res) => {
   if (!email || !password) {
     return res.status(400).json({
       success: false,
-      message: 'email &password required',
+      message: 'email & password required',
     });
   }
 
@@ -117,6 +117,9 @@ const login = (req, res) => {
           userId: user.id,
           roleId: user.roleId,
           roleName: user.roleName,
+          role: {
+            permissions: user.permissions || []
+          }
         };
 
         const token = jwt.sign(
