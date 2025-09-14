@@ -55,6 +55,103 @@ const role_id= 3
     });
 };
   
+const login = (req, res) => {
+  const email = req.body.email.trim().toLowerCase();
+  const password = req.body.password
+
+  if (!email || !password) {
+    return res.status(400).json({
+      success: false,
+      message: 'email &password required',
+    });
+  }
+
+  const selectQuery = `
+    SELECT
+      u.id,
+      u.email,
+      u.password_hash,
+      u.first_name AS "firstName",
+      u.last_name  AS "lastName",
+      u.avatar_url AS "avatarUrl",
+      u.is_active  AS "isActive",
+      u.role_id    AS "roleId",
+      r.name       AS "roleName",
+      r.permissions
+    FROM users u
+    LEFT JOIN roles r ON r.id = u.role_id
+    WHERE u.email = $1
+    LIMIT 1
+  `;
+
+  pool
+    .query(selectQuery, [email])
+    .then((result) => {
+      if (result.rows.length === 0) {
+        return res.status(403).json({
+          success: false,
+          message: `The email doesn't exist or the password is incorrect`,
+        });
+      }
+
+      const user = result.rows[0];
+
+      if (user.isActive === false) {
+        return res.status(403).json({
+          success: false,
+          message: 'Account is deactivated',
+        });
+      }
+
+   
+      return bcrypt.compare(password, user.password_hash).then((isMatch) => {
+        if (!isMatch) {
+          return res.status(403).json({
+            success: false,
+            message: `The email doesn't exist or the password is incorrect`,
+          });
+        }
+
+    
+        const payload = {
+          userId: user.id,
+          roleId: user.roleId,
+          roleName: user.roleName,
+        };
+
+        const token = jwt.sign(
+          payload,
+          process.env.SECRET || 'MERAKI',
+          { expiresIn: '24h' }
+        );
+
+        delete user.password_hash;
+
+        return res.status(200).json({
+          success: true,
+          message: 'Valid login credentials',
+          token,
+          user: {
+            id: user.id,
+            email: user.email,
+            firstName: user.firstName,
+            lastName: user.lastName,
+            avatarUrl: user.avatarUrl,
+            roleId: user.roleId,
+            roleName: user.roleName,
+            permissions: user.permissions,
+          },
+        });
+      });
+    })
+    .catch((err) => {
+      res.status(500).json({
+        success: false,
+        message: 'Server Error',
+        err: err.message,
+      });
+    });
+};
 
 
 module.exports = { register , login ,getAllUsers,getUserById};
