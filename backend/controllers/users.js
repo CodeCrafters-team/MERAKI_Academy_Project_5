@@ -1,6 +1,6 @@
-const usersModel = require("../models/users");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
+const { pool } = require("../models/db");
 
 const register = (req, res) => {
   const { firstName, lastName, email, password, avatarUrl } = req.body;
@@ -16,17 +16,18 @@ const register = (req, res) => {
     .hash(password, 12)
     .then((passwordHash) => {
       const insertQuery = `
-        INSERT INTO users (email, password_hash, first_name, last_name, avatar_url)
-        VALUES ($1, $2, $3, $4, $5)
+        INSERT INTO users (email, password_hash, first_name, last_name, avatar_url, role_id)
+        VALUES ($1, $2, $3, $4, $5 ,$6)
         RETURNING *
       `;
-
-      const values = [
+const role_id= 3    
+ const values = [
         email.trim().toLowerCase(),
         passwordHash,
         firstName.trim(),
         lastName.trim(),
         avatarUrl || null,
+         role_id
       ];
 
       return pool.query(insertQuery, values);
@@ -56,4 +57,4 @@ const register = (req, res) => {
   
 
 
-module.exports = { register };
+module.exports = { register , login ,getAllUsers,getUserById};
