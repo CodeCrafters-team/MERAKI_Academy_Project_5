@@ -166,5 +166,4 @@ getCategoryById,
 createCategory,
 updateCategory,
 deleteCategory,
-getCategoryStats
 };

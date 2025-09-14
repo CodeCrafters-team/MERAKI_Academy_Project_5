@@ -62,7 +62,7 @@ const login = (req, res) => {
   if (!email || !password) {
     return res.status(400).json({
       success: false,
-      message: 'email &password required',
+      message: 'email & password required',
     });
   }
 
