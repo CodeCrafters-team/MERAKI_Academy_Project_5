@@ -13,4 +13,4 @@ pool.connect((err, pool) => {
   console.error("Pool connected on: ", pool.user);
 });
 
-module.exports = {pool};
+module.exports = {pool}; 
