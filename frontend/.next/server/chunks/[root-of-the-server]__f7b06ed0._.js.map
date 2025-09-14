@@ -1,0 +1,8 @@
+{
+  "version": 3,
+  "sources": [],
+  "sections": [
+    {"offset": {"line": 3, "column": 0}, "map": {"version":3,"sources":[],"names":[],"mappings":"","debugId":null}},
+    {"offset": {"line": 55, "column": 0}, "map": {"version":3,"sources":["file:///D:/MERAKI_Academy/projects/MERAKI_Academy_Project_5_forked/src/app/lib/db/index.ts"],"sourcesContent":["import { Pool } from \"pg\";\r\nconsole.log(process.env.connectionString);\r\nconst pool = new Pool({\r\n  connectionString: process.env.connectionString,\r\n});\r\n\r\nexport default pool;"],"names":[],"mappings":";;;;AAAA;;;;;;AACA,QAAQ,GAAG,CAAC,QAAQ,GAAG,CAAC,gBAAgB;AACxC,MAAM,OAAO,IAAI,4GAAI,CAAC;IACpB,kBAAkB,QAAQ,GAAG,CAAC,gBAAgB;AAChD;uCAEe","debugId":null}},
+    {"offset": {"line": 89, "column": 0}, "map": {"version":3,"sources":["file:///D:/MERAKI_Academy/projects/MERAKI_Academy_Project_5_forked/src/app/api/users/route.ts"],"sourcesContent":["import pool from \"@/app/lib/db\";\r\nimport { NextResponse } from \"next/server\";\r\n\r\nexport async function GET() {\r\n  try {\r\n    const result = await pool.query(\"SELECT * FROM users\");\r\n    return NextResponse.json(result.rows);\r\n  } catch (err: any) {\r\n    console.error(\"Database error\", err);\r\n    return NextResponse.json(\r\n      { error: \"Failed to fetch users\" },\r\n      { status: 500 }\r\n    );\r\n  }\r\n}"],"names":[],"mappings":";;;;AAAA;AACA;;;;;;;AAEO,eAAe;IACpB,IAAI;QACF,MAAM,SAAS,MAAM,6IAAI,CAAC,KAAK,CAAC;QAChC,OAAO,gJAAY,CAAC,IAAI,CAAC,OAAO,IAAI;IACtC,EAAE,OAAO,KAAU;QACjB,QAAQ,KAAK,CAAC,kBAAkB;QAChC,OAAO,gJAAY,CAAC,IAAI,CACtB;YAAE,OAAO;QAAwB,GACjC;YAAE,QAAQ;QAAI;IAElB;AACF","debugId":null}}]
+}

@@ -1,0 +1,8 @@
+{
+  "version": 3,
+  "sources": [],
+  "sections": [
+    {"offset": {"line": 3, "column": 0}, "map": {"version":3,"sources":[],"names":[],"mappings":"","debugId":null}},
+    {"offset": {"line": 49, "column": 0}, "map": {"version":3,"sources":["file:///D:/MERAKI_Academy/projects/MERAKI_Academy_Project_5_forked/src/app/lib/db/Services/users.ts"],"sourcesContent":["import pool from \"../index\";\r\n\r\n\r\nexport const getAllUsers = async ()=>{\r\nconst res = await pool.query('SELECT * FROM users');\r\nreturn res.rows;\r\n}"],"names":[],"mappings":";;;;AAAA;;AAGO,MAAM,cAAc;IAC3B,MAAM,MAAM,MAAM,6IAAI,CAAC,KAAK,CAAC;IAC7B,OAAO,IAAI,IAAI;AACf","debugId":null}},
+    {"offset": {"line": 75, "column": 0}, "map": {"version":3,"sources":["file:///D:/MERAKI_Academy/projects/MERAKI_Academy_Project_5_forked/src/app/api/users/route.ts"],"sourcesContent":["import { getAllUsers } from \"@/app/lib/db/Services/users\";\nimport { NextResponse } from \"next/server\";\n\nexport const GET = async () => {\n  try {\n    const res = await getAllUsers();\n    return NextResponse.json(res, { status: 200 });\n  } catch (error) {\n    console.error(\"GET /api/users failed:\", error);\n    return NextResponse.json(\n      { message: \"Failed to fetch users\" },\n      { status: 500 }\n    );\n  }\n};\n"],"names":[],"mappings":";;;;AAAA;AACA;;;AAEO,MAAM,MAAM;IACjB,IAAI;QACF,MAAM,MAAM,MAAM,IAAA,6JAAW;QAC7B,OAAO,gJAAY,CAAC,IAAI,CAAC,KAAK;YAAE,QAAQ;QAAI;IAC9C,EAAE,OAAO,OAAO;QACd,QAAQ,KAAK,CAAC,0BAA0B;QACxC,OAAO,gJAAY,CAAC,IAAI,CACtB;YAAE,SAAS;QAAwB,GACnC;YAAE,QAAQ;QAAI;IAElB;AACF","debugId":null}}]
+}

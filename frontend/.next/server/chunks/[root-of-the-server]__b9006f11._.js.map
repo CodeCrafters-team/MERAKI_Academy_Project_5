@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": [],
+  "sections": [
+    {"offset": {"line": 3, "column": 0}, "map": {"version":3,"sources":[],"names":[],"mappings":"","debugId":null}},
+    {"offset": {"line": 55, "column": 0}, "map": {"version":3,"sources":["file:///D:/MERAKI_Academy/projects/MERAKI_Academy_Project_5_forked/src/app/api/users/route.ts"],"sourcesContent":["import { NextResponse } from \"next/server\";\r\n\r\nexport const GET = async()=>{\r\nconst res = await getAllUseers()\r\n\r\nreturn NextResponse.json(res)\r\n}"],"names":[],"mappings":";;;;AAAA;;AAEO,MAAM,MAAM;IACnB,MAAM,MAAM,MAAM;IAElB,OAAO,gJAAY,CAAC,IAAI,CAAC;AACzB","debugId":null}}]
+}
