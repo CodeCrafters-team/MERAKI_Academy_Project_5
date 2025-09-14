@@ -153,5 +153,36 @@ const login = (req, res) => {
     });
 };
 
+const getAllUsers = (req, res) => {
+  const sql = `
+    SELECT
+      id,
+      email,
+      first_name AS "firstName",
+      last_name  AS "lastName",
+      avatar_url AS "avatarUrl",
+      is_active  AS "isActive",
+      created_at AS "createdAt",
+      role_id    AS "roleId"
+    FROM users
+    ORDER BY id ASC
+  `;
+
+  pool
+    .query(sql)
+    .then(({ rows }) => {
+      res.status(200).json({
+        success: true,
+        users: rows,
+      });
+    })
+    .catch((err) => {
+      res.status(500).json({
+        success: false,
+        message: 'Server Error',
+        err: err.message,
+      });
+    });
+};
 
 module.exports = { register , login ,getAllUsers,getUserById};
