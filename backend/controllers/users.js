@@ -185,4 +185,58 @@ const getAllUsers = (req, res) => {
     });
 };
 
+
+const getUserById = (req, res) => {
+  const { id } = req.params;
+  const userId = id
+
+  if (!userId) {
+    return res.status(400).json({
+      success: false,
+      message: ' user id required',
+    });
+  }
+
+  const sql = `
+    SELECT
+      u.id,
+      u.email,
+      u.first_name AS "firstName",
+      u.last_name  AS "lastName",
+      u.avatar_url AS "avatarUrl",
+      u.is_active  AS "isActive",
+      u.created_at AS "createdAt",
+      u.role_id    AS "roleId",
+      r.name       AS "roleName",
+      r.permissions
+    FROM users u
+    LEFT JOIN roles r ON r.id = u.role_id
+    WHERE u.id = $1
+    LIMIT 1
+  `;
+
+  pool
+    .query(sql, [userId])
+    .then(({ rows }) => {
+      if (rows.length === 0) {
+        return res.status(404).json({
+          success: false,
+          message: 'User not found',
+        });
+      }
+      return res.status(200).json({
+        success: true,
+        user: rows[0],
+      });
+    })
+    .catch((err) => {
+      res.status(500).json({
+        success: false,
+        message: 'Server Error',
+        err: err.message,
+      });
+    });
+};
+
+
 module.exports = { register , login ,getAllUsers,getUserById};
