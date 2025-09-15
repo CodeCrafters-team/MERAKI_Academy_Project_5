@@ -13,7 +13,7 @@ const createModule = (req, res) => {
   const sql = `
     INSERT INTO modules (course_id, title)
     VALUES ($1, $2)
-    RETURNING id, course_id AS "courseId", title, created_at AS "createdAt"
+    RETURNING id, course_id, title, created_at 
   `;
 
   pool.query(sql, [courseId, title.trim()])
@@ -32,7 +32,31 @@ const createModule = (req, res) => {
     });
 };
 
+const getModulesByCourse = (req, res) => {
+  const { id } = req.params;
+  const courseId = id;
+
+  if (!courseId) {
+    return res.status(400).json({ success: false, message: "courseId is required" });
+  }
+
+  const sql = `
+    SELECT *
+    FROM modules
+    WHERE course_id = $1
+  `;
+
+  pool.query(sql, [courseId])
+    .then(({ rows }) => {
+      res.status(200).json({ success: true, modules: rows });
+    })
+    .catch((err) => {
+      res.status(500).json({ success: false, message: "Server error", error: err.message });
+    });
+};
+
 module.exports = {
-    createModule
+    createModule,
+    getModulesByCourse
 };
  
