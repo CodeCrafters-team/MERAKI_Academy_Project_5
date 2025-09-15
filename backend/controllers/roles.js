@@ -54,3 +54,4 @@ const getAllRoles = (req, res) => {
 module.exports = {createRole
     ,getAllRoles
 };
+ 
