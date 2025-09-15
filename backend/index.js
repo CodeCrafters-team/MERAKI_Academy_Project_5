@@ -11,6 +11,7 @@ const usersRouter = require("./routes/users");
 const rolesRouter = require("./routes/roles");
 const modulesRouter = require("./routes/modules");
 const categoriesRouter = require("./routes/categories");
+const coursesRouter = require("./routes/courses");
 
 
 app.use(cors());
@@ -21,6 +22,7 @@ app.use("/users", usersRouter);
 app.use("/roles", rolesRouter);
 app.use("/modules", modulesRouter);
 app.use("/categories", categoriesRouter);
+app.use("/courses", coursesRouter);
 
 
 // Handles any other endpoints [unassigned - endpoints]
