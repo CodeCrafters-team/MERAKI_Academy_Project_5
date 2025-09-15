@@ -13,6 +13,7 @@ const modulesRouter = require("./routes/modules");
 const categoriesRouter = require("./routes/categories");
 const coursesRouter = require("./routes/courses");
 const lessonsRouter=require("./routes/lessons")
+const enrollmentRouter=require("./routes/enrollments")
 
 app.use(cors());
 app.use(express.json());
@@ -24,8 +25,7 @@ app.use("/modules", modulesRouter);
 app.use("/categories", categoriesRouter);
 app.use("/courses", coursesRouter);
 app.use("/lessons", lessonsRouter);
-
-
+app.use("/enrollment", enrollmentRouter);
 
 
 // Handles any other endpoints [unassigned - endpoints]

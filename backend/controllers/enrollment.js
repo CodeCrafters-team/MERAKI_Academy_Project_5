@@ -39,7 +39,7 @@ const getEnrollmentById=async(req,res)=>{
 try{
 
 const{id}=req.params
-const result=await pool.query(`SELECT * FROM enrollments WHERE id=$1 `,[id])
+const result=await pool.query(`SELECT * FROM enrollments WHERE id=$1 RETURNING *`,[id])
 
 if(result.rows.length===0){
     res.status(404).json({
@@ -92,6 +92,31 @@ data:result.rows[0]
 
 }
 
+const deleteEnrollment=async(req,res)=>{
+    try{
+const {id}=req.params
+const result=pool.query(`DELETE FROM enrollments WHERE id=$1 RETURNING *`,[id])
+
+if(result.rows.length===0){
+    res.status(404).json({
+        success: false,
+        message: "Enrollment Not Found",
+    })
+}
+
+ res.status(200).json({
+        success: true,
+        message: "Enrollment Deleted Successfully",
+    })
+
+
+    }catch(err){
+         res.status(500).json({
+        success: false,
+        message: "Server Error",
+    })
+    }
+}
 
 
 
@@ -100,5 +125,4 @@ data:result.rows[0]
 
 
 
-
-module.exports={getAllEnrollment,getEnrollmentById,createEnrollment}
+module.exports={getAllEnrollment,getEnrollmentById,createEnrollment,deleteEnrollment}
