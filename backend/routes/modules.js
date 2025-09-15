@@ -1,8 +1,9 @@
 const express = require("express");
 const { 
-     createModule,
+    createModule,
     getModulesByCourse,
-    updateModule
+    updateModule,
+    deleteModule,
  } = require("../controllers/modules");
 
  const modulesRouter = express.Router();
@@ -10,5 +11,6 @@ const {
 modulesRouter.get("/:id", getModulesByCourse);
 modulesRouter.post("/", createModule);
 modulesRouter.put("/:id", updateModule);
+modulesRouter.delete("/:id", deleteModule);
 
 module.exports = modulesRouter;

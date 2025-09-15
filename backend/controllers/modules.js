@@ -89,11 +89,48 @@ const updateModule = (req, res) => {
       res.status(500).json({ success: false, message: "Server error", error: err.message });
     });
 };
+
+
+const deleteModule = (req, res) => {
+  const { id } = req.params;
+
+  if (!id) {
+    return res.status(400).json({ success: false, message: "module id is required" });
+  }
+
+  const sql = `
+    DELETE FROM modules
+    WHERE id = $1
+    RETURNING *
+  `;
+
+  pool.query(sql, [id])
+    .then(({ rows }) => {
+      if (rows.length === 0) {
+        return res.status(404).json({ success: false, message: "Module not found" });
+      }
+      res.status(200).json({
+        success: true,
+        message: "Module deleted successfully",
+      });
+    })
+    .catch((err) => {
+      if (err.code === "23503") {
+        return res.status(409).json({
+          success: false,
+          message: "Cannot delete module because related lessons exist",
+        });
+      }
+      res.status(500).json({ success: false, message: "Server error", error: err.message });
+    });
+};
+
+
+
 module.exports = {
     createModule,
     getModulesByCourse,
-    updateModule
-    
-
+    updateModule,
+    deleteModule
 };
  
