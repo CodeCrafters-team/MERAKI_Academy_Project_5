@@ -55,8 +55,45 @@ const getModulesByCourse = (req, res) => {
     });
 };
 
+
+const updateModule = (req, res) => {
+  const { id } = req.params;
+  const { title } = req.body;
+
+  if (!id) {
+    return res.status(400).json({ success: false, message: "module id is required" });
+  }
+  if (!title) {
+    return res.status(400).json({ success: false, message: "title is required" });
+  }
+
+  const sql = `
+    UPDATE modules
+    SET title = $1
+    WHERE id = $2
+    RETURNING *
+  `;
+
+  pool.query(sql, [title.trim(), id])
+    .then(({ rows }) => {
+      if (rows.length === 0) {
+        return res.status(404).json({ success: false, message: "Module not found" });
+      }
+      res.status(200).json({
+        success: true,
+        message: "Module updated successfully",
+        module: rows[0],
+      });
+    })
+    .catch((err) => {
+      res.status(500).json({ success: false, message: "Server error", error: err.message });
+    });
+};
 module.exports = {
     createModule,
-    getModulesByCourse
+    getModulesByCourse,
+    updateModule
+    
+
 };
  
