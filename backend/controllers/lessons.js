@@ -52,6 +52,36 @@ const getLessonById = async (req, res) => {
     }
   };
 
+const getLessonByModulesId=async(req,res)=>{
+try{
+const {module_id}=req.params
+const result=await pool.query(`SELECT * FROM  lessons WHERE module_id=$1`,[module_id])
+ if (result.rows.length === 0) {
+        return res.status(404).json({
+          success: false,
+          message: "Lesson Not Found",
+        });
+      }
+  
+      res.status(200).json({
+        success: true,
+        message: "Fetched lesson Successfully",
+        data: result.rows[0],
+      });
+
+}catch(err){
+res.status(500).json({
+        success: false,
+        message: "Server Error",
+        error: err.message,
+      });
+}
+
+
+
+}
+
+
 
   const createLesson = async (req, res) => {
     try {
@@ -118,4 +148,4 @@ const deleteLesson = async (req, res) => {
 
 
 
-module.exports={getAllLessons,getLessonById,createLesson,deleteLesson}
+module.exports={getAllLessons,getLessonById,createLesson,deleteLesson,getLessonByModulesId}
