@@ -124,7 +124,7 @@ const login = (req, res) => {
 
         const token = jwt.sign(
           payload,
-          process.env.SECRET || 'MERAKI',
+          process.env.SECRET,
           { expiresIn: '24h' }
         );
 
