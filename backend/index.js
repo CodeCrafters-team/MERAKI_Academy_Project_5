@@ -10,6 +10,7 @@ const PORT = 5000;
 const usersRouter = require("./routes/users");
 const rolesRouter = require("./routes/roles");
 const modulesRouter = require("./routes/modules");
+const categoriesRouter = require("./routes/categories");
 
 
 app.use(cors());
@@ -19,6 +20,7 @@ app.use(express.json());
 app.use("/users", usersRouter);
 app.use("/roles", rolesRouter);
 app.use("/modules", modulesRouter);
+app.use("/categories", categoriesRouter);
 
 
 // Handles any other endpoints [unassigned - endpoints]
