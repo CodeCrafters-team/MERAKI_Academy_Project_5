@@ -10,7 +10,7 @@ const createRole = (req, res) => {
     return res.status(400).json({ success: false, message: 'name is required' });
   }
 
-  const normPerms = permissions.map(perm => perm.trim().TolowerCase());
+  const normPerms = permissions.map(perm => perm.trim());
 
   pool
     .query('SELECT id FROM roles WHERE LOWER(name) = LOWER($1) LIMIT 1', [normName])
@@ -37,5 +37,20 @@ const createRole = (req, res) => {
     });
 };
  
+const getAllRoles = (req, res) => {
+  const sql = `
+ SELECT * FROM roles
+  `;
+  pool
+    .query(sql)
+    .then(({ rows }) => {
+      res.status(200).json({ success: true, roles: rows });
+    })
+    .catch((err) => {
+      res.status(500).json({ success: false, message: 'Server Error', err: err.message });
+    });
+};
 
-module.exports = {createRole};
+module.exports = {createRole
+    ,getAllRoles
+};
