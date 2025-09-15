@@ -1,7 +1,7 @@
 const { Pool } = require("pg");
 
 const connectionString = process.env.DB_URL;
-
+console.log("DB Connection String:", connectionString);
 const pool = new Pool({
   connectionString,
 });
