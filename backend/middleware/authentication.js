@@ -26,7 +26,7 @@ const authentication = (req, res, next) => {
     }
 
 
-    const verify = jwt.verify(token, process.env.SECRET || "MERAKI");
+    const verify = jwt.verify(token, process.env.SECRET );
     req.token = verify;
     next();
   } catch (error) {
