@@ -1,6 +1,6 @@
 const express = require("express");
  const { register, login
-    ,getAllUsers,getUserById, verifyCode, updateUserInfo
+    ,getAllUsers,getUserById,  forgotPassword, verifyResetCode, resetPassword
  } = require("../controllers/users");
 
 const authentication = require("../middleware/authentication");
@@ -16,7 +16,7 @@ usersRouter.get("/",  getAllUsers);
 
 usersRouter.get("/:id", getUserById);
 
-usersRouter.post('/verifyCode/:id', verifyCode);
-usersRouter.post('/update-user/:id', updateUserInfo);
-
+usersRouter.post("/forgot_password", forgotPassword);
+usersRouter.post("/verify_reset_code", verifyResetCode);
+usersRouter.put("/reset_password", resetPassword);
 module.exports = usersRouter;
