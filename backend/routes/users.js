@@ -1,6 +1,6 @@
 const express = require("express");
  const { register, login
-    ,getAllUsers,getUserById
+    ,getAllUsers,getUserById, verifyCode, updateUserInfo
  } = require("../controllers/users");
 
 const authentication = require("../middleware/authentication");
@@ -15,5 +15,8 @@ usersRouter.post("/login", login);
 usersRouter.get("/",  getAllUsers);
 
 usersRouter.get("/:id", getUserById);
+
+usersRouter.post('/verifyCode/:id', verifyCode);
+usersRouter.post('/update-user/:id', updateUserInfo);
 
 module.exports = usersRouter;
