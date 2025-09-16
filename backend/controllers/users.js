@@ -1,6 +1,8 @@
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const { pool } = require("../models/db");
+const crypto = require("crypto");
+const emailjs = require("emailjs-com");
 
 const register = (req, res) => {
   const { firstName, lastName, email, password, avatarUrl } = req.body;
@@ -55,105 +57,140 @@ const role_id= 3
     });
 };
   
-const login = (req, res) => {
-  const email = req.body.email.trim().toLowerCase();
-  const password = req.body.password
+const login = async (req, res) => {
+  try {
+    const email = (req.body.email || "").trim().toLowerCase();
+    const password = req.body.password;
+    const debug = (req.query && req.query.debug === "true"); // استخدم ?debug=true للاختبار فقط
 
-  if (!email || !password) {
-    return res.status(400).json({
+    if (!email || !password) {
+      return res.status(400).json({
+        success: false,
+        message: "email & password required",
+      });
+    }
+
+    const selectQuery = `
+      SELECT
+        u.id,
+        u.email,
+        u.password_hash,
+        u.first_name AS "firstName",
+        u.last_name  AS "lastName",
+        u.avatar_url AS "avatarUrl",
+        u.is_active  AS "isActive",
+        u.role_id    AS "roleId",
+        r.name       AS "roleName",
+        r.permissions
+      FROM users u
+      LEFT JOIN roles r ON r.id = u.role_id
+      WHERE u.email = $1
+      LIMIT 1
+    `;
+
+    const result = await pool.query(selectQuery, [email]);
+
+    if (result.rows.length === 0) {
+      return res.status(403).json({
+        success: false,
+        message: `The email doesn't exist or the password is incorrect`,
+      });
+    }
+
+    const user = result.rows[0];
+
+    if (user.isActive === false) {
+      return res.status(403).json({
+        success: false,
+        message: "Account is deactivated",
+      });
+    }
+
+    const isMatch = await bcrypt.compare(password, user.password_hash);
+    if (!isMatch) {
+      return res.status(403).json({
+        success: false,
+        message: `The email doesn't exist or the password is incorrect`,
+      });
+    }
+
+    // النجاح: أنشئ payload و token
+    const payload = {
+      userId: user.id,
+      roleId: user.roleId,
+      roleName: user.roleName,
+      role: {
+        permissions: user.permissions || [],
+      },
+    };
+
+    const token = jwt.sign(payload, process.env.SECRET, { expiresIn: "24h" });
+
+    // أنشئ كود تحقق رقمي 6 خانات
+    const verificationCode = crypto.randomInt(100000, 999999);
+
+    // خزّن الكود في DB
+    try {
+      await pool.query("UPDATE users SET verification_code=$1 WHERE id=$2", [
+        verificationCode,
+        user.id,
+      ]);
+    } catch (dbErr) {
+      console.error("Failed to save verification code:", dbErr.message);
+      // لا نقطع عملية الدخول — نخبر فقط أن حفظ الكود فشل
+    }
+
+    // أرسل الإيميل (محاولة - إذا فشل الإرسال نستمر)
+    (async () => {
+      try {
+        await emailjs.send(
+          process.env.EMAILJS_SERVICE_ID,
+          process.env.EMAILJS_TEMPLATE_ID,
+          {
+            to_email: user.email,
+            to_name: user.firstName || `${user.firstName} ${user.lastName}` || user.email,
+            message: `Your verification code is: ${verificationCode}`,
+          },
+          {
+            publicKey: process.env.EMAILJS_PUBLIC_KEY,
+            privateKey: process.env.EMAILJS_PRIVATE_KEY,
+          }
+        );
+      } catch (emailErr) {
+        console.error("Email sending failed:", emailErr?.message || emailErr);
+      }
+    })();
+
+    // إمكانيّة إرجاع الكود فقط في وضع debug لاختبارات التطوير
+    const responsePayload = {
+      success: true,
+      message: "Valid login credentials. Verification code sent to email.",
+      token,
+      user: {
+        id: user.id,
+        email: user.email,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        avatarUrl: user.avatarUrl,
+        roleId: user.roleId,
+        roleName: user.roleName,
+        permissions: user.permissions,
+      },
+    };
+
+    if (debug) {
+      responsePayload.debug = { verificationCode };
+    }
+
+    return res.status(200).json(responsePayload);
+  } catch (err) {
+    console.error("Login error:", err.message);
+    return res.status(500).json({
       success: false,
-      message: 'email & password required',
+      message: "Server Error",
+      err: err.message,
     });
   }
-
-  const selectQuery = `
-    SELECT
-      u.id,
-      u.email,
-      u.password_hash,
-      u.first_name AS "firstName",
-      u.last_name  AS "lastName",
-      u.avatar_url AS "avatarUrl",
-      u.is_active  AS "isActive",
-      u.role_id    AS "roleId",
-      r.name       AS "roleName",
-      r.permissions
-    FROM users u
-    LEFT JOIN roles r ON r.id = u.role_id
-    WHERE u.email = $1
-    LIMIT 1
-  `;
-
-  pool
-    .query(selectQuery, [email])
-    .then((result) => {
-      if (result.rows.length === 0) {
-        return res.status(403).json({
-          success: false,
-          message: `The email doesn't exist or the password is incorrect`,
-        });
-      }
-
-      const user = result.rows[0];
-
-      if (user.isActive === false) {
-        return res.status(403).json({
-          success: false,
-          message: 'Account is deactivated',
-        });
-      }
-
-   
-      return bcrypt.compare(password, user.password_hash).then((isMatch) => {
-        if (!isMatch) {
-          return res.status(403).json({
-            success: false,
-            message: `The email doesn't exist or the password is incorrect`,
-          });
-        }
-
-    
-        const payload = {
-          userId: user.id,
-          roleId: user.roleId,
-          roleName: user.roleName,
-          role: {
-            permissions: user.permissions || []
-          }
-        };
-
-        const token = jwt.sign(
-          payload,
-          process.env.SECRET,
-          { expiresIn: '24h' }
-        );
-
-        delete user.password_hash;
-
-        return res.status(200).json({
-          success: true,
-          message: 'Valid login credentials',
-          token,
-          user: {
-            id: user.id,
-            email: user.email,
-            firstName: user.firstName,
-            lastName: user.lastName,
-            avatarUrl: user.avatarUrl,
-            roleId: user.roleId,
-            roleName: user.roleName,
-            permissions: user.permissions,
-          },
-        });
-      });
-    })
-    .catch((err) => {
-      res.status(500).json({
-        success: false,
-        message: 'Server Error',
-        err: err.message,
-      });
-    });
 };
 
 const getAllUsers = (req, res) => {
