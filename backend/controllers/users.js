@@ -241,5 +241,78 @@ const getUserById = (req, res) => {
     });
 };
 
+const updateUserInfo = async (req, res) => {
+  const { id } = req.params;
+  const { firstName, lastName, avatarUrl, email } = req.body;
 
-module.exports = { register , login ,getAllUsers,getUserById};
+  try {
+    const userCheck = await pool.query("SELECT * FROM users WHERE id = $1", [id]);
+    if (userCheck.rows.length === 0) {
+      return res.status(404).json({ success: false, message: "User not found" });
+    }
+
+    const verificationCode = crypto.randomInt(100000, 999999);
+
+    try {
+      await emailjs.send(
+        process.env.EMAILJS_SERVICE_ID,
+        process.env.EMAILJS_TEMPLATE_ID,
+        {
+          to_email: email || userCheck.rows[0].email,
+          to_name: firstName || userCheck.rows[0].first_name,
+          message: `Your verification code is: ${verificationCode}`,
+        },
+        {
+          publicKey: process.env.EMAILJS_PUBLIC_KEY,
+          privateKey: process.env.EMAILJS_PRIVATE_KEY,
+        }
+      );
+    } catch (err) {
+      console.error("Email sending failed:", err.message);
+    }
+
+    await pool.query(
+      `UPDATE users SET first_name=$1, last_name=$2, avatar_url=$3, verification_code=$4 WHERE id=$5`,
+      [
+        firstName || userCheck.rows[0].first_name,
+        lastName || userCheck.rows[0].last_name,
+        avatarUrl || userCheck.rows[0].avatar_url,
+        verificationCode,
+        id,
+      ]
+    );
+
+    res.status(200).json({
+      success: true,
+      message: "Verification code sent to email",
+    });
+  } catch (err) {
+    console.error("Error updating user:", err.message);
+    res.status(500).json({ success: false, message: "Server error", error: err.message });
+  }
+};
+
+const verifyCode = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { code } = req.body;
+
+    const user = await pool.query("SELECT verification_code FROM users WHERE id=$1", [id]);
+    if (user.rows.length === 0) {
+      return res.status(404).json({ success: false, message: "User not found" });
+    }
+
+    if (parseInt(code) !== user.rows[0].verification_code) {
+      return res.status(400).json({ success: false, message: "Invalid verification code" });
+    }
+
+    await pool.query("UPDATE users SET verification_code=NULL WHERE id=$1", [id]);
+
+    res.status(200).json({ success: true, message: "User verified successfully" });
+  } catch (err) {
+    console.error("Error verifying code:", err.message);
+    res.status(500).json({ success: false, message: "Server error", error: err.message });
+  }
+};
+
+module.exports = { register , login ,getAllUsers,getUserById, updateUserInfo, verifyCode};
