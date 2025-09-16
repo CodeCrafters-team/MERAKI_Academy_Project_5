@@ -1,4 +1,4 @@
- const jwt = require("jsonwebtoken");
+const jwt = require("jsonwebtoken");
 
 const authentication = (req, res, next) => {
   try {
@@ -25,8 +25,10 @@ const authentication = (req, res, next) => {
       });
     }
 
-
-    const verify = jwt.verify(token, process.env.SECRET );
+    const verify = jwt.verify(token, process.env.SECRET);
+    req.user = {
+      id: verify.userId,
+    };
     req.token = verify;
     next();
   } catch (error) {

@@ -14,6 +14,7 @@ const categoriesRouter = require("./routes/categories");
 const coursesRouter = require("./routes/courses");
 const lessonsRouter=require("./routes/lessons")
 const enrollmentRouter=require("./routes/enrollments")
+const conversationsRouter = require("./routes/conversations");
 
 app.use(cors());
 app.use(express.json());
@@ -26,6 +27,8 @@ app.use("/categories", categoriesRouter);
 app.use("/courses", coursesRouter);
 app.use("/lessons", lessonsRouter);
 app.use("/enrollment", enrollmentRouter);
+app.use("/conversations", conversationsRouter);
+
 
 
 // Handles any other endpoints [unassigned - endpoints]
