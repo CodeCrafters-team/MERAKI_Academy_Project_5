@@ -1,21 +1,16 @@
--- CREATE TABLE conversations (
---   id SERIAL PRIMARY KEY,
---   created_at TIMESTAMP DEFAULT now()
--- );
+CREATE TABLE conversations (
+  id SERIAL PRIMARY KEY,
+  user1_id INT NOT NULL REFERENCES users(id),
+  user2_id INT NOT NULL REFERENCES users(id),
+  created_at TIMESTAMP DEFAULT now(),
+  UNIQUE(user1_id, user2_id)
+);
 
--- CREATE TABLE conversation_participants (
---   id SERIAL PRIMARY KEY,
---   conversation_id INT NOT NULL REFERENCES conversations(id) ON DELETE CASCADE,
---   user_id INT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
---   joined_at TIMESTAMP DEFAULT now(),
---   UNIQUE (conversation_id, user_id)
--- );
-
--- CREATE TABLE messages (
---   id SERIAL PRIMARY KEY,
---   conversation_id INT NOT NULL REFERENCES conversations(id) ON DELETE CASCADE,
---   user_id INT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
---   text TEXT,
---   read_at TIMESTAMP,
---   created_at TIMESTAMP DEFAULT now()
--- );
+CREATE TABLE messages (
+  id SERIAL PRIMARY KEY,
+  conversation_id INT NOT NULL REFERENCES conversations(id) ON DELETE CASCADE,
+  user_id INT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+  text TEXT,
+  read_at TIMESTAMP,
+  created_at TIMESTAMP DEFAULT now()
+);
