@@ -84,22 +84,6 @@ const getEnrollmentsByUser = async (req, res) => {
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 const createEnrollment = async (req, res) => {
   try {
     const { user_id, course_id, enrolled_at, username, course_name } = req.body;
@@ -161,4 +145,4 @@ const deleteEnrollment = async (req, res) => {
 
 
 
-module.exports={getAllEnrollment,getEnrollmentById,createEnrollment,deleteEnrollment}
+module.exports={getAllEnrollment,getEnrollmentById,getEnrollmentsByUser,createEnrollment,deleteEnrollment}
