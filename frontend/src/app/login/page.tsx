@@ -1,97 +1,63 @@
-"use client";
 
-import { useState } from "react";
+'use client';
 
-export default function LoginForm() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [verificationCode, setVerificationCode] = useState("");
-  const [message, setMessage] = useState("");
-  const [step, setStep] = useState<"login" | "verify">("login");
-  const [userId, setUserId] = useState<string>("");
+import { useDispatch } from 'react-redux';
+import { setCredentials } from '@/redux/slices/authSlice';
+import { AppDispatch } from '@/redux/store';
+import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+export default function LoginPage() {
+const dispatch = useDispatch<AppDispatch>();
+const router = useRouter();
+const [email, setEmail] = useState('');
+const [password, setPassword] = useState('');
 
-    if (step === "login") {
-      try {
-        const res = await fetch("http://localhost:5000/users/login", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ email, password }),
-        });
+const handleLogin = async () => {
+    const res = await fetch('http://localhost:5000/users/login', {
+    method: 'POST',
+    body: JSON.stringify({ email, password }),
+    headers: { 'Content-Type': 'application/json' },
+    });
 
-        const data = await res.json();
+    const data = await res.json();
 
-        if (data.requires2FA) {
-          setMessage("Verification code sent to your email.");
-          setStep("verify");
-          setUserId(data.user.id);
-          if (!data.passwordCorrect) {
-            setMessage("Password incorrect, please verify with code to update info.");
-          }
-        } else {
-          setMessage(data.message || "Login failed");
-        }
-      } catch (err) {
-        console.error(err);
-        setMessage("Server error");
-      }
-    } else if (step === "verify") {
-      try {
-        const res = await fetch(`http://localhost:5000/users/verifyCode/${userId}`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ code: verificationCode }),
-        });
+    if (data.success) {
+    dispatch(
+        setCredentials({
+        token: data.token,
+        userId: data.user.id,
+        avatarUrl: data.user.avatarUrl,
+        })
+    );
 
-        const data = await res.json();
-
-        if (data.success) {
-          setMessage("User verified! You can now update your info.");
-        } else {
-          setMessage(data.message || "Verification failed");
-        }
-      } catch (err) {
-        console.error(err);
-        setMessage("Server error");
-      }
+    router.push('/');
+    } else {
+    console.log('Login error');
     }
-  };
+};
 
-  return (
-    <div style={{ maxWidth: "400px", margin: "2rem auto" }}>
-      <h2>Login</h2>
-      <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
+return (
+    <div>
+    <div>
+        <h2>Logi</h2>
         <input
-          type="email"
-          placeholder="Email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          required
-          disabled={step === "verify"}
+        type="email"
+        placeholder="Email"
+        value={email}
+        onChange={(e) => setEmail(e.target.value)}
         />
-        {step === "login" && (
-          <input
-            type="password"
-            placeholder="Password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-          />
-        )}
-        {step === "verify" && (
-          <input
-            type="text"
-            placeholder="Verification Code"
-            value={verificationCode}
-            onChange={(e) => setVerificationCode(e.target.value)}
-            required
-          />
-        )}
-        <button type="submit">{step === "login" ? "Login" : "Verify"}</button>
-      </form>
-      {message && <p>{message}</p>}
+        <input
+        type="password"
+        placeholder="Password"
+        value={password}
+        onChange={(e) => setPassword(e.target.value)}
+        />
+        <button
+        onClick={handleLogin}>
+        Login
+        </button>
     </div>
-  );
+    </div>
+);
 }
