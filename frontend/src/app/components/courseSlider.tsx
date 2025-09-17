@@ -47,7 +47,7 @@ export default function CourseSlider() {
     cardsRef.current.forEach((card, i) => {
       setTimeout(() => {
         if (card) card.classList.add('visible');
-      }, i * 200); // يظهر كل كارت بفاصل 200ms
+      }, i * 500); 
     });
   }, []);
 
@@ -55,7 +55,7 @@ export default function CourseSlider() {
     <div className="container my-5">
       <Swiper
         slidesPerView={3}
-        spaceBetween={30}
+        spaceBetween={40}
         navigation={true}
         loop={false}
         modules={[Navigation]}
