@@ -54,6 +54,52 @@ const getEnrollmentById = async (req, res) => {
   }
 };
 
+
+const getEnrollmentsByUser = async (req, res) => {
+  try {
+    const { user_id } = req.params
+
+    const result = await pool.query(  `SELECT * FROM enrollments WHERE user_id = $1`,[user_id]);
+
+    if (result.rows.length === 0) {
+      return res.status(404).json({
+        success: false,
+        message: "No enrollments found for this user",
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      message: "Fetched enrollments successfully",
+      data: result.rows,
+    });
+  } catch (err) {
+    res.status(500).json({
+      success: false,
+      message: "Server Error",
+      error: err.message,
+    });
+  }
+};
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 const createEnrollment = async (req, res) => {
   try {
     const { user_id, course_id, enrolled_at, username, course_name } = req.body;
