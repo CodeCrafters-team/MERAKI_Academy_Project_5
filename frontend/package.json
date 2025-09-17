@@ -11,13 +11,18 @@
   "dependencies": {
     "@reduxjs/toolkit": "^2.9.0",
     "@types/pg": "^8.15.5",
+    "axios": "^1.12.2",
+    "bootstrap": "^5.3.8",
     "debug": "^4.4.3",
     "dotenv": "^17.2.2",
-    "next": "15.5.2",
+    "next": "^15.5.2",
     "pg": "^8.16.3",
     "react": "19.1.0",
-    "react-dom": "19.1.0",
-    "react-redux": "^9.2.0"
+
+    "react-redux": "^9.2.0",
+
+    "react-bootstrap": "^2.10.10",
+    "react-dom": "19.1.0"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",

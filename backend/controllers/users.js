@@ -1,6 +1,8 @@
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const { pool } = require("../models/db");
+const crypto = require("crypto");
+const emailjs = require("@emailjs/nodejs");
 
 const register = (req, res) => {
   const { firstName, lastName, email, password, avatarUrl } = req.body;
@@ -8,7 +10,7 @@ const register = (req, res) => {
   if (!firstName || !lastName || !email || !password) {
     return res.status(400).json({
       success: false,
-      message: 'firstName, lastName, email, password required',
+      message: "firstName, lastName, email, password required",
     });
   }
 
@@ -20,14 +22,14 @@ const register = (req, res) => {
         VALUES ($1, $2, $3, $4, $5 ,$6)
         RETURNING *
       `;
-const role_id= 3    
- const values = [
+      const role_id = 3;
+      const values = [
         email.trim().toLowerCase(),
         passwordHash,
         firstName.trim(),
         lastName.trim(),
         avatarUrl || null,
-         role_id
+        role_id,
       ];
 
       return pool.query(insertQuery, values);
@@ -35,34 +37,34 @@ const role_id= 3
     .then((result) => {
       res.status(201).json({
         success: true,
-        message: 'Account Created Successfully',
+        message: "Account Created Successfully",
         user: result.rows[0],
       });
     })
     .catch((err) => {
-      if (err.code === '23505') {
+      if (err.code === "23505") {
         return res.status(409).json({
           success: false,
-          message: 'The email already exists',
+          message: "The email already exists",
         });
       }
 
       res.status(500).json({
         success: false,
-        message: 'Server Error',
+        message: "Server Error",
         err: err.message,
       });
     });
 };
-  
+
 const login = (req, res) => {
   const email = req.body.email.trim().toLowerCase();
-  const password = req.body.password
+  const password = req.body.password;
 
   if (!email || !password) {
     return res.status(400).json({
       success: false,
-      message: 'email & password required',
+      message: "email & password required",
     });
   }
 
@@ -99,11 +101,10 @@ const login = (req, res) => {
       if (user.isActive === false) {
         return res.status(403).json({
           success: false,
-          message: 'Account is deactivated',
+          message: "Account is deactivated",
         });
       }
 
-   
       return bcrypt.compare(password, user.password_hash).then((isMatch) => {
         if (!isMatch) {
           return res.status(403).json({
@@ -112,27 +113,24 @@ const login = (req, res) => {
           });
         }
 
-    
         const payload = {
           userId: user.id,
           roleId: user.roleId,
           roleName: user.roleName,
           role: {
-            permissions: user.permissions || []
-          }
+            permissions: user.permissions || [],
+          },
         };
 
-        const token = jwt.sign(
-          payload,
-          process.env.SECRET,
-          { expiresIn: '24h' }
-        );
+        const token = jwt.sign(payload, process.env.SECRET, {
+          expiresIn: "24h",
+        });
 
         delete user.password_hash;
 
         return res.status(200).json({
           success: true,
-          message: 'Valid login credentials',
+          message: "Valid login credentials",
           token,
           user: {
             id: user.id,
@@ -150,7 +148,7 @@ const login = (req, res) => {
     .catch((err) => {
       res.status(500).json({
         success: false,
-        message: 'Server Error',
+        message: "Server Error",
         err: err.message,
       });
     });
@@ -182,21 +180,20 @@ const getAllUsers = (req, res) => {
     .catch((err) => {
       res.status(500).json({
         success: false,
-        message: 'Server Error',
+        message: "Server Error",
         err: err.message,
       });
     });
 };
 
-
 const getUserById = (req, res) => {
   const { id } = req.params;
-  const userId = id
+  const userId = id;
 
   if (!userId) {
     return res.status(400).json({
       success: false,
-      message: ' user id required',
+      message: " user id required",
     });
   }
 
@@ -224,7 +221,7 @@ const getUserById = (req, res) => {
       if (rows.length === 0) {
         return res.status(404).json({
           success: false,
-          message: 'User not found',
+          message: "User not found",
         });
       }
       return res.status(200).json({
@@ -235,11 +232,162 @@ const getUserById = (req, res) => {
     .catch((err) => {
       res.status(500).json({
         success: false,
-        message: 'Server Error',
+        message: "Server Error",
         err: err.message,
       });
     });
 };
 
+const forgotPassword = (req, res) => {
+  console.log(process.env.EMAILJS_SERVICE_ID);
+  console.log(process.env.EMAILJS_TEMPLATE_ID);
+  console.log(process.env.EMAILJS_PUBLIC_KEY);
+  console.log(process.env.EMAILJS_PRIVATE_KEY);
+  const { email } = req.body;
 
-module.exports = { register , login ,getAllUsers,getUserById};
+  if (!email) {
+    return res
+      .status(400)
+      .json({ success: false, message: "Email is required" });
+  }
+
+  pool
+    .query("SELECT id, first_name FROM users WHERE email = $1", [email])
+    .then((result) => {
+      if (result.rows.length === 0) {
+        return res
+          .status(404)
+          .json({ success: false, message: "Email not found" });
+      }
+
+      const user = result.rows[0];
+      const code = crypto.randomInt(100000, 999999);
+
+      return pool
+        .query("UPDATE users SET verification_code = $1 WHERE id = $2", [
+          code,
+          user.id,
+        ])
+        .then(() => {
+          return emailjs.send(
+            process.env.EMAILJS_SERVICE_ID,
+            process.env.EMAILJS_TEMPLATE_ID,
+            {
+              to_email: email,
+              to_name: user.first_name,
+              code: code,
+            },
+            {
+              publicKey: process.env.EMAILJS_PUBLIC_KEY,
+              privateKey: process.env.EMAILJS_PRIVATE_KEY,
+            }
+          );
+        })
+        .then(() => {
+          res
+            .status(200)
+            .json({ success: true, message: "Verification code sent" });
+        });
+    })
+    .catch((err) => {
+      console.error("Forgot password error:", err);
+      res
+        .status(500)
+        .json({ success: false, message: "Server error", error: err.message });
+    });
+};
+
+const verifyResetCode = (req, res) => {
+  const { email, code } = req.body;
+
+  if (!email || !code) {
+    return res
+      .status(400)
+      .json({ success: false, message: "Email and code are required" });
+  }
+
+  pool
+    .query("SELECT id, verification_code FROM users WHERE email = $1", [email])
+    .then((result) => {
+      if (result.rows.length === 0) {
+        return res
+          .status(404)
+          .json({ success: false, message: "User not found" });
+      }
+
+      const user = result.rows[0];
+
+      if (parseInt(code) !== user.verification_code) {
+        return res
+          .status(400)
+          .json({ success: false, message: "Invalid code" });
+      }
+
+      return pool
+        .query("UPDATE users SET verification_code = NULL WHERE id = $1", [
+          user.id,
+        ])
+        .then(() => {
+          res
+            .status(200)
+            .json({
+              success: true,
+              message: "Code verified successfully",
+              userId: user.id,
+            });
+        });
+    })
+    .catch((err) => {
+      console.error("Verification error:", err.message);
+      res
+        .status(500)
+        .json({ success: false, message: "Server error", error: err.message });
+    });
+};
+const resetPassword = (req, res) => {
+  const { email, newPassword } = req.body;
+
+  if (!email || !newPassword) {
+    return res
+      .status(400)
+      .json({ success: false, message: "Email and new password are required" });
+  }
+
+  pool
+    .query("SELECT id FROM users WHERE email = $1", [email])
+    .then((result) => {
+      if (result.rows.length === 0) {
+        return res
+          .status(404)
+          .json({ success: false, message: "User not found" });
+      }
+
+      return bcrypt.hash(newPassword, 12).then((hashed) => {
+        return pool.query(
+          "UPDATE users SET password_hash = $1 WHERE email = $2",
+          [hashed, email]
+        );
+      });
+    })
+    .then(() => {
+      res
+        .status(200)
+        .json({ success: true, message: "Password changed successfully" });
+    })
+    .catch((err) => {
+      console.error("Reset password error:", err.message);
+      res
+        .status(500)
+        .json({ success: false, message: "Server error", error: err.message });
+    });
+};
+
+module.exports = {
+  register,
+  login,
+  getAllUsers,
+  getUserById,
+  forgotPassword,
+  verifyResetCode,
+  resetPassword,
+};
