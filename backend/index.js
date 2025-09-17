@@ -35,7 +35,7 @@ app.use("/modules", modulesRouter);
 app.use("/categories", categoriesRouter);
 app.use("/courses", coursesRouter);
 app.use("/lessons", lessonsRouter);
-app.use("/enrollment", enrollmentRouter);
+app.use("/enrollments", enrollmentRouter);
 app.use("/conversations", conversationsRouter);
 app.use("/messages", messagesRouter);
 
