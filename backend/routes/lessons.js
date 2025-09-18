@@ -9,6 +9,6 @@ lessonsRouter.get("/",getAllLessons)
 lessonsRouter.get("/:id",getLessonById)
 lessonsRouter.post("/",createLesson)
 lessonsRouter.delete("/:id",deleteLesson)
-lessonsRouter.get("/module/:id",getLessonByModulesId)
+lessonsRouter.get("/:module_id",getLessonByModulesId)
 
 module.exports=lessonsRouter

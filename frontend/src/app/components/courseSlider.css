@@ -1,0 +1,27 @@
+.course-card {
+  transition: transform 0.3s, box-shadow 0.3s, opacity 0.5s ease-in-out, transform 0.5s ease-in-out;
+  opacity: 0;
+  transform: translateY(30px);
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.course-card.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.course-card:hover {
+  transform: scale(1.05);
+  box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+}
+
+.card-img-top {
+  height: 200px;
+  object-fit: cover;
+}
+
+.btn-buy {
+  width: 100%;
+  margin-top: 10px;
+}
