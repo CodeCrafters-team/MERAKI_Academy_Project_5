@@ -2,7 +2,7 @@ const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const { pool } = require("../models/db");
 const crypto = require("crypto");
-const emailjs = require("emailjs-com");
+const emailjs = require("@emailjs/nodejs");
 
 const register = (req, res) => {
   const { firstName, lastName, email, password, avatarUrl } = req.body;
@@ -10,7 +10,7 @@ const register = (req, res) => {
   if (!firstName || !lastName || !email || !password) {
     return res.status(400).json({
       success: false,
-      message: 'firstName, lastName, email, password required',
+      message: "firstName, lastName, email, password required",
     });
   }
 
@@ -22,14 +22,14 @@ const register = (req, res) => {
         VALUES ($1, $2, $3, $4, $5 ,$6)
         RETURNING *
       `;
-const role_id= 3    
- const values = [
+      const role_id = 3;
+      const values = [
         email.trim().toLowerCase(),
         passwordHash,
         firstName.trim(),
         lastName.trim(),
         avatarUrl || null,
-         role_id
+        role_id,
       ];
 
       return pool.query(insertQuery, values);
@@ -37,160 +37,121 @@ const role_id= 3
     .then((result) => {
       res.status(201).json({
         success: true,
-        message: 'Account Created Successfully',
+        message: "Account Created Successfully",
         user: result.rows[0],
       });
     })
     .catch((err) => {
-      if (err.code === '23505') {
+      if (err.code === "23505") {
         return res.status(409).json({
           success: false,
-          message: 'The email already exists',
+          message: "The email already exists",
         });
       }
 
       res.status(500).json({
         success: false,
-        message: 'Server Error',
+        message: "Server Error",
         err: err.message,
       });
     });
 };
-  
-const login = async (req, res) => {
-  try {
-    const email = (req.body.email || "").trim().toLowerCase();
-    const password = req.body.password;
-    const debug = (req.query && req.query.debug === "true"); // استخدم ?debug=true للاختبار فقط
 
-    if (!email || !password) {
-      return res.status(400).json({
-        success: false,
-        message: "email & password required",
-      });
-    }
+const login = (req, res) => {
+  const email = req.body.email.trim().toLowerCase();
+  const password = req.body.password;
 
-    const selectQuery = `
-      SELECT
-        u.id,
-        u.email,
-        u.password_hash,
-        u.first_name AS "firstName",
-        u.last_name  AS "lastName",
-        u.avatar_url AS "avatarUrl",
-        u.is_active  AS "isActive",
-        u.role_id    AS "roleId",
-        r.name       AS "roleName",
-        r.permissions
-      FROM users u
-      LEFT JOIN roles r ON r.id = u.role_id
-      WHERE u.email = $1
-      LIMIT 1
-    `;
-
-    const result = await pool.query(selectQuery, [email]);
-
-    if (result.rows.length === 0) {
-      return res.status(403).json({
-        success: false,
-        message: `The email doesn't exist or the password is incorrect`,
-      });
-    }
-
-    const user = result.rows[0];
-
-    if (user.isActive === false) {
-      return res.status(403).json({
-        success: false,
-        message: "Account is deactivated",
-      });
-    }
-
-    const isMatch = await bcrypt.compare(password, user.password_hash);
-    if (!isMatch) {
-      return res.status(403).json({
-        success: false,
-        message: `The email doesn't exist or the password is incorrect`,
-      });
-    }
-
-    // النجاح: أنشئ payload و token
-    const payload = {
-      userId: user.id,
-      roleId: user.roleId,
-      roleName: user.roleName,
-      role: {
-        permissions: user.permissions || [],
-      },
-    };
-
-    const token = jwt.sign(payload, process.env.SECRET, { expiresIn: "24h" });
-
-    // أنشئ كود تحقق رقمي 6 خانات
-    const verificationCode = crypto.randomInt(100000, 999999);
-
-    // خزّن الكود في DB
-    try {
-      await pool.query("UPDATE users SET verification_code=$1 WHERE id=$2", [
-        verificationCode,
-        user.id,
-      ]);
-    } catch (dbErr) {
-      console.error("Failed to save verification code:", dbErr.message);
-      // لا نقطع عملية الدخول — نخبر فقط أن حفظ الكود فشل
-    }
-
-    // أرسل الإيميل (محاولة - إذا فشل الإرسال نستمر)
-    (async () => {
-      try {
-        await emailjs.send(
-          process.env.EMAILJS_SERVICE_ID,
-          process.env.EMAILJS_TEMPLATE_ID,
-          {
-            to_email: user.email,
-            to_name: user.firstName || `${user.firstName} ${user.lastName}` || user.email,
-            message: `Your verification code is: ${verificationCode}`,
-          },
-          {
-            publicKey: process.env.EMAILJS_PUBLIC_KEY,
-            privateKey: process.env.EMAILJS_PRIVATE_KEY,
-          }
-        );
-      } catch (emailErr) {
-        console.error("Email sending failed:", emailErr?.message || emailErr);
-      }
-    })();
-
-    // إمكانيّة إرجاع الكود فقط في وضع debug لاختبارات التطوير
-    const responsePayload = {
-      success: true,
-      message: "Valid login credentials. Verification code sent to email.",
-      token,
-      user: {
-        id: user.id,
-        email: user.email,
-        firstName: user.firstName,
-        lastName: user.lastName,
-        avatarUrl: user.avatarUrl,
-        roleId: user.roleId,
-        roleName: user.roleName,
-        permissions: user.permissions,
-      },
-    };
-
-    if (debug) {
-      responsePayload.debug = { verificationCode };
-    }
-
-    return res.status(200).json(responsePayload);
-  } catch (err) {
-    console.error("Login error:", err.message);
-    return res.status(500).json({
+  if (!email || !password) {
+    return res.status(400).json({
       success: false,
-      message: "Server Error",
-      err: err.message,
+      message: "email & password required",
     });
   }
+
+  const selectQuery = `
+    SELECT
+      u.id,
+      u.email,
+      u.password_hash,
+      u.first_name AS "firstName",
+      u.last_name  AS "lastName",
+      u.avatar_url AS "avatarUrl",
+      u.is_active  AS "isActive",
+      u.role_id    AS "roleId",
+      r.name       AS "roleName",
+      r.permissions
+    FROM users u
+    LEFT JOIN roles r ON r.id = u.role_id
+    WHERE u.email = $1
+    LIMIT 1
+  `;
+
+  pool
+    .query(selectQuery, [email])
+    .then((result) => {
+      if (result.rows.length === 0) {
+        return res.status(403).json({
+          success: false,
+          message: `The email doesn't exist or the password is incorrect`,
+        });
+      }
+
+      const user = result.rows[0];
+
+      if (user.isActive === false) {
+        return res.status(403).json({
+          success: false,
+          message: "Account is deactivated",
+        });
+      }
+
+      return bcrypt.compare(password, user.password_hash).then((isMatch) => {
+        if (!isMatch) {
+          return res.status(403).json({
+            success: false,
+            message: `The email doesn't exist or the password is incorrect`,
+          });
+        }
+
+        const payload = {
+          userId: user.id,
+          roleId: user.roleId,
+          roleName: user.roleName,
+          role: {
+            permissions: user.permissions || [],
+          },
+        };
+
+        const token = jwt.sign(payload, process.env.SECRET, {
+          expiresIn: "24h",
+        });
+
+        delete user.password_hash;
+
+        return res.status(200).json({
+          success: true,
+          message: "Valid login credentials",
+          token,
+          user: {
+            id: user.id,
+            email: user.email,
+            firstName: user.firstName,
+            lastName: user.lastName,
+            avatarUrl: user.avatarUrl,
+            roleId: user.roleId,
+            roleName: user.roleName,
+            permissions: user.permissions,
+          },
+        });
+      });
+    })
+    .catch((err) => {
+      res.status(500).json({
+        success: false,
+        message: "Server Error",
+        err: err.message,
+      });
+    });
 };
 
 const getAllUsers = (req, res) => {
@@ -219,21 +180,20 @@ const getAllUsers = (req, res) => {
     .catch((err) => {
       res.status(500).json({
         success: false,
-        message: 'Server Error',
+        message: "Server Error",
         err: err.message,
       });
     });
 };
 
-
 const getUserById = (req, res) => {
   const { id } = req.params;
-  const userId = id
+  const userId = id;
 
   if (!userId) {
     return res.status(400).json({
       success: false,
-      message: ' user id required',
+      message: " user id required",
     });
   }
 
@@ -261,7 +221,7 @@ const getUserById = (req, res) => {
       if (rows.length === 0) {
         return res.status(404).json({
           success: false,
-          message: 'User not found',
+          message: "User not found",
         });
       }
       return res.status(200).json({
@@ -272,84 +232,162 @@ const getUserById = (req, res) => {
     .catch((err) => {
       res.status(500).json({
         success: false,
-        message: 'Server Error',
+        message: "Server Error",
         err: err.message,
       });
     });
 };
 
-const updateUserInfo = async (req, res) => {
-  const { id } = req.params;
-  const { firstName, lastName, avatarUrl, email } = req.body;
+const forgotPassword = (req, res) => {
+  console.log(process.env.EMAILJS_SERVICE_ID);
+  console.log(process.env.EMAILJS_TEMPLATE_ID);
+  console.log(process.env.EMAILJS_PUBLIC_KEY);
+  console.log(process.env.EMAILJS_PRIVATE_KEY);
+  const { email } = req.body;
 
-  try {
-    const userCheck = await pool.query("SELECT * FROM users WHERE id = $1", [id]);
-    if (userCheck.rows.length === 0) {
-      return res.status(404).json({ success: false, message: "User not found" });
-    }
+  if (!email) {
+    return res
+      .status(400)
+      .json({ success: false, message: "Email is required" });
+  }
 
-    const verificationCode = crypto.randomInt(100000, 999999);
+  pool
+    .query("SELECT id, first_name FROM users WHERE email = $1", [email])
+    .then((result) => {
+      if (result.rows.length === 0) {
+        return res
+          .status(404)
+          .json({ success: false, message: "Email not found" });
+      }
 
-    try {
-      await emailjs.send(
-        process.env.EMAILJS_SERVICE_ID,
-        process.env.EMAILJS_TEMPLATE_ID,
-        {
-          to_email: email || userCheck.rows[0].email,
-          to_name: firstName || userCheck.rows[0].first_name,
-          message: `Your verification code is: ${verificationCode}`,
-        },
-        {
-          publicKey: process.env.EMAILJS_PUBLIC_KEY,
-          privateKey: process.env.EMAILJS_PRIVATE_KEY,
-        }
-      );
-    } catch (err) {
-      console.error("Email sending failed:", err.message);
-    }
+      const user = result.rows[0];
+      const code = crypto.randomInt(100000, 999999);
 
-    await pool.query(
-      `UPDATE users SET first_name=$1, last_name=$2, avatar_url=$3, verification_code=$4 WHERE id=$5`,
-      [
-        firstName || userCheck.rows[0].first_name,
-        lastName || userCheck.rows[0].last_name,
-        avatarUrl || userCheck.rows[0].avatar_url,
-        verificationCode,
-        id,
-      ]
-    );
-
-    res.status(200).json({
-      success: true,
-      message: "Verification code sent to email",
+      return pool
+        .query("UPDATE users SET verification_code = $1 WHERE id = $2", [
+          code,
+          user.id,
+        ])
+        .then(() => {
+          return emailjs.send(
+            process.env.EMAILJS_SERVICE_ID,
+            process.env.EMAILJS_TEMPLATE_ID,
+            {
+              to_email: email,
+              to_name: user.first_name,
+              code: code,
+            },
+            {
+              publicKey: process.env.EMAILJS_PUBLIC_KEY,
+              privateKey: process.env.EMAILJS_PRIVATE_KEY,
+            }
+          );
+        })
+        .then(() => {
+          res
+            .status(200)
+            .json({ success: true, message: "Verification code sent" });
+        });
+    })
+    .catch((err) => {
+      console.error("Forgot password error:", err);
+      res
+        .status(500)
+        .json({ success: false, message: "Server error", error: err.message });
     });
-  } catch (err) {
-    console.error("Error updating user:", err.message);
-    res.status(500).json({ success: false, message: "Server error", error: err.message });
-  }
 };
 
-const verifyCode = async (req, res) => {
-  try {
-    const { id } = req.params;
-    const { code } = req.body;
+const verifyResetCode = (req, res) => {
+  const { email, code } = req.body;
 
-    const user = await pool.query("SELECT verification_code FROM users WHERE id=$1", [id]);
-    if (user.rows.length === 0) {
-      return res.status(404).json({ success: false, message: "User not found" });
-    }
-
-    if (parseInt(code) !== user.rows[0].verification_code) {
-      return res.status(400).json({ success: false, message: "Invalid verification code" });
-    }
-
-    await pool.query("UPDATE users SET verification_code=NULL WHERE id=$1", [id]);
-
-    res.status(200).json({ success: true, message: "User verified successfully" });
-  } catch (err) {
-    console.error("Error verifying code:", err.message);
-    res.status(500).json({ success: false, message: "Server error", error: err.message });
+  if (!email || !code) {
+    return res
+      .status(400)
+      .json({ success: false, message: "Email and code are required" });
   }
+
+  pool
+    .query("SELECT id, verification_code FROM users WHERE email = $1", [email])
+    .then((result) => {
+      if (result.rows.length === 0) {
+        return res
+          .status(404)
+          .json({ success: false, message: "User not found" });
+      }
+
+      const user = result.rows[0];
+
+      if (parseInt(code) !== user.verification_code) {
+        return res
+          .status(400)
+          .json({ success: false, message: "Invalid code" });
+      }
+
+      return pool
+        .query("UPDATE users SET verification_code = NULL WHERE id = $1", [
+          user.id,
+        ])
+        .then(() => {
+          res
+            .status(200)
+            .json({
+              success: true,
+              message: "Code verified successfully",
+              userId: user.id,
+            });
+        });
+    })
+    .catch((err) => {
+      console.error("Verification error:", err.message);
+      res
+        .status(500)
+        .json({ success: false, message: "Server error", error: err.message });
+    });
+};
+const resetPassword = (req, res) => {
+  const { email, newPassword } = req.body;
+
+  if (!email || !newPassword) {
+    return res
+      .status(400)
+      .json({ success: false, message: "Email and new password are required" });
+  }
+
+  pool
+    .query("SELECT id FROM users WHERE email = $1", [email])
+    .then((result) => {
+      if (result.rows.length === 0) {
+        return res
+          .status(404)
+          .json({ success: false, message: "User not found" });
+      }
+
+      return bcrypt.hash(newPassword, 12).then((hashed) => {
+        return pool.query(
+          "UPDATE users SET password_hash = $1 WHERE email = $2",
+          [hashed, email]
+        );
+      });
+    })
+    .then(() => {
+      res
+        .status(200)
+        .json({ success: true, message: "Password changed successfully" });
+    })
+    .catch((err) => {
+      console.error("Reset password error:", err.message);
+      res
+        .status(500)
+        .json({ success: false, message: "Server error", error: err.message });
+    });
 };
 
-module.exports = { register , login ,getAllUsers,getUserById, updateUserInfo, verifyCode};
+module.exports = {
+  register,
+  login,
+  getAllUsers,
+  getUserById,
+  forgotPassword,
+  verifyResetCode,
+  resetPassword,
+};
