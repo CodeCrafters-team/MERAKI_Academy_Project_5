@@ -7,7 +7,7 @@ interface AuthState {
 }
 
 const initialState: AuthState = {
-  token: null,
+  token:       localStorage.getItem("token"),
   userId: null,
   avatarUrl: null,
 };
@@ -20,6 +20,9 @@ const authSlice = createSlice({
       state,
       action: PayloadAction<{ token: string; userId: number; avatarUrl: string }>
     ) => {
+      localStorage.setItem("token", action.payload.token);
+      localStorage.setItem("userId", String(action.payload.userId));
+      localStorage.setItem("avatar", action.payload.avatarUrl);
       state.token = action.payload.token;
       state.userId = action.payload.userId;
       state.avatarUrl = action.payload.avatarUrl;
@@ -28,6 +31,7 @@ const authSlice = createSlice({
       state.token = null;
       state.userId = null;
       state.avatarUrl = null;
+      localStorage.clear();
     },
   },
 });
