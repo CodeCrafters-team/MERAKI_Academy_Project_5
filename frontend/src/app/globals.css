@@ -1,0 +1,17 @@
+*{
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  scroll-behavior: smooth;
+}
+
+
+.btn-primary {
+  background:  #4ab0ff;
+
+}
+
+.btn-primary:hover {
+  background: #f59d01;
+}
