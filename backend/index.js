@@ -1,4 +1,6 @@
 const express = require("express");
+const passport = require("passport");
+const GoogleStrategy = require("passport-google-oauth20").Strategy;
 const cors = require("cors");
 const { createServer } = require("http");
 const { Server } = require("socket.io");
@@ -39,6 +41,9 @@ app.use("/enrollments", enrollmentRouter);
 app.use("/conversations", conversationsRouter);
 app.use("/messages", messagesRouter);
 
+
+app.use("/auth", authRoutes);
+
 app.use((req, res) => res.status(404).json("NO content at this path"));
 
 io.on("connection", (socket) => {
@@ -64,6 +69,46 @@ io.on("connection", (socket) => {
     console.log("User disconnected:", socket.id);
   });
 });
+//*******************************************************/
+passport.use(
+  new GoogleStrategy(
+    {
+      clientID: process.env.GOOGLE_CLIENT_ID,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+      callbackURL: "http://localhost:5000/auth/google/callback",
+    },
+    async (accessToken, refreshToken, profile, done) => {
+      try {
+       
+        const user = {
+          id: profile.id,
+          name: profile.displayName,
+          email: profile.emails[0].value,
+          avatar: profile.photos[0].value,
+        };
+
+        return done(null, user);
+      } catch (err) {
+        return done(err, null);
+      }
+    }
+  )
+);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 httpServer.listen(PORT, () => {
   console.log(`Server listening at http://localhost:${PORT}`);
