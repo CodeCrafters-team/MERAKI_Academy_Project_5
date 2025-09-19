@@ -1,11 +1,14 @@
 const express = require("express");
 const passport = require("passport");
-const GoogleStrategy = require("passport-google-oauth20").Strategy;
 const cors = require("cors");
 const { createServer } = require("http");
 const { Server } = require("socket.io");
+const authRoutes = require("./routes/authRoutes");
 require("dotenv").config();
+console.log(process.env.JWT_SECRET);
+
 require("./models/db");
+require("./passport");
 
 const app = express();
 const httpServer = createServer(app);
@@ -69,32 +72,18 @@ io.on("connection", (socket) => {
     console.log("User disconnected:", socket.id);
   });
 });
-//*******************************************************/
-passport.use(
-  new GoogleStrategy(
-    {
-      clientID: process.env.GOOGLE_CLIENT_ID,
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-      callbackURL: "http://localhost:5000/auth/google/callback",
-    },
-    async (accessToken, refreshToken, profile, done) => {
-      try {
-       
-        const user = {
-          id: profile.id,
-          name: profile.displayName,
-          email: profile.emails[0].value,
-          avatar: profile.photos[0].value,
-        };
+//*******************************************************//
+app.use(cors({
+  origin: "http://localhost:3000",
+  credentials: true,
+}));
 
-        return done(null, user);
-      } catch (err) {
-        return done(err, null);
-      }
-    }
-  )
-);
+app.use(passport.initialize());
+app.use("/auth", authRoutes);
 
+app.get("/", (req, res) => {
+  res.send("Server running!");
+});
 
 
 
