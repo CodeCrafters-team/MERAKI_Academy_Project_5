@@ -89,7 +89,7 @@ export default function Navbar() {
                     <i className="bi bi-search"></i>
                   </button>
                   <input
-                    style={{ width: "20em" }}
+                    style={{ width: "16em" }}
                     type="search"
                     className="form-control "
                     placeholder="Search courses..."

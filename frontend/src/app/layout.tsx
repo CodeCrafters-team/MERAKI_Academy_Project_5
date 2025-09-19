@@ -12,8 +12,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en" >
       <body>
-        <Navbar/>
+  <Navbar/>
+
+        <div style={{ marginTop: '4em' }}>
         <Providers>{children}</Providers>
+        </div>
       </body>
     </html>
   );
