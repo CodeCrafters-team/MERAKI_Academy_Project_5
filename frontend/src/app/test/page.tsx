@@ -6,6 +6,7 @@ function page() {
     <div>
       <div> 
         <CourseSlider/>
+        
       </div>
     </div>
   )
