@@ -1,6 +1,6 @@
 const express = require("express");
  const { register, login
-    ,getAllUsers,getUserById,  forgotPassword, verifyResetCode, resetPassword
+   ,getAllUsers,getUserById,  forgotPassword, verifyResetCode, resetPassword
  } = require("../controllers/users");
 
 const authentication = require("../middleware/authentication");

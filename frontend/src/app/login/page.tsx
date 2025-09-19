@@ -14,33 +14,62 @@ const [email, setEmail] = useState('');
 const [password, setPassword] = useState('');
 
 const handleLogin = async () => {
-    const res = await fetch('http://localhost:5000/users/login', {
-    method: 'POST',
-    body: JSON.stringify({ email, password }),
-    headers: { 'Content-Type': 'application/json' },
+    try {
+      const res = await fetch("http://localhost:5000/users/login", {
+        method: "POST",
+        body: JSON.stringify({ email, password }),
+        headers: { "Content-Type": "application/json" },
+      });
+
+      const data = await res.json();
+
+      if (data.success) {
+        localStorage.setItem("token", data.token);
+        localStorage.setItem("userId", data.user.id);
+        localStorage.setItem("avatarUrl", data.user.avatarUrl);
+
+        router.push("/");
+      } else {
+        console.log("Login error:", data.message);
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+const handleForgotPassword = async () => {
+  if (!email) {
+    console.log("Email is required");
+    return;
+  }
+
+  try {
+    const res = await fetch("http://localhost:5000/users/forgot_password", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email }),
     });
 
     const data = await res.json();
 
     if (data.success) {
-    dispatch(
-        setCredentials({
-        token: data.token,
-        userId: data.user.id,
-        avatarUrl: data.user.avatarUrl,
-        })
-    );
+      localStorage.setItem("resetEmail", email);
 
-    router.push('/');
+      console.log("Verification code sent. Go to verify page.");
+      router.push("/verify-password");        
     } else {
-    console.log('Login error');
+      console.log("Error sending code:", data.message);
     }
+  } catch (err) {
+    console.error("Forgot password error:", err);
+  }
 };
+
 
 return (
     <div>
     <div>
-        <h2>Logi</h2>
+        <h2>Login</h2>
         <input
         type="email"
         placeholder="Email"
@@ -57,6 +86,11 @@ return (
         onClick={handleLogin}>
         Login
         </button>
+
+        <button
+        onClick={handleForgotPassword}>
+        Forgot Password
+      </button>
     </div>
     </div>
 );
