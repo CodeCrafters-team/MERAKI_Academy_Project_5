@@ -1,9 +1,14 @@
 const express = require("express");
+const passport = require("passport");
 const cors = require("cors");
 const { createServer } = require("http");
 const { Server } = require("socket.io");
+const authRoutes = require("./routes/authRoutes");
 require("dotenv").config();
+console.log(process.env.JWT_SECRET);
+
 require("./models/db");
+require("./passport");
 
 const app = express();
 const httpServer = createServer(app);
@@ -39,6 +44,9 @@ app.use("/enrollments", enrollmentRouter);
 app.use("/conversations", conversationsRouter);
 app.use("/messages", messagesRouter);
 
+
+app.use("/auth", authRoutes);
+
 app.use((req, res) => res.status(404).json("NO content at this path"));
 
 io.on("connection", (socket) => {
@@ -64,6 +72,21 @@ io.on("connection", (socket) => {
     console.log("User disconnected:", socket.id);
   });
 });
+//*******************************************************//
+app.use(cors({
+  origin: "http://localhost:3000",
+  credentials: true,
+}));
+
+app.use(passport.initialize());
+app.use("/auth", authRoutes);
+
+app.get("/", (req, res) => {
+  res.send("Server running!");
+});
+
+
+
 
 httpServer.listen(PORT, () => {
   console.log(`Server listening at http://localhost:${PORT}`);
