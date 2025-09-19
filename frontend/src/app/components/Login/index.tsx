@@ -3,26 +3,31 @@
 import React, { useState } from "react";
 import axios from "axios";
 import "./style.css";
+import { useRouter } from "next/navigation";
 
 const Login = () => {
   const [email, setEmail] = useState("");
   const [message, setMessage] = useState("");
   const [password, setPassword] = useState("");
   const [status, setStatus] = useState(false);
+  const [loading,   setLoading]   = useState(false);
+  
 
-  const handleLogin = (e ) => {
+  const router = useRouter();
+
+  const handleLogin = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     axios
-      .post(`/users/login`, { email, password })
+      .post(`http://localhost:5000/users/login`, { email, password })
       .then((result) => {
+        setLoading(true);
         if (result.data) {
           console.log(result.data);
           setMessage("Login successful");
           setStatus(true);
-          setTimeout(() => {
-            window.location.reload();
-          }, 200);
+         setTimeout(() => router.push('/'), 800);
+
         } else {
           throw new Error();
         }
@@ -33,7 +38,7 @@ const Login = () => {
           return setMessage(error.response.data.message);
         }
         setMessage("Error happened while Login, please try again");
-      });
+      }).finally(() => setLoading(false));
   };
 
   
@@ -41,10 +46,10 @@ const Login = () => {
   return (
     <div className="Login" style={{ background: "#f2f4f7" }}>
       <div className="left-side">
-        <h3 className=" animate__animated animate__fadeInTopRight animate__slow ">
+        <h3>
           Learn with SmartPath <br /> draw your own path to creativity and success
         </h3>
-        <img className="animate__fadeInBottomLeft animate__animated animate__slow" style={{ width: "30em" }} src="/assets/img1.svg" alt="Learning" />
+        <img  style={{ width: "30em" }} src="/assets/img1.svg" alt="Learning" />
       </div>
 
       <div className={ "animate__animated  animate__fadeInLeft Form "}>
@@ -65,7 +70,7 @@ const Login = () => {
             required
           />
           <button className="login-btn  animate__animated  animate__fadeInLeft animate__slow" type="submit">
-            Login
+            {loading ? "Logging in..." : "Login"}
           </button>
         </form>
 
