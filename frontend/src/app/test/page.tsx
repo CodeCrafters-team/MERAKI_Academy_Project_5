@@ -6,6 +6,7 @@ function page() {
     <div>
       <div> 
         <CourseSlider/>
+        
       </div>
       <h1>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Voluptatem, dicta doloribus magni accusamus perspiciatis facilis vitae corporis nisi, explicabo fugiat temporibus quidem asperiores dolores tempora nesciunt eum beatae harum molestias.
       Deleniti earum libero officiis aliquam blanditiis rerum accusamus quo distinctio eos deserunt magni modi tempore magnam, facere quaerat voluptate laudantium! Quia est eveniet reiciendis esse fugiat recusandae numquam magnam ex?
