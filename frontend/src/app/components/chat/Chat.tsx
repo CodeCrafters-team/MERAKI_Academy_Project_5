@@ -4,8 +4,7 @@ import { useEffect, useMemo, useRef, useState, useCallback } from "react";
 import { useRouter, useParams } from "next/navigation";
 import { listConversations, getMessages, sendMessage, startConversation } from "./../../api/chat";
 import { joinConversation, leaveConversation, onChatMessage, onNewMessage, connectSocket } from "@/app/socket";
-import 'bootstrap/dist/css/bootstrap.min.css';
-import 'bootstrap-icons/font/bootstrap-icons.css';
+
 
 
 const THEME = "#77b0e4ff";
