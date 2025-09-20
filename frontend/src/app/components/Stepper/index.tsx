@@ -28,7 +28,7 @@ interface StepperProps extends HTMLAttributes<HTMLDivElement> {
   nextButtonText?: string;
   disableStepIndicators?: boolean;
   renderStepIndicator?: (props: RenderStepIndicatorProps) => ReactNode;
-  externalStep?: number; // 👈 جديد
+  externalStep?: number; 
 }
 
 interface RenderStepIndicatorProps {

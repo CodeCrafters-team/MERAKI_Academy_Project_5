@@ -60,16 +60,15 @@ export default function Navbar() {
             <div className="collapse navbar-collapse" id="mainNav">
               <ul className="navbar-nav me-auto mb-2 mb-lg-0">
                 <li className="nav-item">
-                  <a className="nav-link" href="#home">
+                  <a className="nav-link" href="/home">
                    <b>Home</b> 
                   </a>
                 </li>
                 <li className="nav-item">
-                  <a className="nav-link" href="#courses">
-                    <b>  Courses</b>
-                   
-                  </a>
-                </li>
+  <a className="nav-link" href="#courses">
+    <b>Courses</b>
+  </a>
+</li>
                 <li className="nav-item">
                   <a className="nav-link" href="login">
                    
