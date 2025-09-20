@@ -17,3 +17,13 @@
 .btn-primary:hover {
   background-position: right center;
 }
+
+ a {
+  color: #000000;
+  text-decoration: none;
+  transition: color 0.5s ease-in-out;
+
+}
+ a:hover {
+  color: #646464;
+}
