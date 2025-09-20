@@ -1,6 +1,8 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import { useRouter } from "next/navigation";
+
 
 interface Category {
   id: number;
@@ -16,6 +18,9 @@ export default function CategoriesGrid() {
   const [categories, setCategories] = useState<Category[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+
+  const router = useRouter();
+  
 
   useEffect(() => {
     (async () => {
@@ -100,6 +105,9 @@ export default function CategoriesGrid() {
                 const bg = colors[idx  % colors.length ];
                 return (
                   <div
+                  onClick={()=>{
+                    router.push(`/categories/${idx}`)
+                  }}
                     className="col-sm-6 col-md-4 col-xl-3 animate__animated animate__fadeInUp"
                     key={item.id ?? idx}
                   >
