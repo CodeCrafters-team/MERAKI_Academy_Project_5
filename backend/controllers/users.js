@@ -5,12 +5,12 @@ const crypto = require("crypto");
 const emailjs = require("@emailjs/nodejs");
 
 const register = (req, res) => {
-  const { firstName, lastName, email, password, avatarUrl } = req.body;
+  const { firstName, lastName, age, email, password, avatarUrl } = req.body;
 
-  if (!firstName || !lastName || !email || !password) {
+  if (!firstName || !lastName || !email || !password || !age) {
     return res.status(400).json({
       success: false,
-      message: "firstName, lastName, email, password required",
+      message: "firstName, lastName, email, age, password required",
     });
   }
 
@@ -18,8 +18,8 @@ const register = (req, res) => {
     .hash(password, 12)
     .then((passwordHash) => {
       const insertQuery = `
-        INSERT INTO users (email, password_hash, first_name, last_name, avatar_url, role_id)
-        VALUES ($1, $2, $3, $4, $5 ,$6)
+        INSERT INTO users (email, password_hash, first_name, last_name, avatar_url, role_id ,age)
+        VALUES ($1, $2, $3, $4, $5 ,$6 ,$7)
         RETURNING *
       `;
       const role_id = 3;
@@ -30,6 +30,7 @@ const register = (req, res) => {
         lastName.trim(),
         avatarUrl || null,
         role_id,
+        age
       ];
 
       return pool.query(insertQuery, values);

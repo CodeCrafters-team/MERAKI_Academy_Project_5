@@ -8,10 +8,12 @@
 
 
 .btn-primary {
-  background:  #4ab0ff;
-
+  background: linear-gradient(90deg, #4ab0ff, #f69d01, #4ab0ff);
+  background-size: 300% 300%;
+  background-position: left center; 
+  transition: background-position 1.5s ease-in-out;
 }
 
 .btn-primary:hover {
-  background: #f59d01;
+  background-position: right center;
 }
