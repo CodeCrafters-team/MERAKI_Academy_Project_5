@@ -3,12 +3,10 @@ const passport = require("passport");
 const cors = require("cors");
 const { createServer } = require("http");
 const { Server } = require("socket.io");
-const authRoutes = require("./routes/authRoutes");
+const authRoutes = require("./routes/google");
 require("dotenv").config();
-console.log(process.env.JWT_SECRET);
-
 require("./models/db");
-require("./passport");
+
 
 const app = express();
 const httpServer = createServer(app);
@@ -21,6 +19,7 @@ require("./socket").init(io);
 
 const PORT = 5000;
 
+const googleRoutes = require("./routes/google");
 const usersRouter = require("./routes/users");
 const rolesRouter = require("./routes/roles");
 const modulesRouter = require("./routes/modules");
@@ -30,9 +29,15 @@ const lessonsRouter = require("./routes/lessons");
 const enrollmentRouter = require("./routes/enrollments");
 const conversationsRouter = require("./routes/conversations");
 const messagesRouter = require("./routes/messages");
+const setupGoogleStrategy = require("./config/googleStrategy");
+
 
 app.use(cors());
 app.use(express.json());
+setupGoogleStrategy();
+app.use(passport.initialize());
+
+
 
 app.use("/users", usersRouter);
 app.use("/roles", rolesRouter);
@@ -43,9 +48,10 @@ app.use("/lessons", lessonsRouter);
 app.use("/enrollments", enrollmentRouter);
 app.use("/conversations", conversationsRouter);
 app.use("/messages", messagesRouter);
+app.use("/auth/google", googleRoutes);
 
 
-app.use("/auth", authRoutes);
+
 
 app.use((req, res) => res.status(404).json("NO content at this path"));
 

@@ -11,6 +11,8 @@ const Login = () => {
   const [password, setPassword] = useState("");
   const [status, setStatus] = useState(false);
   const [loading,   setLoading]   = useState(false);
+      const GOOGLE_LOGIN_URL = `http://localhost:5000/auth/google/login`;
+
   
 
   const router = useRouter();
@@ -87,6 +89,7 @@ const Login = () => {
         <button
           type="button"
           className="google-btn animate__animated  animate__fadeInUp animate__slow"
+           onClick={() => (window.location.href = GOOGLE_LOGIN_URL)}
         >
           <img
             src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg"

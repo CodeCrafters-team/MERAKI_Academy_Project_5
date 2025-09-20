@@ -36,7 +36,8 @@ export default function Home() {
 
             <div className="col-md-8  animate__fadeInTopRight animate__animated animate__slow">
               <img
-                src="https://i.postimg.cc/cCbTGdp2/2311865.png"
+              style={{ width: "90%" }}
+                src="/assets/section1.svg"
                 alt="Learning Illustration"
                 className="img-fluid"
               />
