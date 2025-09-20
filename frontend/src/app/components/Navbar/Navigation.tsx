@@ -111,7 +111,7 @@ export default function Navbar() {
             </div>
 
             <div className="collapse navbar-collapse" id="mainNav">
-              <ul className="navbar-nav me-auto mb-2 mb-lg-0">
+            <ul className="navbar-nav ms-4 ms-lg-5 me-auto mb-2 mb-lg-0 d-flex gap-3">
                 <li className="nav-item">
                   <a className="nav-link" href="#home">
                   <b>Home</b> 
@@ -139,17 +139,32 @@ export default function Navbar() {
 
 
 <div className="container mt-3 d-none d-lg-block">
-  <div style={{ position: "relative", maxWidth: "500px", margin: "0 auto" }}>
-    <form
-      className="d-flex"
-      onSubmit={(e) => {
-        e.preventDefault();
-      }}
-    >
+  <div style={{ position: "relative", maxWidth: "350px", margin: "0 auto" }}>
+    <form className="d-flex" 
+    onSubmit={(e) => {
+  e.preventDefault();
+
+  if (search.trim().length > 0) {
+    const filtered = courses.filter((course) =>
+      course.title.toLowerCase().includes(search.toLowerCase()) ||
+      course.description.toLowerCase().includes(search.toLowerCase())
+    );
+    setResults(filtered.slice(0, 5));
+
+  if (filtered.length === 1 && filtered[0].title.toLowerCase() === search.toLowerCase()) {
+  window.location.href = `/courses/${filtered[0].title.toLowerCase()}`;
+}
+  } else {
+    setResults([]);
+  }
+}}>
       <div className="input-group w-100">
-        <button className="btn btn-outline-secondary" type="submit">
-          <i className="bi bi-search"></i>
-        </button>
+        <button
+  className="btn btn-outline-secondary"
+  type="submit"
+>
+  <i className="bi bi-search"></i>
+</button>
         <input
           type="search"
           className="form-control"
