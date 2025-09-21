@@ -10,8 +10,8 @@ export default function NotFound() {
   }, []);
 
   return (
-    <main className="container text-center my-5">
-      <div className="animate__animated animate__fadeIn">
+    <main className="container text-center my-5 d-flex justify-content-center" style={{height:"100vh"}}>
+      <div className="animate__animated animate__fadeIn align-content-center">
         <h1
           className="display-3 fw-bold animate__animated animate__shakeX"
           style={{ color: "#77B0E4" }}
@@ -47,14 +47,7 @@ export default function NotFound() {
           </Link>
         </div>
 
-        <div className="mt-5">
-          <img 
-            src="/assets/notFound.jpg"
-            alt="404 illustration"
-            className="img-fluid rounded-4 shadow-sm animate__animated animate__zoomIn"
-            style={{ maxWidth: "500px" }}
-          />
-        </div>
+       
       </div>
     </main>
   );
