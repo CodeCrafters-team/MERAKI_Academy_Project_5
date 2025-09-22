@@ -1,9 +1,13 @@
 .course-card {
-  transition: transform 0.3s, box-shadow 0.3s, opacity 0.5s ease-in-out, transform 0.5s ease-in-out;
+  transition: all 0.4s ease-in-out;
   opacity: 0;
-  transform: translateY(30px);
-  border-radius: 10px;
+  transform: translateY(20px);
+  border-radius: 15px;
   overflow: hidden;
+  border: 2px solid transparent;
+  height: 450px; 
+  display: flex;
+  flex-direction: column;
 }
 
 .course-card.visible {
@@ -12,8 +16,10 @@
 }
 
 .course-card:hover {
-  transform: scale(1.05);
-  box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+  transform: translateY(-8px);
+  border: 2px solid transparent;
+  border-image: linear-gradient(45deg, #77B0E4, #F6A531) 1;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.25);
 }
 
 .card-img-top {
@@ -21,7 +27,34 @@
   object-fit: cover;
 }
 
+.card-body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 15px;
+  min-height: 150px; 
+}
+
+.card-text {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 3; 
+  -webkit-box-orient: vertical;
+  min-height: 60px; 
+}
+
 .btn-buy {
   width: 100%;
-  margin-top: 10px;
+  margin-top: auto;
+  background-color: #77B0E4;
+  color: #fff;
+  font-weight: 500;
+  transition: all 0.3s ease-in-out;
+}
+
+.btn-buy:hover {
+  background-color: #F6A531;
+  color: #fff;
 }
