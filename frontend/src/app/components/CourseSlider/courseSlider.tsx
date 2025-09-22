@@ -75,7 +75,7 @@ export default function CourseSlider() {
               <div className="card-body d-flex flex-column">
                 <h5 className="card-title">{course.title}</h5>
                 <p className="card-text">{course.description}</p>
-                <button    className="btn btn-primary btn-buy mt-auto border-0">لمعرفة المزيد اضغط</button>
+                <button    className="btn btn-primary btn-buy mt-auto border-0">To Know MORE</button>
               </div>
               <div className="card-footer">
                 <strong>Price: ${course.price}</strong>
