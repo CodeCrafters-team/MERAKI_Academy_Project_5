@@ -2,6 +2,8 @@
 import 'animate.css'
 import { useEffect, useState } from "react";
 
+
+
 interface Category{
   name:string,
   id:number,
@@ -47,6 +49,7 @@ image?:string
 
   return (
     <div className="container py-5">
+        
       <h2 className="mb-4 fw-bold animate__animated animate__fadeInLeft" style={{"color":"#F6A531","padding":"10px" }}>Course Categories</h2>
       <div className="row g-4">
         {categories.map((cat) => (
