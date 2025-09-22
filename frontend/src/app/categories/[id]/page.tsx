@@ -22,6 +22,9 @@ interface Course {
   cover_url: string | null;
   price: number | null;
   is_published?: boolean;
+  avatar_url: null;
+  first_name: string;
+  last_name: string | null;
 }
 
 export default function CategoryPage() {
@@ -38,7 +41,7 @@ export default function CategoryPage() {
   const [loadingCourses, setLoadingCourses] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  const API_BASE =  "http://localhost:5000";
+  const API_BASE = "http://localhost:5000";
 
   useEffect(() => {
     let mounted = true;
@@ -70,6 +73,7 @@ export default function CategoryPage() {
           `${API_BASE}/courses`
         );
         const data = (res.data as any)?.data ?? res.data;
+        console.log(data)
         if (mounted) setCourses(Array.isArray(data) ? data : []);
       } catch (e: any) {
         if (mounted) setError(e?.message || "Failed to load courses");
@@ -115,9 +119,7 @@ export default function CategoryPage() {
                   <img src="/assets/cate2.svg" alt="" />
                 </div>
                 <div className="col-md-6 px-md-5 text-center position-relative order-md-2 mb-5 mb-md-0">
-                  <h1 className="mb-3 ">
-                    What do you want to learn?
-                  </h1>
+                  <h1 className="mb-3 ">What do you want to learn?</h1>
                   <p className="mb-3 ">
                     Grow your skill with the most reliable online courses and
                     certifications
@@ -291,6 +293,10 @@ export default function CategoryPage() {
                           </div>
                           <div className="card-body">
                             <h6 className="mb-1 fw-bold">{course.title}</h6>
+                            {/* <div>
+                              <img className=" col rounded-circle" style={{width: ""}} src={course.avatar_url || "https://scontent.famm12-1.fna.fbcdn.net/v/t39.30808-6/363288108_2016075678741930_1719177822222085679_n.jpg?_nc_cat=105&ccb=1-7&_nc_sid=6ee11a&_nc_eui2=AeEkLLR8Iqtg026pY71ygrkuASV8vhFFdysBJXy-EUV3K2zmzFY5bQTCt324fDuTRdIGIDXer4RmAQNfgr9AeOS9&_nc_ohc=Jf7PMNHcc9kQ7kNvwFO0Eum&_nc_oc=AdmhjhBDp4lsltcMDp_4BsGCVTXrKQOrx2as4XSkissj6i7RrnvLuPLFff19_yMB09A&_nc_zt=23&_nc_ht=scontent.famm12-1.fna&_nc_gid=9_PlzrnYW610k6KO-9eurQ&oh=00_AfYiwKEw_SJlI1yeP4R5Y6kTpD0kCLRJYFfBEM7NYx5KiA&oe=68D6F3B6" } alt="" />
+                               <p className="col">{course.first_name} {course.last_name}</p>
+                            </div> */}
                             <p
                               className="text-muted small mb-3"
                               style={{ minHeight: 40 }}
@@ -311,7 +317,6 @@ export default function CategoryPage() {
                                 href={`/courses/${course.id}`}
                                 className="btn btn-primary btn-sm border-0"
                                 style={{
-                                 
                                   color: "#fff",
                                   borderRadius: 10,
                                 }}
