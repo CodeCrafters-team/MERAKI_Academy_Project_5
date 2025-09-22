@@ -85,6 +85,7 @@ function CourseSlider({ title }: { title: string }) {
               />
               <div className="card-body d-flex flex-column flex-grow-1">
                 <h5 className="card-title">{course.title}</h5>
+
                 <p className="card-text flex-grow-1">{course.description}</p>
                 <button
                   className="btn btn-primary btn-buy mt-auto border-0"
@@ -92,6 +93,7 @@ function CourseSlider({ title }: { title: string }) {
                 >
                   لمعرفة المزيد اضغط
                 </button>
+
               </div>
               <div
                 className="card-footer text-center fw-semibold"
