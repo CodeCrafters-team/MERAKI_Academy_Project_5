@@ -2,7 +2,25 @@ const { pool } = require("../models/db");
 
 const getAllCourses = async (req, res) => {
   try {
-    const result = await pool.query("SELECT * FROM courses ORDER BY id ASC");
+   const result = await pool.query(`
+  SELECT 
+    courses.id,
+    courses.title,
+    courses.description,
+    courses.cover_url,
+    courses.price,
+    courses.is_published,
+    courses.created_at,
+    courses.updated_at,
+    users.id ,
+    users.avatar_url,
+    users.first_name ,
+    users.last_name  ,
+    users.email      
+  FROM courses
+  JOIN users ON courses.created_by = users.id
+  ORDER BY courses.id ASC
+`);
 
     if (!result.rows) {
       res.status(404).json({

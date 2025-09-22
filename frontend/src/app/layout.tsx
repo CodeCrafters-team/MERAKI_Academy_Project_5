@@ -5,6 +5,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap-icons/font/bootstrap-icons.css';
 import 'animate.css';
 import './globals.css';
+import SimpleFooter from './footer/page';
 
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
@@ -17,6 +18,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <div style={{ marginTop: '4em' }}>
         <Providers>{children}</Providers>
         </div>
+        <SimpleFooter/>
       </body>
     </html>
   );

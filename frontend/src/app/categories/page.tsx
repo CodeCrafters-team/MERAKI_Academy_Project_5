@@ -106,7 +106,7 @@ export default function CategoriesGrid() {
                 return (
                   <div
                   onClick={()=>{
-                    router.push(`/categories/${idx}`)
+                    router.push(`/categories/${item.id}`)
                   }}
                     className="col-sm-6 col-md-4 col-xl-3 animate__animated animate__fadeInUp"
                     key={item.id ?? idx}
