@@ -77,4 +77,35 @@ const getCourseProgress = async (req, res) => {
   }
 };
 
-module.exports = { completeLesson, uncompleteLesson, getCourseProgress };
+const checkLessonComplete = async (req, res) => {
+  const lessonId = Number(req.params.lessonId )
+  const userId = req.user?.id; 
+
+  if (!lessonId || !userId) {
+    return res
+      .status(400)
+      .json({ success: false, message: "userId & lessonId required" });
+  }
+
+  try {
+    const { rows } = await pool.query(
+      `SELECT is_completed
+         FROM course_progress
+        WHERE user_id = $1 AND lesson_id = $2
+        LIMIT 1;`,
+      [userId, lessonId]
+    );
+
+    const isCompleted = rows.length ? !!rows[0].is_completed : false;
+
+    return res.json({
+      success: true,
+      data: { lessonId, isCompleted },
+    });
+  } catch (e) {
+    return res.status(500).json({ success: false, message: e.message });
+  }
+};
+
+
+module.exports = { completeLesson, uncompleteLesson, getCourseProgress ,checkLessonComplete };
