@@ -4,32 +4,48 @@ import React, { useState } from "react";
 import axios from "axios";
 import "./style.css";
 import { useRouter } from "next/navigation";
+import { useDispatch } from "react-redux";
+import { AppDispatch } from "../../../redux/store"; 
+import { setCredentials } from "../../../redux/slices/authSlice"; 
 
 const Login = () => {
   const [email, setEmail] = useState("");
   const [message, setMessage] = useState("");
   const [password, setPassword] = useState("");
   const [status, setStatus] = useState(false);
-  const [loading,   setLoading]   = useState(false);
-      const GOOGLE_LOGIN_URL = `http://localhost:5000/auth/google/login`;
+  const [loading, setLoading] = useState(false);
 
-  
+  const GOOGLE_LOGIN_URL = `http://localhost:5000/auth/google/login`;
 
   const router = useRouter();
+  const dispatch = useDispatch<AppDispatch>();
 
   const handleLogin = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    setLoading(true);
 
     axios
       .post(`http://localhost:5000/users/login`, { email, password })
       .then((result) => {
-        setLoading(true);
-        if (result.data) {
+        if (result.data && result.data.success) {
           console.log(result.data);
+
+        dispatch(
+  setCredentials({
+    token: result.data.token,
+    userId: result.data.user.id,
+    firstName: result.data.user.firstName || "",
+    lastName: result.data.user.lastName || "",
+    age: result.data.user.age || 0,
+    email: result.data.user.email || "",
+    avatarUrl: result.data.user.avatarUrl || "",
+  })
+);
+
           setMessage("Login successful");
           setStatus(true);
-         setTimeout(() => router.push('/'), 800);
 
+          setTimeout(() => router.push("/"), 800);
         } else {
           throw new Error();
         }
@@ -40,10 +56,9 @@ const Login = () => {
           return setMessage(error.response.data.message);
         }
         setMessage("Error happened while Login, please try again");
-      }).finally(() => setLoading(false));
+      })
+      .finally(() => setLoading(false));
   };
-
-  
 
   return (
     <div className="Login" style={{ background: "#f2f4f7" }}>
@@ -51,32 +66,35 @@ const Login = () => {
         <h3>
           Learn with SmartPath <br /> draw your own path to creativity and success
         </h3>
-        <img  style={{ width: "30em" }} src="/assets/img1.svg" alt="Learning" />
+        <img style={{ width: "30em" }} src="/assets/img1.svg" alt="Learning" />
       </div>
 
-      <div className={ "animate__animated  animate__fadeInLeft Form "}>
+      <div className={"animate__animated animate__fadeInLeft Form"}>
         <p className="Title">Login</p>
         <form onSubmit={handleLogin}>
           <input
-          className=" animate__animated  animate__fadeInLeft animate__slow "
+            className="animate__animated animate__fadeInLeft animate__slow"
             type="email"
             placeholder="Email"
             onChange={(e) => setEmail(e.target.value)}
             required
           />
           <input
-          className=" animate__animated  animate__fadeInRight animate__slow "
+            className="animate__animated animate__fadeInRight animate__slow"
             type="password"
             placeholder="Password"
             onChange={(e) => setPassword(e.target.value)}
             required
           />
-          <button className="login-btn  animate__animated  animate__fadeInLeft animate__slow" type="submit">
+          <button
+            className="login-btn animate__animated animate__fadeInLeft animate__slow"
+            type="submit"
+          >
             {loading ? "Logging in..." : "Login"}
           </button>
         </form>
 
-        <div className="to-register  animate__animated  animate__fadeInUp animate__slow">
+        <div className="to-register animate__animated animate__fadeInUp animate__slow">
           Don&apos;t have an account? <a href="/register">Register</a>
         </div>
 
@@ -88,8 +106,8 @@ const Login = () => {
 
         <button
           type="button"
-          className="google-btn animate__animated  animate__fadeInUp animate__slow"
-           onClick={() => (window.location.href = GOOGLE_LOGIN_URL)}
+          className="google-btn animate__animated animate__fadeInUp animate__slow"
+          onClick={() => (window.location.href = GOOGLE_LOGIN_URL)}
         >
           <img
             src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg"

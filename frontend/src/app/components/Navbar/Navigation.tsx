@@ -1,4 +1,4 @@
-"use client";
+'use client';
 
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
@@ -18,7 +18,10 @@ export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [search, setSearch] = useState("");
   const [results, setResults] = useState<typeof courses>([]);
+  const [showDialog, setShowDialog] = useState(false);
+
   const auth = useSelector((state: RootState) => state.auth);
+console.log("Auth state:", auth);
 
   useEffect(() => {
     // @ts-ignore
@@ -29,6 +32,13 @@ export default function Navbar() {
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
+
+  
+  useEffect(() => {
+    if (auth.token && auth.userId) {
+      setShowDialog(true);
+    }
+  }, [auth.token, auth.userId]);
 
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value.toLowerCase();
@@ -51,7 +61,7 @@ export default function Navbar() {
         <nav className={`navbar navbar-expand-lg navbar-light ${scrolled ? "bg-light border rounded-4 shadow-sm px-2" : "bg-white border-bottom px-2"}`}>
           <div className="container-fluid">
             <a className="navbar-brand fw-bold" href="#">
-              <img src="https://i.postimg.cc/GhSB7m8C/logo.png" alt="" style={{ width: "9em", height: "2em" }} />
+              <img src="https://i.postimg.cc/GhSB7m8C/logo.png" alt="Logo" style={{ width: "9em", height: "2em" }} />
             </a>
 
             <div className="d-flex justify-content-end gap-2">
@@ -73,17 +83,42 @@ export default function Navbar() {
 
               <div className="d-flex align-items-center ms-lg-3 mt-3 mt-lg-0 gap-2">
                 <ThemeToggle />
-                {auth.token ? (
-                  <UserDialog userId={String(auth.userId)} avatar={auth.avatarUrl || ""} />
-                ) : (
-                  <a className="btn btn-primary rounded-3" href="/login">Login</a>
-                )}
+ 
+ {auth.token ? (
+  auth.avatarUrl ? (
+    <img
+      src={auth.avatarUrl}
+      alt="Avatar"
+      className="w-10 h-10 rounded-full cursor-pointer"
+      onClick={() => setShowDialog(true)}
+    />
+  ) : (
+    <button
+      className="btn btn-secondary"
+      onClick={() => setShowDialog(true)}
+    >
+      Profile
+    </button>
+  )
+) : (
+  <a className="btn btn-primary rounded-3" href="/login">Login</a>
+)} 
               </div>
             </div>
           </div>
         </nav>
       </div>
 
+     
+      {showDialog && auth.token && (
+  <UserDialog
+    userId={auth.userId ? String(auth.userId) : ""}
+    avatar={auth.avatarUrl || "/default-avatar.png"}
+    onClose={() => setShowDialog(false)}
+  />
+)}
+
+     
       <div id="mobileSearch" className="collapse d-lg-none bg-white border-bottom">
         <div className="container-fluid py-2">
           <form className="d-flex gap-2">
@@ -92,6 +127,7 @@ export default function Navbar() {
         </div>
       </div>
 
+    
       <div className="container mt-3 d-none d-lg-block">
         <div style={{ position: "relative", maxWidth: "350px", margin: "0 auto" }}>
           <form className="d-flex" onSubmit={(e) => {
