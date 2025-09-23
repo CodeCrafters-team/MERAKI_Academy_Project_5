@@ -103,7 +103,7 @@ console.log("Auth state:", auth);
 ) : (
   <a className="btn btn-primary rounded-3" href="/login">Login</a>
 )} 
-              </div>
+              </div> 
             </div>
           </div>
         </nav>
