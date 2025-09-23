@@ -14,3 +14,13 @@ CREATE TABLE messages (
   read_at TIMESTAMP,
   created_at TIMESTAMP DEFAULT now()
 );
+
+CREATE TABLE contact (
+  id SERIAL PRIMARY KEY,
+  email VARCHAR(255) NOT NULL,
+  first_name VARCHAR(100) NOT NULL,
+  last_name VARCHAR(100) NOT NULL,
+  message TEXT NOT NULL,
+  created_at TIMESTAMP DEFAULT NOW()
+);
+

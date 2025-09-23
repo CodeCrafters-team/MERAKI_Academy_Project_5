@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
+import Image from "next/image";
 
 export default function About() {
   useEffect(() => {
@@ -29,12 +30,14 @@ export default function About() {
             </a>
           </div>
         </div>
+
         <div className="col-md-6 text-center animate__animated animate__zoomIn">
-          <img
-            src="https://i.postimg.cc/GhSB7m8C/logo.png"
-            alt="Illustration"
+          <Image
+            src="/assets/aboutIMG.svg"
+            alt="About Illustration"
+            width={400}
+            height={280}
             className="img-fluid rounded-4 shadow-sm"
-            style={{ maxHeight: "280px" }}
           />
         </div>
       </section>
