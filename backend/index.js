@@ -30,6 +30,7 @@ const enrollmentRouter = require("./routes/enrollments");
 const conversationsRouter = require("./routes/conversations");
 const messagesRouter = require("./routes/messages");
 const setupGoogleStrategy = require("./config/googleStrategy");
+const reviewRouter = require("./routes/reviews")
 
 
 app.use(cors());
@@ -48,7 +49,8 @@ app.use("/lessons", lessonsRouter);
 app.use("/enrollments", enrollmentRouter);
 app.use("/conversations", conversationsRouter);
 app.use("/messages", messagesRouter);
-app.use("/auth/google", googleRoutes);
+app.use("/auth/google", googleRoutes)
+app.use("/reviews", reviewRouter)
 
 
 
