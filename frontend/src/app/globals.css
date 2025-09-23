@@ -8,9 +8,9 @@
 
 
 .btn-primary {
-  background: linear-gradient(90deg, #4ab0ff, #f69d01, #4ab0ff);
-  background-size: 300% 300%;
-  background-position: left center; 
+  background: linear-gradient(90deg, #4ab0ff, #4ab0ff, #f69d01 , #f69d01);
+  background-size: 300% ;
+  background-position: left center ; 
   transition: background-position 1.5s ease-in-out;
 }
 
@@ -27,11 +27,23 @@
  a:hover {
   color: #646464;
 }
-.card{
+/* .card{
   transition:  transform 0.5s ease-in-out;
   cursor: pointer; 
 }
 .card:hover{
 transform: scale(1.09);
-}
+} */
 
+        .nav-tabs .nav-link {
+          color: #000 !important;             
+        }
+        .nav-tabs .nav-link:hover {
+          color: #000 !important;
+        }
+        .nav-tabs .nav-link.active {
+          color: #f69d01 !important;
+          border-color: #f69d01 #f69d01 #fff !important;
+          font-weight: 700 !important;
+        }
+   

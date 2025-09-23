@@ -34,7 +34,6 @@ export default function SimpleFooter() {
         <div className="row gy-7">
           <div className="col-md-4">
             <div className="mb-3 d-flex align-items-center">
-              <Image src="" alt="" width={40} height={0} />
               <span className=" ms-2 h5 mb-0 "><strong>Smart Path Application</strong></span>
             </div>
             <p className="small">

@@ -86,17 +86,14 @@ const getEnrollmentsByUser = async (req, res) => {
 
 const createEnrollment = async (req, res) => {
   try {
-    const { user_id, course_id, enrolled_at, username, course_name } = req.body;
+    const { user_id, course_id, e } = req.body;
 
     const result = await pool.query(
-      `INSERT INTO enrollments (user_id, course_id, enrolled_at, username, course_name)
-       VALUES ($1, $2, $3, $4, $5) RETURNING *`,
+      `INSERT INTO enrollments (user_id, course_id)
+       VALUES ($1, $2) RETURNING *`,
       [
-        user_id || null,
-        course_id || null,
-        enrolled_at || new Date(),
-        username || null,
-        course_name || null,
+        user_id ,
+        course_id ,
       ]
     );
 
@@ -142,7 +139,34 @@ const deleteEnrollment = async (req, res) => {
   }
 };
 
+const checkEnrollmentForUserCourse = async (req, res) => {
+  try {
+    const userId = req.user.id 
+    const courseId = Number(req.params.courseId);
+    if (!userId || !courseId) {
+      return res.status(400).json({
+        success: false,
+        message: "user_id and course_id are required",
+      });
+    }
+
+    const q = `SELECT * FROM enrollments WHERE user_id=$1 AND course_id=$2 LIMIT 1`;
+    const result = await pool.query(q, [userId, courseId]);
+
+    return res.status(200).json({
+      success: true,
+      message: "Enrollment check",
+      enrolled: result.rows.length > 0,
+      data: result.rows[0] || null,
+    });
+  } catch (err) {
+    res.status(500).json({
+      success: false,
+      message: "Server Error",
+      error: err.message,
+    });
+  }
+};
 
 
-
-module.exports={getAllEnrollment,getEnrollmentById,getEnrollmentsByUser,createEnrollment,deleteEnrollment}
+module.exports={getAllEnrollment,getEnrollmentById,getEnrollmentsByUser,createEnrollment,deleteEnrollment , checkEnrollmentForUserCourse}

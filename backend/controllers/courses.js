@@ -45,30 +45,55 @@ const getAllCourses = async (req, res) => {
 };
 
 const getCourseById = async (req, res) => {
-    try {
-      const { id } = req.params;
-      const result = await pool.query("SELECT * FROM courses WHERE id = $1", [id]);
-  
-      if (result.rows.length === 0) {
-        return res.status(404).json({
-          success: false,
-          message: "Course Not Found",
-        });
-      }
-  
-      res.status(200).json({
-        success: true,
-        message: "Fetched Course Successfully",
-        data: result.rows[0],
-      });
-    } catch (err) {
-      res.status(500).json({
+  try {
+    const { id } = req.params;
+
+    const sql = `
+      SELECT 
+        c.id,
+        c.category_id,
+        c.title,
+        c.description,
+        c.cover_url,
+        c.price,
+        c.is_published,
+        c.created_by,
+        c.created_at,
+        c.updated_at,
+        u.first_name ,
+        u.last_name  ,
+        u.email      ,
+        u.avatar_url ,
+        u.bio
+      FROM courses c
+      LEFT JOIN users u ON u.id = c.created_by
+      WHERE c.id = $1
+      LIMIT 1
+    `;
+
+    const result = await pool.query(sql, [id]);
+
+    if (result.rows.length === 0) {
+      return res.status(404).json({
         success: false,
-        message: "Server Error",
-        error: err.message,
+        message: "Course Not Found",
       });
     }
-  };
+
+    res.status(200).json({
+      success: true,
+      message: "Fetched Course Successfully",
+      data: result.rows[0],
+    });
+  } catch (err) {
+    res.status(500).json({
+      success: false,
+      message: "Server Error",
+      error: err.message,
+    });
+  }
+};
+
 
   const createCourse = async (req, res) => {
     try {
@@ -127,6 +152,52 @@ const getCourseById = async (req, res) => {
       });
     }
   };
+  const getCoursesByCategoryId = async (req, res) => {
+  try {
+    const { category_id } = req.params;
+
+    const result = await pool.query(
+      `SELECT 
+        courses.id,
+        courses.title,
+        courses.description,
+        courses.cover_url,
+        courses.price,
+        courses.is_published,
+        courses.created_at,
+        courses.updated_at,
+        users.id AS user_id,
+        users.avatar_url,
+        users.first_name,
+        users.last_name,
+        users.email
+      FROM courses
+      JOIN users ON courses.created_by = users.id
+      WHERE courses.category_id = $1
+      ORDER BY courses.id ASC`,
+      [category_id]
+    );
+
+    if (result.rows.length === 0) {
+      return res.status(404).json({
+        success: false,
+        message: "No Courses Found For This Category",
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      message: "Fetched Courses By Category Successfully",
+      data: result.rows,
+    });
+  } catch (err) {
+    res.status(500).json({
+      success: false,
+      message: "Server Error",
+      error: err.message,
+    });
+  }
+};
     
 
-module.exports={getAllCourses,getCourseById,createCourse,deleteCourse}
+module.exports={getAllCourses,getCourseById,createCourse,deleteCourse , getCoursesByCategoryId}
