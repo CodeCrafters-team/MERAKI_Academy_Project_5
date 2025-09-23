@@ -1,0 +1,84 @@
+.ContactPage {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 3rem 5%;
+    min-height: 100vh;
+    background: #f2f4f7;
+  }
+  
+  .Form {
+    flex: 1;
+    max-width: 500px;
+    background: #fff;
+    padding: 2rem;
+    border-radius: 1rem;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  }
+  
+  .Form .Title {
+    font-size: 2rem;
+    font-weight: bold;
+    margin-bottom: 1.5rem;
+    text-align: center;
+  }
+  
+  .Form input,
+  .Form textarea {
+    width: 100%;
+    padding: 0.9rem 1rem;
+    margin-bottom: 1rem;
+    border: 1px solid #ddd;
+    border-radius: 0.7rem;
+    font-size: 1rem;
+    outline: none;
+    transition: border 0.3s;
+  }
+  
+  .Form input:focus,
+  .Form textarea:focus {
+    border: 1px solid #0070f3;
+  }
+  
+  .register-btn {
+    width: 100%;
+    padding: 1rem;
+    border: none;
+    background: #0070f3;
+    color: #fff;
+    font-size: 1.1rem;
+    font-weight: bold;
+    border-radius: 0.7rem;
+    cursor: pointer;
+    transition: background 0.3s;
+  }
+  
+  .register-btn:hover {
+    background: #005bb5;
+  }
+  
+  .SuccessMessage {
+    margin-top: 1rem;
+    color: #28a745;
+    font-weight: bold;
+    text-align: center;
+  }
+  
+  .ErrorMessage {
+    margin-top: 1rem;
+    color: #dc3545;
+    font-weight: bold;
+    text-align: center;
+  }
+  
+  .left-side {
+    flex: 1;
+    text-align: center;
+  }
+  
+  .left-side h3 {
+    font-size: 1.5rem;
+    font-weight: 500;
+    margin-bottom: 1rem;
+  }
+  
