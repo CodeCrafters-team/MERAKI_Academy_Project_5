@@ -27,11 +27,11 @@
  a:hover {
   color: #646464;
 }
-.card{
+/* .card{
   transition:  transform 0.5s ease-in-out;
   cursor: pointer; 
 }
 .card:hover{
 transform: scale(1.09);
-}
+} */
 
