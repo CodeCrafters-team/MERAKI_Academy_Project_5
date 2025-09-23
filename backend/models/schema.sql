@@ -15,14 +15,13 @@ CREATE TABLE messages (
   created_at TIMESTAMP DEFAULT now()
 );
 
-CREATE TABLE Contact (
+CREATE TABLE contact (
   id SERIAL PRIMARY KEY,
-  userId INT NOT NULL,
-  name VARCHAR(100) NOT NULL,
-  email VARCHAR(150) NOT NULL,
+  email VARCHAR(255) NOT NULL,
+  first_name VARCHAR(100) NOT NULL,
+  last_name VARCHAR(100) NOT NULL,
   message TEXT NOT NULL,
-  createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  FOREIGN KEY (userId) REFERENCES users(id)
+  created_at TIMESTAMP DEFAULT NOW()
 );
 
 CREATE TABLE reviews (
