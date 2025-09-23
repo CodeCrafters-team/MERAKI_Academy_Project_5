@@ -31,6 +31,7 @@ const conversationsRouter = require("./routes/conversations");
 const messagesRouter = require("./routes/messages");
 const setupGoogleStrategy = require("./config/googleStrategy");
 const reviewRouter = require("./routes/reviews")
+const progressRouter = require("./routes/progress")
 
 
 app.use(cors());
@@ -51,6 +52,7 @@ app.use("/conversations", conversationsRouter);
 app.use("/messages", messagesRouter);
 app.use("/auth/google", googleRoutes)
 app.use("/reviews", reviewRouter)
+app.use("/progress", progressRouter)
 
 
 

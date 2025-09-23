@@ -33,3 +33,11 @@ CREATE TABLE reviews (
   comment TEXT,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT now()
 );
+
+CREATE TABLE  course_progress (
+  id         BIGSERIAL PRIMARY KEY,
+  user_id    BIGINT  NOT NULL REFERENCES users(id)   ON DELETE CASCADE,
+  lesson_id  BIGINT  NOT NULL REFERENCES lessons(id) ON DELETE CASCADE,
+  is_completed BOOLEAN NOT NULL DEFAULT FALSE,
+  UNIQUE (user_id, lesson_id)
+);
