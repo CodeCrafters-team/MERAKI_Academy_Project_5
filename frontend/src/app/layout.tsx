@@ -18,14 +18,15 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="en">
       <body>
         <Providers>
-         
-            <Navbar />
-            <ThemeToggle />
-            {children}
-            <UserDialog />
-            <SimpleFooter />
-          
+
+  <Navbar/>
+
+        <div style={{ marginTop: '4em' }}>
+        {children}
+        </div>
         </Providers>
+
+
       </body>
     </html>
   );
