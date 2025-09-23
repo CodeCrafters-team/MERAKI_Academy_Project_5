@@ -127,6 +127,52 @@ const getCourseById = async (req, res) => {
       });
     }
   };
+  const getCoursesByCategoryId = async (req, res) => {
+  try {
+    const { category_id } = req.params;
+
+    const result = await pool.query(
+      `SELECT 
+        courses.id,
+        courses.title,
+        courses.description,
+        courses.cover_url,
+        courses.price,
+        courses.is_published,
+        courses.created_at,
+        courses.updated_at,
+        users.id AS user_id,
+        users.avatar_url,
+        users.first_name,
+        users.last_name,
+        users.email
+      FROM courses
+      JOIN users ON courses.created_by = users.id
+      WHERE courses.category_id = $1
+      ORDER BY courses.id ASC`,
+      [category_id]
+    );
+
+    if (result.rows.length === 0) {
+      return res.status(404).json({
+        success: false,
+        message: "No Courses Found For This Category",
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      message: "Fetched Courses By Category Successfully",
+      data: result.rows,
+    });
+  } catch (err) {
+    res.status(500).json({
+      success: false,
+      message: "Server Error",
+      error: err.message,
+    });
+  }
+};
     
 
-module.exports={getAllCourses,getCourseById,createCourse,deleteCourse}
+module.exports={getAllCourses,getCourseById,createCourse,deleteCourse , getCoursesByCategoryId}
