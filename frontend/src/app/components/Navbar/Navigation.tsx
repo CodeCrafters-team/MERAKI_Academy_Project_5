@@ -1,6 +1,11 @@
 "use client";
 
-import { useEffect, useState } from "react";
+
+import React, { useEffect, useState } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import type { RootState } from "../../../redux/store";
+import { logout } from "../../../redux/slices/authSlice";
+import { useRouter } from "next/navigation";
 
 const courses = [
   {
@@ -39,6 +44,11 @@ export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [search, setSearch] = useState("");
   const [results, setResults] = useState<typeof courses>([]);
+  const router = useRouter(); 
+  const dispatch = useDispatch(); 
+  const { token, avatarUrl } = useSelector((state: RootState) => state.auth); 
+  const [sheetOpen, setSheetOpen] = useState(false); 
+
 
   useEffect(() => {
     // @ts-ignore
@@ -66,6 +76,11 @@ export default function Navbar() {
     setResults([]);
   }
 };
+
+const handleLogout = () => {
+    dispatch(logout());
+    setSheetOpen(false);
+  };
 
   return (
     <header className="fixed-top">
@@ -138,7 +153,7 @@ export default function Navbar() {
               </ul>
 
 
-<div className="container mt-3 d-none d-lg-block">
+<div className="container d-none d-lg-block align-self-center mt-lg-0">
   <div style={{ position: "relative", maxWidth: "350px", margin: "0 auto" }}>
     <form className="d-flex" 
     onSubmit={(e) => {
@@ -217,14 +232,34 @@ export default function Navbar() {
     )}
   </div>
 </div>
-              <button className="btn btn-primary ms-lg-3 mt-3 mt-lg-0 rounded-3 border-0">
-                Login
-              </button>{" "}
+{!token ? (
+                <button
+                  className="btn btn-primary ms-lg-3 mt-3 mt-lg-0 rounded-3 border-0"
+                  onClick={() => router.push("/login")}
+                >
+                  Login
+                </button>
+              ) : (
+                <div className="d-flex align-items-center gap-3 ms-lg-3">
+                  <i className="bi bi-bell fs-5" style={{ cursor: "pointer" ,color: "#77B0E4"}}></i>
+<i className="bi bi-chat-dots-fill" style={{ color: "#77B0E4", fontSize: "1.5rem", cursor: "pointer" }}
+  onClick={() => router.push("/chat")}
+></i>
+
+                  <img
+                    src={avatarUrl || "https://cdn-icons-png.flaticon.com/512/149/149071.png"}
+                    alt="avatar"
+                    className="rounded-circle"
+                    style={{ width: "40px", height: "40px", cursor: "pointer" }}
+                    onClick={() => setSheetOpen(true)}
+                  />
+                </div>
+              )}
+              
             </div>
           </div>
         </nav>
       </div>
-
       <div
         id="mobileSearch"
         className="collapse d-lg-none bg-white border-bottom"
@@ -239,6 +274,89 @@ export default function Navbar() {
           </form>
         </div>
       </div>
+
+{sheetOpen && (
+  <>
+    <div
+      className="position-fixed top-0 start-0 w-100 h-100"
+      style={{ backgroundColor: "rgba(0,0,0,0.4)", zIndex: 1050 }}
+      onClick={() => setSheetOpen(false)}
+    ></div>
+
+    <div
+      className="position-fixed top-0 h-100 bg-white shadow rounded-3 p-4 d-flex flex-column"
+      style={{
+        width: "350px",
+        zIndex: 1055,
+        right: 0,
+        left: "auto",
+        transform: sheetOpen ? "translateX(0)" : "translateX(100%)",
+        transition: "transform 0.3s ease-in-out",
+      }}
+    >
+      <div className="d-flex justify-content-between align-items-center mb-4">
+        <h5
+  className="fw-bold m-0"
+  style={{ color: "#77B0E4" }}
+>
+  Edit profile
+</h5>
+        <button
+          className="btn-close"
+          style={{ width: "0.8rem", height: "0.8rem" }}
+          onClick={() => setSheetOpen(false)}
+        ></button>
+      </div>
+
+      <button
+        className="w-100 mb-3 text-white fw-bold"
+        style={{
+          backgroundColor: "#77B0E4",
+          border: "none",
+          padding: "0.75rem",
+          borderRadius: "8px",
+        }}
+        onClick={() => {
+          router.push("/settings");
+          setSheetOpen(false);
+        }}
+      >
+        Settings
+      </button>
+
+      <button
+        className="w-100 text-white fw-bold"
+        style={{
+          backgroundColor: "#77B0E4",
+          border: "none",
+          padding: "0.75rem",
+          borderRadius: "8px",
+        }}
+        onClick={() => {
+          router.push("/update-profile");
+          setSheetOpen(false);
+        }}
+      >
+        Update Profile
+      </button>
+
+      <div className="flex-grow-1"></div>
+
+      <button
+        className="w-100 text-white fw-bold mt-3"
+        style={{
+          backgroundColor: "#F6A531",
+          border: "none",
+          padding: "0.75rem",
+          borderRadius: "8px",
+        }}
+        onClick={handleLogout}
+      >
+        Logout
+      </button>
+    </div>
+  </>
+)}
     </header>
   );
 }

@@ -4,6 +4,8 @@ import React, { useState } from "react";
 import axios from "axios";
 import "./style.css";
 import { useRouter } from "next/navigation";
+import { useDispatch } from "react-redux";
+import { loginSuccess } from "../../../redux/slices/authSlice";
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -12,7 +14,7 @@ const Login = () => {
   const [status, setStatus] = useState(false);
   const [loading,   setLoading]   = useState(false);
       const GOOGLE_LOGIN_URL = `http://localhost:5000/auth/google/login`;
-
+const dispatch = useDispatch();
   
 
   const router = useRouter();
@@ -25,10 +27,12 @@ const Login = () => {
       .then((result) => {
         setLoading(true);
         if (result.data) {
+          const { token, avatarUrl } = result.data; 
+  dispatch(loginSuccess({ token, avatarUrl }));
           console.log(result.data);
           setMessage("Login successful");
           setStatus(true);
-         setTimeout(() => router.push('/'), 800);
+        setTimeout(() => router.push('/'), 800);
 
         } else {
           throw new Error();
