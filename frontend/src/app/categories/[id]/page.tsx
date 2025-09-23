@@ -28,7 +28,16 @@ interface Course {
   first_name: string;
   last_name: string | null;
 }
-
+const fmtMoney = (v: number | string | null) => {
+  if (v == null || v === "" || v === 0) return "Free";
+  const n = typeof v === "string" ? Number(v) : v;
+  if (Number.isNaN(n)) return "Free";
+  return new Intl.NumberFormat("en-US", {
+    style: "currency",
+    currency: "USD",
+    minimumFractionDigits: 2,
+  }).format(n);
+};
 export default function CategoryPage() {
   const { id } = useParams() as { id?: string };
   const pathname = usePathname();
@@ -319,9 +328,7 @@ export default function CategoryPage() {
                             </p>
                             <div className="d-flex align-items-center justify-content-between">
                               <span className="fw-bold" style={{ color: "green" }}>
-                                {course.price && !Number.isNaN(course.price)
-                                  ? `$${course.price}`
-                                  : "Free"}
+                                {fmtMoney(course.price)}
                               </span>
                               <Link
                                 href={`/courses/${course.id}`}
