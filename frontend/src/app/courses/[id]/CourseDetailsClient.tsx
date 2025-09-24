@@ -2,6 +2,9 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import axios from "axios";
+import CheckoutModal from "../../components/CheckoutModal/CheckoutModal";
+import "react-credit-cards-2/dist/es/styles-compiled.css";
+
 
 const THEME = { primary: "#77b0e4", secondary: "#f6a531" };
 const API_BASE =  "http://localhost:5000";
@@ -113,6 +116,33 @@ export default function CourseDetailsClient({
   const [editComment, setEditComment] = useState("");
   const [openModuleIds, setOpenModuleIds] = useState<Set<number>>(new Set());
 
+const [checkoutOpen, setCheckoutOpen] = useState(false);
+const [loading, setLoading] = useState(false);
+
+const handleEnrollFree = async () => {
+  if (!auth.id || !course?.id) { 
+    router.push("/login");
+    return;
+  }
+
+  try {
+    setLoading(true);
+    await axios.post(`${API_BASE}/enrollments`, {
+      user_id: auth.id,
+      course_id: course.id,
+    }, { headers: authHeader() });
+
+
+    setIsEnrolled(true);
+  } catch (error) {
+    console.error(error);
+  } finally {
+    setLoading(false);
+  }
+};
+
+
+
   useEffect(() => {
     modules.forEach((m) => {
       axios
@@ -130,7 +160,6 @@ export default function CourseDetailsClient({
         .catch(() => {});
     });
   }, [modules]);
-
   useEffect(() => {
     if (!course?.id || !auth.id) {
       setCheckingEnroll(false);
@@ -314,7 +343,19 @@ export default function CourseDetailsClient({
                 <>
                   <h3 style={{ color: "green" }} className="fw-bold animate__animated animate__fadeInDown">{fmtMoney(course.price)}</h3>
                   <div className="d-grid gap-2">
-                    <button className="btn btn-primary border-0 shadow animate__animated animate__pulse">Buy course</button>
+                 <button
+                 className="btn btn-primary border-0 shadow animate__animated animate__pulse"
+                  onClick={() => {
+                     const price = Number(course?.price ?? 0);
+                    if (price === 0) {
+                     handleEnrollFree();  
+                     } else {
+                  setCheckoutOpen(true);
+                    }
+                      }}
+                      >
+                       {loading ? "Processing..." : (Number(course?.price ?? 0) === 0 ? "Enroll for free" : "Buy course")}
+                       </button>
                   </div>
                 </>
               )}
@@ -535,6 +576,15 @@ export default function CourseDetailsClient({
           </div>
         </div>
       )}
-    </div>
+         <CheckoutModal
+        open={checkoutOpen}
+        onClose={() => setCheckoutOpen(false)}
+        userId={auth.id}
+        courseId={courseId}
+        cPrice={course.price}      
+        apiBase="http://localhost:5000"
+        paymentsPrefix="/payments"
+      />
+   </div>
   );
 }
