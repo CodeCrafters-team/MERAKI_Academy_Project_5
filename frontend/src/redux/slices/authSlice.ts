@@ -42,7 +42,7 @@ const authSlice = createSlice({
       state.lastName = action.payload.lastName;
       state.age = action.payload.age;
       state.email = action.payload.email;
-      state.avatarUrl = action.payload.avatarUrl;
+      state.avatarUrl = action.payload.avatarUrl  || "https://cdn-icons-png.flaticon.com/512/149/149071.png";
 
       localStorage.setItem("token", action.payload.token);
       localStorage.setItem("userId", String(action.payload.userId));
@@ -50,7 +50,7 @@ const authSlice = createSlice({
       localStorage.setItem("lastName", action.payload.lastName);
       localStorage.setItem("age", String(action.payload.age));
       localStorage.setItem("email", action.payload.email);
-      localStorage.setItem("avatar", action.payload.avatarUrl);
+      localStorage.setItem("avatar", action.payload.avatarUrl)
     },
 
     updateProfile: (
@@ -85,6 +85,17 @@ const authSlice = createSlice({
       }
     },
 
+    loginSuccess: (state, action) => {
+  localStorage.setItem("token", action.payload.token);
+  localStorage.setItem("userId", String(action.payload.userId)); 
+  localStorage.setItem("avatar", action.payload.avatarUrl);
+
+  state.token = action.payload.token;
+  state.userId = action.payload.userId;     
+  state.avatarUrl = action.payload.avatarUrl || "https://cdn-icons-png.flaticon.com/512/149/149071.png";
+},
+
+
     logout: (state) => {
       state.token = null;
       state.userId = null;
@@ -109,5 +120,11 @@ const authSlice = createSlice({
   },
 });
 
-export const { setCredentials, updateProfile, logout, deleteAccount } = authSlice.actions;
+
+
+
+
+export const { setCredentials, logout ,loginSuccess , updateProfile,deleteAccount} = authSlice.actions;
 export default authSlice.reducer;
+
+

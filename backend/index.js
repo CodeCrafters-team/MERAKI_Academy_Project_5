@@ -30,6 +30,7 @@ const enrollmentRouter = require("./routes/enrollments");
 const conversationsRouter = require("./routes/conversations");
 const messagesRouter = require("./routes/messages");
 const setupGoogleStrategy = require("./config/googleStrategy");
+const contactRouter = require("./routes/contacts"); 
 
 
 app.use(cors());
@@ -49,6 +50,8 @@ app.use("/enrollments", enrollmentRouter);
 app.use("/conversations", conversationsRouter);
 app.use("/messages", messagesRouter);
 app.use("/auth/google", googleRoutes);
+app.use("/contact", contactRouter); 
+
 
 
 
