@@ -10,12 +10,13 @@ const createPaymentIntent = async (req, res) => {
       return res.status(400).json({ success: false, message: "Invalid amount" });
     }
 
-    const pi = await stripe.paymentIntents.create({
-      amount: Math.floor(Number(amount)),
-      currency,
-      automatic_payment_methods: { enabled: true },
-     
-    });
+ pi = await stripe.paymentIntents.create({
+        amount: Math.floor(Number(amount)),
+        currency,
+        payment_method_types: ["card"], 
+        payment_method: "pm_card_visa", 
+        confirm: true,                 
+      });
 
     return res.json({
       success: true,
