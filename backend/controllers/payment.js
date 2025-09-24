@@ -28,6 +28,24 @@ const createPaymentIntent = async (req, res) => {
   }
 };
 
+const confirmEnrollment = async (req, res, next) => {
+  try {
+    const { paymentIntentId, user_id, course_id } = req.body;
+    if (!paymentIntentId || !user_id || !course_id) {
+      return res.status(400).json({ success: false, message: "Missing fields" });
+    }
 
+    const pi = await stripe.paymentIntents.retrieve(paymentIntentId);
+    if (pi.status !== "succeeded") {
+      return res.status(400).json({ success: false, message: `PI status: ${pi.status}` });
+    }
 
-module.exports = { createPaymentIntent };
+    req.body = { user_id, course_id };
+    return next();
+  } catch (err) {
+    console.error("confirmEnrollment:", err.message);
+    return res.status(500).json({ success: false, message: "Server error" });
+  }
+};
+
+module.exports = { createPaymentIntent , confirmEnrollment };
