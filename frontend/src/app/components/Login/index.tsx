@@ -27,8 +27,10 @@ const dispatch = useDispatch();
       .then((result) => {
         setLoading(true);
         if (result.data) {
-          const { token, avatarUrl } = result.data; 
-  dispatch(loginSuccess({ token, avatarUrl }));
+          const { token, avatarUrl,user } = result.data; 
+          console.log(result.data);
+          
+  dispatch(loginSuccess({ token, avatarUrl,userId:user.id }));
           console.log(result.data);
           setMessage("Login successful");
           setStatus(true);
