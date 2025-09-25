@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useRouter } from "next/navigation";
 import { AppDispatch } from "@/redux/store";
 import { useEffect } from "react";
+import CourseSliders from "./components/CourseSlider/courseSlider";
 
 export default function Home() {
   const dispatch = useDispatch<AppDispatch>();
@@ -44,6 +45,9 @@ export default function Home() {
             </div>
           </div>
         </div>
+      </section>
+      <section>
+        <CourseSliders/>
       </section>
     </>
   );
