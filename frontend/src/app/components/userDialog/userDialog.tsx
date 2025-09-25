@@ -15,7 +15,7 @@ interface UserDialogProps {
   onClose: () => void;
 }
 
-export default function UserDialog({ onClose }: UserDialogProps) {
+export default function UserDialog() {
   const dispatch = useDispatch();
   const auth = useSelector((state: RootState) => state.auth);
   const userId = auth.userId;
@@ -88,10 +88,16 @@ export default function UserDialog({ onClose }: UserDialogProps) {
     }
   };
 
+
+
+
+
+  
   if (!user) return null;
 
   return (
-    <div className="profile-modal " >
+    <div className="profile-modal ">
+    
       <div className="profile-container">
         <div className="profile-photo-section">
           <div className="profile-photo-wrapper">
@@ -108,14 +114,15 @@ export default function UserDialog({ onClose }: UserDialogProps) {
               onChange={handleImageChange}
               style={{ display: "none" }}
             />
+            <h2 className=""style={{fontSize:"36px",marginLeft:"100px",textAlign:"center",width:"200px",marginTop:"20px"}}>{user.firstName} {user.lastName}</h2>
             <label htmlFor="file-upload" className="upload-label">
               Choose Photo
             </label>
           </div>
         </div>
 
-        <div className="profile-info-section">
-          <h2 className="profile-title">My Profile</h2>
+        <div className="profile-info-section ">
+          <h2 className="profile-title">Profile information</h2>
           <div className="form-inputs-container">
             <div className="form-group">
               <label htmlFor="firstName">First Name</label>
@@ -167,6 +174,11 @@ export default function UserDialog({ onClose }: UserDialogProps) {
           >
             {saving ? "Saving..." : "Update Profile"}
           </button>
+          <button
+            className="btn-delete-profile"
+          >
+            {"Delete Account"}
+          </button>
           {message && <div className="message success">{message}</div>}
           {error && <div className="message error">{error}</div>}
         </div>
@@ -185,6 +197,7 @@ export default function UserDialog({ onClose }: UserDialogProps) {
           />
         </div>
       )}
+     
     </div>
   );
 }
