@@ -1,10 +1,55 @@
 "use client";
 
-import React from "react";
+import { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
 import { RootState } from "../../redux/store";
+import axios from "axios";
 
 const THEME = { primary: "#77b0e4", secondary: "#f6a531" };
+export type Review = {
+  id: number;
+  user_id: number;
+  rating: number;
+  comment: string | null;
+  created_at: string;
+  first_name?: string;
+  last_name?: string;
+  avatar_url?: string | null;
+};
+
+export type CourseWithReviews = {
+  course_id: number;
+  course_title: string;
+  cover_url: string | null;
+  price: number | string;
+  is_published: boolean;
+  student_count: number;
+  review_count: number;
+  avg_rating: number | string;
+  reviews: Review[];
+};
+
+type Course = {
+  id: number;
+  title: string;
+  description: string | null;
+  cover_url: string | null;
+  price: number | string;
+  is_published: boolean;
+  created_at: string;
+  updated_at: string;
+  instructor_id: number;
+  instructor_avatar: string | null;
+  instructor_first_name: string;
+  instructor_last_name: string;
+  instructor_email: string;
+};
+
+type ApiResponse<T> = {
+  success: boolean;
+  message: string;
+  data: T;
+};
 
 function Stars({ value }: { value: number }) {
   return (
@@ -29,9 +74,52 @@ function Stars({ value }: { value: number }) {
   );
 }
 
+const formatNumberK = (num: number): string => {
+  if (num >= 1000) {
+    return (num / 1000).toFixed(1) + "K";
+  }
+  return num.toString();
+};
+
+
 export default function page() {
+  const [loading, setLoading] = useState(false);
+  const [courses, setCourses] = useState<CourseWithReviews[]>([]);
+  const [error, setError] = useState<string | null>(null);
+
   const auth = useSelector((state: RootState) => state.auth);
-  console.log(auth);
+console.log(auth)
+  useEffect(() => {
+    if (!auth.userId) return;
+    setLoading(true);
+    setError(null);
+
+    axios
+      .get<ApiResponse<CourseWithReviews[]>>(
+        `http://localhost:5000/reviews/instructors/${auth.userId}`
+      )
+      .then((res) => {
+        const sorted = res.data.data.sort((a, b) => {
+          const earningA = Number(a.price) * a.student_count;
+          const earningB = Number(b.price) * b.student_count;
+          return earningB - earningA; 
+        });
+
+        setCourses(sorted);
+      })
+      .catch((err) => {
+        setError(err?.message || "Failed to fetch instructor reviews");
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+  }, []);
+console.log(courses)
+  const totalStudents = courses.reduce((sum, course) => sum + Number(course.student_count), 0);
+  const avgRating = courses.length ? courses.reduce((sum, course) => sum + (Number(course.avg_rating) || 0), 0) / courses.length : 0;
+   const totalEarnings = courses.reduce((sum, course) => sum + Number(Number(course.price) * course.student_count ), 0);
+
+
   return (
     <div className="bg-light min-vh-100 d-flex">
       <section className="flex-grow-1 p-4">
@@ -40,8 +128,7 @@ export default function page() {
             <div className="pe-3" style={{ maxWidth: 680 }}>
               <h1 className="h4 fw-bold mb-2">Welcome back, Issa Azeez</h1>
               <p className="text-muted mb-0">
-                Lorem ipsum dolor sit amet consectetur. Condimentum viverra
-                pellentesque diam at sed.
+               Keep inspiring minds and growing your impact every day.
               </p>
             </div>
             <div className="position-relative">
@@ -83,7 +170,7 @@ export default function page() {
             <small className="text-muted">Here’s your overview today!</small>
           </div>
         </div>
-
+        {}
         <div className="row g-3 mb-4">
           <div className="col-12 col-sm-6 col-xl-3">
             <div className="card h-100 border-0 shadow-sm">
@@ -96,7 +183,7 @@ export default function page() {
                 </div>
                 <div>
                   <div className="text-muted small">Total Course</div>
-                  <div className="fs-4 fw-bold">21</div>
+                  <div className="fs-4 fw-bold">{courses.length}</div>
                 </div>
               </div>
             </div>
@@ -106,14 +193,14 @@ export default function page() {
             <div className="card h-100 border-0 shadow-sm">
               <div className="card-body d-flex align-items-center gap-3">
                 <div
-                  className="rounded-3 bg-success-subtle text-success d-inline-grid justify-content-center"
+                  className="rounded-3 bg-primary-subtle text-primary d-inline-grid justify-content-center"
                   style={{ width: 46, height: 46 }}
                 >
                   <span className="bi bi-people align-self-center " />
                 </div>
                 <div>
                   <div className="text-muted small">Total Students</div>
-                  <div className="fs-4 fw-bold">234</div>
+                  <div className="fs-4 fw-bold">{totalStudents}</div>
                 </div>
               </div>
             </div>
@@ -130,7 +217,7 @@ export default function page() {
                 </div>
                 <div>
                   <div className="text-muted small">Av. Ratings</div>
-                  <div className="fs-4 fw-bold">4.92</div>
+                  <div className="fs-4 fw-bold">{avgRating.toFixed(2)}</div>
                 </div>
               </div>
             </div>
@@ -140,14 +227,14 @@ export default function page() {
             <div className="card h-100 border-0 shadow-sm">
               <div className="card-body d-flex align-items-center gap-3">
                 <div
-                  className="rounded-3 bg-primary-subtle text-primary d-inline-grid justify-content-center"
+                  className="rounded-3 bg-success-subtle text-success d-inline-grid justify-content-center"
                   style={{ width: 46, height: 46 }}
                 >
                   <span className="bi bi-wallet2 align-self-center" />
                 </div>
                 <div>
                   <div className="text-muted small">Total Earnings</div>
-                  <div className="fs-4 fw-bold">$5.1K</div>
+                  <div className="fs-4 fw-bold">{formatNumberK(totalEarnings)}</div>
                 </div>
               </div>
             </div>
@@ -169,37 +256,17 @@ export default function page() {
                   </tr>
                 </thead>
                 <tbody>
-                  {[
-                    {
-                      rank: "01.",
-                      name: "Phython and Django Full Stack Web...",
-                      students: "22",
-                      rating: 4,
-                      earning: "$1.3K",
-                    },
-                    {
-                      rank: "02.",
-                      name: "Phython and Django Full Stack Web...",
-                      students: "172",
-                      rating: 4,
-                      earning: "$1.3K",
-                    },
-                    {
-                      rank: "03.",
-                      name: "Phython and Django Full Stack Web...",
-                      students: "32",
-                      rating: 4,
-                      earning: "$1.3K",
-                    },
-                  ].map((row, i) => (
-                    <tr key={i}>
-                      <td className="fw-semibold">{row.rank}</td>
-                      <td>{row.name}</td>
-                      <td>{row.students}</td>
+                  {courses.map((row, i) => (
+                    <tr key={i++}>
+                      <td className="fw-semibold">{i + 1}</td>
+                      <td>{row.course_title}</td>
+                      <td>{row.student_count}</td>
                       <td>
-                        <Stars value={Number(row.rating)} />
+                        <Stars value={Number(row.avg_rating)} />
                       </td>
-                      <td className="fw-semibold">{row.earning}</td>
+                      <td className="fw-semibold green">
+                        <span style={{color:"green"}}>${(Number(row.price) * row.student_count).toFixed(1)}</span>
+                      </td>
                     </tr>
                   ))}
                 </tbody>

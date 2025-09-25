@@ -163,9 +163,69 @@ const deleteReview = (req, res) => {
     });
 };
 
+const getInstructorReviews = async (req, res) => {
+  try {
+    const { id } = req.params; 
+    if (!id) {
+      return res.status(400).json({ success: false, message: "instructor id required" });
+    }
+
+     const sql = `
+      SELECT
+        c.id AS course_id,
+        c.title AS course_title,
+        c.cover_url,
+        c.price,
+        c.is_published,
+        COUNT(DISTINCT e.user_id) AS student_count, 
+        COUNT(r.id) AS review_count,
+        COALESCE(ROUND(AVG(r.rating)::numeric, 2), 0) AS avg_rating,
+        COALESCE(
+          JSON_AGG(
+            JSON_BUILD_OBJECT(
+              'id', r.id,
+              'user_id', r.user_id,
+              'rating', r.rating,
+              'comment', r.comment,
+              'created_at', r.created_at,
+              'first_name', u.first_name,
+              'last_name',  u.last_name,
+              'avatar_url', u.avatar_url
+            )
+            ORDER BY r.created_at DESC
+          ) FILTER (WHERE r.id IS NOT NULL),
+          '[]'
+        ) AS reviews
+      FROM courses c
+      LEFT JOIN reviews r ON r.course_id = c.id
+      LEFT JOIN users   u ON u.id = r.user_id
+      LEFT JOIN enrollments e ON e.course_id = c.id 
+      WHERE c.created_by = $1
+      GROUP BY c.id, c.title, c.cover_url, c.price, c.is_published
+      ORDER BY c.id;
+    `;
+
+    const { rows } = await pool.query(sql, [id]);
+
+    return res.status(200).json({
+      success: true,
+      message: "Fetched instructor reviews successfully",
+      data: rows, 
+    });
+  } catch (err) {
+    return res.status(500).json({
+      success: false,
+      message: "Server Error",
+      error: err.message,
+    });
+  }
+};
+
+
 module.exports = {
   getReviewsByCourseId,
   createReview,
   updateReview,
   deleteReview,
+  getInstructorReviews
 };

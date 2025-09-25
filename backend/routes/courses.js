@@ -6,7 +6,8 @@ const {
   deleteCourse,
   getCoursesByCategoryId,
   getTrendingCourses,
-  getMostSellingCourses
+  getMostSellingCourses,
+  getCoursesByInstructor
 } = require("../controllers/courses");
 
 const coursesRouter = express.Router();
@@ -16,6 +17,7 @@ coursesRouter.get("/categories/:category_id", getCoursesByCategoryId);
 coursesRouter.get("/trending", getTrendingCourses);
 coursesRouter.get("/most-selling", getMostSellingCourses);
 coursesRouter.get("/:id", getCourseById);
+coursesRouter.get("/instructor/:id", getCoursesByInstructor);
 coursesRouter.post("/", createCourse);
 coursesRouter.delete("/:id", deleteCourse);
 
