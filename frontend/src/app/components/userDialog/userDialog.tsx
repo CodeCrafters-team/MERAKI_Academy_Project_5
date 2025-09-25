@@ -4,9 +4,8 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "../../../redux/store";
-import { updateProfile } from "@/redux/slices/authSlice";
-import "./userDialog.css"; 
-
+import { updateProfile, deleteAccount } from "@/redux/slices/authSlice";
+import "./userDialog.css";
 
 const CLOUD_NAME = "dkgru3hra";
 const UPLOAD_PRESET = "project-4";
@@ -15,7 +14,7 @@ interface UserDialogProps {
   onClose: () => void;
 }
 
-export default function UserDialog() {
+export default function UserDialog({ onClose }: UserDialogProps) {
   const dispatch = useDispatch();
   const auth = useSelector((state: RootState) => state.auth);
   const userId = auth.userId;
@@ -26,6 +25,7 @@ export default function UserDialog() {
   const [message, setMessage] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [previewOpen, setPreviewOpen] = useState(false);
+  const [confirmOpen, setConfirmOpen] = useState(false); // مودال التأكيد
 
   useEffect(() => {
     if (auth) setUser(auth);
@@ -37,7 +37,7 @@ export default function UserDialog() {
     setImageFile(file);
 
     const localUrl = URL.createObjectURL(file);
-    setUser(prev => prev ? { ...prev, avatarUrl: localUrl } : prev);
+    setUser((prev) => (prev ? { ...prev, avatarUrl: localUrl } : prev));
   };
 
   const handleSave = async () => {
@@ -88,16 +88,23 @@ export default function UserDialog() {
     }
   };
 
-
-
-
-
-  
   if (!user) return null;
 
+  const handleDelete = async () => {
+    try {
+      await axios.delete(`http://localhost:5000/users/${userId}`, {
+        headers: { Authorization: `Bearer ${auth.token}` },
+      });
+      dispatch(deleteAccount());
+      setConfirmOpen(false); 
+      onClose();           
+    } catch (err) {
+      setError("Failed to delete account. Please try again.");
+    }
+  };
+
   return (
-    <div className="profile-modal ">
-    
+    <div className="profile-modal">
       <div className="profile-container">
         <div className="profile-photo-section">
           <div className="profile-photo-wrapper">
@@ -114,14 +121,24 @@ export default function UserDialog() {
               onChange={handleImageChange}
               style={{ display: "none" }}
             />
-            <h2 className=""style={{fontSize:"36px",marginLeft:"100px",textAlign:"center",width:"200px",marginTop:"20px"}}>{user.firstName} {user.lastName}</h2>
+            <h2
+              style={{
+                fontSize: "36px",
+                marginLeft: "100px",
+                textAlign: "center",
+                width: "200px",
+                marginTop: "20px",
+              }}
+            >
+              {user.firstName} {user.lastName}
+            </h2>
             <label htmlFor="file-upload" className="upload-label">
               Choose Photo
             </label>
           </div>
         </div>
 
-        <div className="profile-info-section ">
+        <div className="profile-info-section">
           <h2 className="profile-title">Profile information</h2>
           <div className="form-inputs-container">
             <div className="form-group">
@@ -131,7 +148,9 @@ export default function UserDialog() {
                 className="form-input"
                 placeholder="First Name"
                 value={user.firstName || ""}
-                onChange={(e) => setUser({ ...user, firstName: e.target.value })}
+                onChange={(e) =>
+                  setUser({ ...user, firstName: e.target.value })
+                }
               />
             </div>
             <div className="form-group">
@@ -141,7 +160,9 @@ export default function UserDialog() {
                 className="form-input"
                 placeholder="Last Name"
                 value={user.lastName || ""}
-                onChange={(e) => setUser({ ...user, lastName: e.target.value })}
+                onChange={(e) =>
+                  setUser({ ...user, lastName: e.target.value })
+                }
               />
             </div>
             <div className="form-group">
@@ -152,7 +173,9 @@ export default function UserDialog() {
                 className="form-input"
                 placeholder="Age"
                 value={user.age || ""}
-                onChange={(e) => setUser({ ...user, age: Number(e.target.value) })}
+                onChange={(e) =>
+                  setUser({ ...user, age: Number(e.target.value) })
+                }
               />
             </div>
             <div className="form-group">
@@ -176,13 +199,15 @@ export default function UserDialog() {
           </button>
           <button
             className="btn-delete-profile"
+            onClick={() => setConfirmOpen(true)}
           >
-            {"Delete Account"}
+            Delete Account
           </button>
           {message && <div className="message success">{message}</div>}
           {error && <div className="message error">{error}</div>}
         </div>
       </div>
+
       {previewOpen && (
         <div
           className="position-fixed top-0 start-0 w-100 h-100 bg-black bg-opacity-75 d-flex justify-content-center align-items-center"
@@ -197,7 +222,35 @@ export default function UserDialog() {
           />
         </div>
       )}
-     
+
+      {confirmOpen && (
+        <div
+          className="position-fixed top-0 start-0 w-100 h-100 bg-black bg-opacity-75 d-flex justify-content-center align-items-center"
+          style={{ zIndex: 1060 }}
+        >
+          <div className="bg-white rounded p-4 shadow" style={{ maxWidth: "400px" }}>
+            <h4 className="mb-3">Confirm Delete</h4>
+            <p>
+              Are you sure you want to delete your account? This action cannot be
+              undone.
+            </p>
+            <div className="d-flex justify-content-end gap-2 mt-3">
+              <button
+                className="btn btn-secondary"
+                onClick={() => setConfirmOpen(false)}
+              >
+                Cancel
+              </button>
+              <button
+                className="btn btn-danger"
+                onClick={handleDelete} 
+              >
+                Yes, Delete
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
