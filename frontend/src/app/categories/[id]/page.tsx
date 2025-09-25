@@ -7,6 +7,8 @@ import "animate.css/animate.min.css";
 
 const THEME = { primary: "#77b0e4", secondary: "#f6a531" };
 
+const API_BASE = "http://localhost:5000";
+
 interface Category {
   id: number;
   name: string;
@@ -15,18 +17,27 @@ interface Category {
   created_at: string;
 }
 interface Course {
-  id: number;
+  id: number;               
   category_id: number;
   title: string;
   description: string | null;
   cover_url: string | null;
-  price: number | null;
+  price: number | null;     
   is_published?: boolean;
-  avatar_url: null;
+  avatar_url?: string | null;
   first_name: string;
   last_name: string | null;
 }
-
+const fmtMoney = (v: number | string | null) => {
+  if (v == null || v === "" || v === 0) return "Free";
+  const n = typeof v === "string" ? Number(v) : v;
+  if (Number.isNaN(n)) return "Free";
+  return new Intl.NumberFormat("en-US", {
+    style: "currency",
+    currency: "USD",
+    minimumFractionDigits: 2,
+  }).format(n);
+};
 export default function CategoryPage() {
   const { id } = useParams() as { id?: string };
   const pathname = usePathname();
@@ -39,22 +50,24 @@ export default function CategoryPage() {
   const [courses, setCourses] = useState<Course[]>([]);
   const [loadingCats, setLoadingCats] = useState(true);
   const [loadingCourses, setLoadingCourses] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-
-  const API_BASE = "http://localhost:5000";
+  const [catsError, setCatsError] = useState<string | null>(null);
+  const [coursesError, setCoursesError] = useState<string | null>(null);
 
   useEffect(() => {
     let mounted = true;
     (async () => {
       try {
         setLoadingCats(true);
+        setCatsError(null);
         const res = await axios.get<{ success?: boolean; data?: Category[] }>(
           `${API_BASE}/categories`
         );
         const data = (res.data as any)?.data ?? res.data;
-        if (mounted) setCategories(Array.isArray(data) ? data : []);
+        if (!mounted) return;
+        setCategories(Array.isArray(data) ? data : []);
       } catch (e: any) {
-        if (mounted) setError(e?.message || "Failed to load categories");
+        if (!mounted) return;
+        setCatsError(e?.message || "Failed to load categories");
       } finally {
         if (mounted) setLoadingCats(false);
       }
@@ -62,21 +75,44 @@ export default function CategoryPage() {
     return () => {
       mounted = false;
     };
-  }, [API_BASE]);
+  }, []);
 
   useEffect(() => {
     let mounted = true;
     (async () => {
       try {
         setLoadingCourses(true);
-        const res = await axios.get<{ success?: boolean; data?: Course[] }>(
-          `${API_BASE}/courses`
-        );
-        const data = (res.data as any)?.data ?? res.data;
-        console.log(data)
-        if (mounted) setCourses(Array.isArray(data) ? data : []);
+        setCoursesError(null);
+
+        const url = isAll
+          ? `${API_BASE}/courses`
+          : `${API_BASE}/courses/categories/${activeCategoryId}`;
+
+        const res = await axios.get<{ success?: boolean; data?: Course[] }>(url);
+        const raw = (res.data as any)?.data ?? res.data;
+
+        const data: Course[] = (Array.isArray(raw) ? raw : []).map((c: any) => ({
+          id: Number(c.id), 
+          category_id: Number(c.category_id),
+          title: String(c.title ?? ""),
+          description: c.description ?? null,
+          cover_url: c.cover_url ?? null,
+          price:
+            c.price === null || c.price === undefined
+              ? null
+              : Number(c.price),
+          is_published: Boolean(c.is_published),
+          avatar_url: c.avatar_url ?? null,
+          first_name: c.first_name ?? "",
+          last_name: c.last_name ?? null,
+        }));
+
+        if (!mounted) return;
+        setCourses(data);
       } catch (e: any) {
-        if (mounted) setError(e?.message || "Failed to load courses");
+        if (!mounted) return;
+        setCourses([]);
+        setCoursesError(e?.message || "Failed to load courses");
       } finally {
         if (mounted) setLoadingCourses(false);
       }
@@ -84,13 +120,9 @@ export default function CategoryPage() {
     return () => {
       mounted = false;
     };
-  }, [API_BASE]);
+  }, [isAll, activeCategoryId]);
 
-  const filtered = useMemo(() => {
-    if (isAll) return courses;
-    if (activeCategoryId == null || Number.isNaN(activeCategoryId)) return [];
-    return courses.filter((c) => c.category_id === activeCategoryId);
-  }, [courses, isAll, activeCategoryId]);
+  const filtered = useMemo(() => courses, [courses]);
 
   const isAllActive =
     pathname === "/categories/all" || pathname === "/categories";
@@ -156,8 +188,8 @@ export default function CategoryPage() {
                 />
                 <span>Loading…</span>
               </div>
-            ) : error ? (
-              <div className="alert alert-danger py-2 px-3">{error}</div>
+            ) : catsError ? (
+              <div className="alert alert-danger py-2 px-3">{catsError}</div>
             ) : (
               <div className="list-group">
                 <Link
@@ -226,6 +258,7 @@ export default function CategoryPage() {
             )}
           </div>
         </aside>
+
         <main className="col-12 col-md-9 col-lg-10">
           <div className="container py-4">
             {loadingCourses ? (
@@ -237,8 +270,8 @@ export default function CategoryPage() {
                 />
                 <span>Loading courses…</span>
               </div>
-            ) : error ? (
-              <div className="alert alert-danger">{error}</div>
+            ) : coursesError ? (
+              <div className="alert alert-danger">{coursesError}</div>
             ) : (
               <>
                 <div className="d-flex align-items-center justify-content-between mb-3">
@@ -260,14 +293,8 @@ export default function CategoryPage() {
                 ) : (
                   <div className="row g-4 animate__animated animate__fadeInUp">
                     {filtered.map((course) => (
-                      <div
-                        key={course.id}
-                        className="col-sm-6 col-md-4 col-xl-3"
-                      >
-                        <div
-                          className="card h-100 border-0 shadow-sm"
-                          style={{ borderRadius: 16 }}
-                        >
+                      <div key={course.id} className="col-sm-6 col-md-4 col-xl-3">
+                        <div className="card h-100 border-0 shadow-sm" style={{ borderRadius: 16 }}>
                           <div
                             style={{
                               background: THEME.primary,
@@ -293,33 +320,20 @@ export default function CategoryPage() {
                           </div>
                           <div className="card-body">
                             <h6 className="mb-1 fw-bold">{course.title}</h6>
-                            {/* <div>
-                              <img className=" col rounded-circle" style={{width: ""}} src={course.avatar_url || "https://scontent.famm12-1.fna.fbcdn.net/v/t39.30808-6/363288108_2016075678741930_1719177822222085679_n.jpg?_nc_cat=105&ccb=1-7&_nc_sid=6ee11a&_nc_eui2=AeEkLLR8Iqtg026pY71ygrkuASV8vhFFdysBJXy-EUV3K2zmzFY5bQTCt324fDuTRdIGIDXer4RmAQNfgr9AeOS9&_nc_ohc=Jf7PMNHcc9kQ7kNvwFO0Eum&_nc_oc=AdmhjhBDp4lsltcMDp_4BsGCVTXrKQOrx2as4XSkissj6i7RrnvLuPLFff19_yMB09A&_nc_zt=23&_nc_ht=scontent.famm12-1.fna&_nc_gid=9_PlzrnYW610k6KO-9eurQ&oh=00_AfYiwKEw_SJlI1yeP4R5Y6kTpD0kCLRJYFfBEM7NYx5KiA&oe=68D6F3B6" } alt="" />
-                               <p className="col">{course.first_name} {course.last_name}</p>
-                            </div> */}
-                            <p
-                              className="text-muted small mb-3"
-                              style={{ minHeight: 40 }}
-                            >
+                            <p className="text-muted small mb-3" style={{ minHeight: 40 }}>
                               {course.description
                                 ? course.description.slice(0, 40) +
                                   (course.description.length > 40 ? "..." : "")
                                 : "No description."}
                             </p>
                             <div className="d-flex align-items-center justify-content-between">
-                              <span
-                                className="fw-bold"
-                                style={{ color: "green" }}
-                              >
-                                {course.price ? `$${course.price}` : "Free"}
+                              <span className="fw-bold" style={{ color: "green" }}>
+                                {fmtMoney(course.price)}
                               </span>
                               <Link
                                 href={`/courses/${course.id}`}
                                 className="btn btn-primary btn-sm border-0"
-                                style={{
-                                  color: "#fff",
-                                  borderRadius: 10,
-                                }}
+                                style={{ color: "#fff", borderRadius: 10 }}
                               >
                                 View
                               </Link>

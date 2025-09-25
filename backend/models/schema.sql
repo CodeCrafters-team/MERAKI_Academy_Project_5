@@ -24,3 +24,19 @@ CREATE TABLE contact (
   created_at TIMESTAMP DEFAULT NOW()
 );
 
+CREATE TABLE reviews (
+  id SERIAL PRIMARY KEY,
+  course_id INTEGER NOT NULL REFERENCES courses(id) ON DELETE CASCADE,
+  user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+  rating INTEGER CHECK (rating BETWEEN 1 AND 5) NOT NULL,
+  comment TEXT,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT now()
+);
+
+CREATE TABLE  course_progress (
+  id         BIGSERIAL PRIMARY KEY,
+  user_id    BIGINT  NOT NULL REFERENCES users(id)   ON DELETE CASCADE,
+  lesson_id  BIGINT  NOT NULL REFERENCES lessons(id) ON DELETE CASCADE,
+  is_completed BOOLEAN NOT NULL DEFAULT FALSE,
+  UNIQUE (user_id, lesson_id)
+);

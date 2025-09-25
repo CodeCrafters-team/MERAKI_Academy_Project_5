@@ -9,9 +9,7 @@ import UserDialog from './components/userDialog/userDialog';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap-icons/font/bootstrap-icons.css';
 import './globals.css';
-import { useSelector } from 'react-redux';
-import { RootState } from '../redux/store';
-import { useEffect } from 'react';
+import 'animate.css/animate.min.css';
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
