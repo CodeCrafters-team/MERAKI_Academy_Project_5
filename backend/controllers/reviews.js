@@ -168,7 +168,7 @@ const getInstructorReviews = async (req, res) => {
     const { id } = req.params; 
     if (!id) {
       return res.status(400).json({ success: false, message: "instructor id required" });
-    }
+    } 
 
      const sql = `
       SELECT
