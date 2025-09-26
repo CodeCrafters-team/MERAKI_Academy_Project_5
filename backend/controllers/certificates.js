@@ -133,4 +133,12 @@ const verifyCertificate = (req, res) => {
     );
 };
 
-module.exports = { issueCertificate, getCertificate, verifyCertificate };
+const getUserCertificates = (req, res) => {
+  const { userId } = req.params;
+  pool.query("SELECT * FROM certificates WHERE user_id=$1 ORDER BY issued_at DESC", [userId])
+    .then((result) => res.json({ success: true, data: result.rows }))
+    .catch((err) => res.status(500).json({ success: false, message: "Server error", error: err.message }));
+};
+
+
+module.exports = { issueCertificate, getCertificate, verifyCertificate , getUserCertificates };
