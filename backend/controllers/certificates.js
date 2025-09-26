@@ -19,8 +19,8 @@ const issueCertificate = (req, res) => {
       course_id,
     ])
     .then((result) => {
-      if (result.rows.length > 0) {
-        return res.json({ success: true, data: result.rows[0] });
+      if (result.rows.length) {
+        return res.json({ success: false, message:"Certificate already exists" });
       }
 
       const certNo = `CRT-${new Date().getFullYear()}-${crypto
