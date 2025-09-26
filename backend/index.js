@@ -34,6 +34,7 @@ const reviewRouter = require("./routes/reviews")
 const progressRouter = require("./routes/progress")
 const contactRouter = require("./routes/contacts"); 
 const paymentsRouter = require("./routes/payments"); 
+const certificatesRouter = require("./routes/certificates")
 
 
 
@@ -59,6 +60,7 @@ app.use("/reviews", reviewRouter)
 app.use("/progress", progressRouter)
 app.use("/contact", contactRouter); 
 app.use("/payments", paymentsRouter); 
+app.use("/certificates", certificatesRouter); 
 
 
 
