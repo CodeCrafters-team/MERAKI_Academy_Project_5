@@ -122,8 +122,8 @@ console.log(courses)
 
   return (
     <div className="bg-light min-vh-100 d-flex">
-      <section className="flex-grow-1 p-4">
-        <div className="card border-0 shadow-sm mb-4">
+      <section className="flex-grow-1 p-4 animate__animated animate__fadeIn">
+        <div className="card border-0 shadow-sm mb-4 animate__animated animate__fadeInDown animate__fast">
           <div className="card-body p-4 d-flex justify-content-between align-items-center">
             <div className="pe-3" style={{ maxWidth: 680 }}>
               <h1 className="h4 fw-bold mb-2">Welcome back, Issa Azeez</h1>
@@ -131,7 +131,7 @@ console.log(courses)
                Keep inspiring minds and growing your impact every day.
               </p>
             </div>
-            <div className="position-relative">
+            <div className="position-relative animate__animated animate__zoomIn animate__delay-1s">
               <div
                 className="rounded-4"
                 style={{
@@ -142,7 +142,7 @@ console.log(courses)
                 }}
               />
               <div
-                className="position-absolute top-50 start-50 translate-middle bg-white rounded-3 border shadow"
+                className="position-absolute top-50 start-50 translate-middle bg-white rounded-3 border shadow animate__animated animate__zoomIn animate__delay-2s"
                 style={{
                   width: 86,
                   height: 86,
@@ -173,7 +173,7 @@ console.log(courses)
         {}
         <div className="row g-3 mb-4">
           <div className="col-12 col-sm-6 col-xl-3">
-            <div className="card h-100 border-0 shadow-sm">
+            <div className="card h-100 border-0 shadow-sm animate__animated animate__fadeInUp">
               <div className="card-body d-flex align-items-center gap-3">
                 <div
                   className="rounded-3 bg-danger-subtle text-danger d-inline-grid justify-content-center"
@@ -190,7 +190,7 @@ console.log(courses)
           </div>
 
           <div className="col-12 col-sm-6 col-xl-3">
-            <div className="card h-100 border-0 shadow-sm">
+            <div className="card h-100 border-0 shadow-sm animate__animated animate__fadeInUp animate__delay-1s">
               <div className="card-body d-flex align-items-center gap-3">
                 <div
                   className="rounded-3 bg-primary-subtle text-primary d-inline-grid justify-content-center"
@@ -207,7 +207,7 @@ console.log(courses)
           </div>
 
           <div className="col-12 col-sm-6 col-xl-3">
-            <div className="card h-100 border-0 shadow-sm">
+            <div className="card h-100 border-0 shadow-sm animate__animated animate__fadeInUp animate__delay-2s">
               <div className="card-body d-flex align-items-center gap-3">
                 <div
                   className="rounded-3 bg-warning-subtle text-warning d-inline-grid justify-content-center"
@@ -224,7 +224,7 @@ console.log(courses)
           </div>
 
           <div className="col-12 col-sm-6 col-xl-3">
-            <div className="card h-100 border-0 shadow-sm">
+            <div className="card h-100 border-0 shadow-sm animate__animated animate__fadeInUp animate__delay-3s">
               <div className="card-body d-flex align-items-center gap-3">
                 <div
                   className="rounded-3 bg-success-subtle text-success d-inline-grid justify-content-center"
@@ -241,10 +241,10 @@ console.log(courses)
           </div>
         </div>
 
-        <div className="card border-0 shadow-sm">
+        <div className="card border-0 shadow-sm animate__animated animate__fadeInUp animate__delay-1s">
           <div className="card-body ">
             <h5 className="m-2">Courses Statistics</h5>
-            <div className="table-responsive">
+            <div className="table-responsive animate__animated animate__fadeIn">
               <table className="table align-middle mb-0">
                 <thead>
                   <tr className="text-muted small">
@@ -255,9 +255,9 @@ console.log(courses)
                     <th scope="col">Earning</th>
                   </tr>
                 </thead>
-                <tbody>
+                <tbody className="animate__animated animate__fadeIn">
                   {courses.map((row, i) => (
-                    <tr key={i++}>
+                    <tr key={i} className="animate__animated animate__fadeInUp animate__faster">
                       <td className="fw-semibold">{i + 1}</td>
                       <td>{row.course_title}</td>
                       <td>{row.student_count}</td>
