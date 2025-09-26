@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
 import { RootState } from "../../redux/store";
 import axios from "axios";
+import Loading from "./loading";
 
 const THEME = { primary: "#77b0e4", secondary: "#f6a531" };
 export type Review = {
@@ -81,14 +82,13 @@ const formatNumberK = (num: number): string => {
   return num.toString();
 };
 
-
 export default function page() {
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [courses, setCourses] = useState<CourseWithReviews[]>([]);
   const [error, setError] = useState<string | null>(null);
 
   const auth = useSelector((state: RootState) => state.auth);
-console.log(auth)
+  console.log(auth);
   useEffect(() => {
     if (!auth.userId) return;
     setLoading(true);
@@ -102,7 +102,7 @@ console.log(auth)
         const sorted = res.data.data.sort((a, b) => {
           const earningA = Number(a.price) * a.student_count;
           const earningB = Number(b.price) * b.student_count;
-          return earningB - earningA; 
+          return earningB - earningA;
         });
 
         setCourses(sorted);
@@ -114,11 +114,24 @@ console.log(auth)
         setLoading(false);
       });
   }, []);
-console.log(courses)
-  const totalStudents = courses.reduce((sum, course) => sum + Number(course.student_count), 0);
-  const avgRating = courses.length ? courses.reduce((sum, course) => sum + (Number(course.avg_rating) || 0), 0) / courses.length : 0;
-   const totalEarnings = courses.reduce((sum, course) => sum + Number(Number(course.price) * course.student_count ), 0);
+  console.log(courses);
+  const totalStudents = courses.reduce(
+    (sum, course) => sum + Number(course.student_count),
+    0
+  );
+  const avgRating = courses.length
+    ? courses.reduce(
+        (sum, course) => sum + (Number(course.avg_rating) || 0),
+        0
+      ) / courses.length
+    : 0;
+  const totalEarnings = courses.reduce(
+    (sum, course) => sum + Number(Number(course.price) * course.student_count),
+    0
+  );
 
+   if (loading) return <Loading/>
+ 
 
   return (
     <div className="bg-light min-vh-100 d-flex">
@@ -128,7 +141,7 @@ console.log(courses)
             <div className="pe-3" style={{ maxWidth: 680 }}>
               <h1 className="h4 fw-bold mb-2">Welcome back, Issa Azeez</h1>
               <p className="text-muted mb-0">
-               Keep inspiring minds and growing your impact every day.
+                Keep inspiring minds and growing your impact every day.
               </p>
             </div>
             <div className="position-relative animate__animated animate__zoomIn animate__delay-1s">
@@ -234,7 +247,9 @@ console.log(courses)
                 </div>
                 <div>
                   <div className="text-muted small">Total Earnings</div>
-                  <div className="fs-4 fw-bold">{formatNumberK(totalEarnings)}</div>
+                  <div className="fs-4 fw-bold">
+                    {formatNumberK(totalEarnings)}
+                  </div>
                 </div>
               </div>
             </div>
@@ -244,28 +259,35 @@ console.log(courses)
         <div className="card border-0 shadow-sm animate__animated animate__fadeInUp animate__delay-1s">
           <div className="card-body ">
             <h5 className="m-2">Courses Statistics</h5>
-            <div className="table-responsive animate__animated animate__fadeIn">
+            <div
+              className="table-responsive overflow-auto"
+              style={{ maxHeight: "48vh" }}
+            >
               <table className="table align-middle mb-0">
                 <thead>
                   <tr className="text-muted small">
-                    <th scope="col">Rank</th>
-                    <th scope="col">Course Name</th>
-                    <th scope="col">Students</th>
-                    <th scope="col">Rating</th>
-                    <th scope="col">Earning</th>
+                    <th className="sticky-top bg-body">Rank</th>
+                    <th className="sticky-top bg-body">Course Name</th>
+                    <th className="sticky-top bg-body">Students</th>
+                    <th className="sticky-top bg-body">Rating</th>
+                    <th className="sticky-top bg-body">Earning</th>
                   </tr>
                 </thead>
+
                 <tbody className="animate__animated animate__fadeIn">
                   {courses.map((row, i) => (
-                    <tr key={i} className="animate__animated animate__fadeInUp animate__faster">
+                    <tr
+                      key={i}
+                      className="animate__animated animate__fadeInUp animate__faster"
+                    >
                       <td className="fw-semibold">{i + 1}</td>
                       <td>{row.course_title}</td>
                       <td>{row.student_count}</td>
                       <td>
                         <Stars value={Number(row.avg_rating)} />
                       </td>
-                      <td className="fw-semibold green">
-                        <span style={{color:"green"}}>${(Number(row.price) * row.student_count).toFixed(1)}</span>
+                      <td className="fw-semibold" style={{ color: "green" }}>
+                        ${(Number(row.price) * row.student_count).toFixed(1)}
                       </td>
                     </tr>
                   ))}
