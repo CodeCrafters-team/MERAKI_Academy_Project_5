@@ -1,3 +1,4 @@
+
 .theme-btn {
   width: 50px;
   height: 50px;
@@ -12,7 +13,7 @@
 }
 
 .theme-btn.light {
-  background-color: #f0c000; 
+  background-color: #f0c000;  
   color: #ffffff;
 }
 
@@ -24,4 +25,28 @@
 .theme-btn:hover {
   transform: scale(1.1);
   box-shadow: 0 0 10px rgba(0,0,0,0.3);
+}
+
+body.light {
+  --bg-color: #ffffff;
+  --text-color: #000000;
+  --primary-color: #f0c000;
+  --secondary-color: #77b0e4;
+}
+
+body.dark {
+  --bg-color: #121212;
+  --text-color: #ffffff;
+  --primary-color: #f0c000;
+  --secondary-color: #77b0e4;
+}
+
+body {
+  background-color: var(--bg-color);
+  color: var(--text-color);
+}
+
+header, nav, main, section, footer, div, button {
+  background-color: var(--bg-color);
+  color: var(--text-color);
 }

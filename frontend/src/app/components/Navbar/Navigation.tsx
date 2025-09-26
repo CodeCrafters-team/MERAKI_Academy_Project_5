@@ -24,6 +24,7 @@ export default function Navbar() {
   const [sheetOpen, setSheetOpen] = useState(false);
   const [closing, setClosing] = useState(false);
 
+
   useEffect(() => {
     // @ts-ignore
     void import("bootstrap/dist/js/bootstrap.bundle.min.js");
@@ -83,6 +84,7 @@ export default function Navbar() {
                 <li className="nav-item"><a className="nav-link" href="/about"><b>About</b></a></li>
                 <li className="nav-item"><a className="nav-link" href="/contact"><b>Contact</b></a></li>
               </ul>
+
               <div className="container d-none d-lg-block align-self-center mt-lg-0">
                 <div style={{ position: "relative", maxWidth: "350px", margin: "0 auto" }}>
                   <form className="d-flex" 
@@ -120,6 +122,7 @@ export default function Navbar() {
                   )}
                 </div>
               </div>
+
               {!token ? (
                 <button
                   className="btn btn-primary ms-lg-3 mt-3 mt-lg-0 rounded-3 border-0"
@@ -133,6 +136,7 @@ export default function Navbar() {
                   <i className="bi bi-envelope-fill" style={{ color: "#77B0E4", fontSize: "1.5rem", cursor: "pointer" }}
                     onClick={() => router.push("/chat")}
                   ></i>
+
                   <img
                     src={avatarUrl || "https://cdn-icons-png.flaticon.com/512/149/149071.png"}
                     alt="avatar"
@@ -146,6 +150,7 @@ export default function Navbar() {
           </div>
         </nav>
       </div>
+
       {sheetOpen && (
         <>
           <div
@@ -220,6 +225,7 @@ export default function Navbar() {
           </div>
         </>
       )}
+
     </header>
   );
 }

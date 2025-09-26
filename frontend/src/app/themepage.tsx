@@ -12,7 +12,7 @@ export default function Home() {
       <div className="container py-5">
         <ThemeToggle />
        
-        <button className="btn btn-primary">مثال على زر </button>
+        <button className="btn btn-primary"></button>
       </div>
     </div>
   );
