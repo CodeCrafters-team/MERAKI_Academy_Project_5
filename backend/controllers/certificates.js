@@ -97,15 +97,40 @@ const issueCertificate = (req, res) => {
 
 const getCertificate = (req, res) => {
   const { id } = req.params;
-  pool.query("SELECT * FROM certificates WHERE id=$1", [id])
+  pool
+    .query("SELECT * FROM certificates WHERE id=$1", [id])
     .then((result) => {
       if (!result.rows.length) {
-        return res.status(404).json({ success: false, message: "Certificate not found" });
+        return res
+          .status(404)
+          .json({ success: false, message: "Certificate not found" });
       }
       res.json({ success: true, data: result.rows[0] });
     })
-    .catch((err) => res.status(500).json({ success: false, message: "Server error", error: err.message }));
+    .catch((err) =>
+      res
+        .status(500)
+        .json({ success: false, message: "Server error", error: err.message })
+    );
 };
 
+const verifyCertificate = (req, res) => {
+  const { certNo } = req.params;
+  pool
+    .query("SELECT * FROM certificates WHERE certificate_no=$1", [certNo])
+    .then((result) => {
+      if (!result.rows.length) {
+        return res
+          .status(404)
+          .json({ success: false, message: "Certificate not found" });
+      }
+      res.json({ success: true, data: result.rows[0] });
+    })
+    .catch((err) =>
+      res
+        .status(500)
+        .json({ success: false, message: "Server error", error: err.message })
+    );
+};
 
-module.exports = { issueCertificate }; 
+module.exports = { issueCertificate, getCertificate, verifyCertificate };
