@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import axios from "axios";
 import CheckoutModal from "../../components/CheckoutModal/CheckoutModal";
 import "react-credit-cards-2/dist/es/styles-compiled.css";
+import LessonModal from "@/app/components/LessonModal/index";
 
 
 const THEME = { primary: "#77b0e4", secondary: "#f6a531" };
@@ -118,6 +119,46 @@ export default function CourseDetailsClient({
 
 const [checkoutOpen, setCheckoutOpen] = useState(false);
 const [loading, setLoading] = useState(false);
+
+const [openLesson, setOpenLesson] = useState<Lesson | null>(null);
+
+const handleOpenLesson = (lesson: Lesson) => setOpenLesson(lesson);
+const handleCloseLesson = () => setOpenLesson(null);
+
+const handleMarkCompleted = async (id: number) => {
+  if (!auth.id) { router.push("/login"); return; }
+
+  try {
+    await axios.post(
+      `${API_BASE}/progress/complete`,
+      { user_id: auth.id, lesson_id: id },
+      { headers: authHeader() }
+    );
+
+    setCompleted(prev => {
+      const next = new Set(prev);
+      next.add(id);
+      return next;
+    });
+
+    if (course?.id) {
+      const { data } = await axios.get(
+        `${API_BASE}/progress/course/${course.id}`,
+        { headers: authHeader() }
+      );
+      const d = data?.data || {};
+      setProgress({
+        totalLessons: Number(d.totalLessons ?? d.total_lessons ?? 0),
+        completedLessons: Number(d.completedLessons ?? d.completed_lessons ?? 0),
+        progressPercent: Number(d.progressPercent ?? d.progress_percent ?? 0),
+      });
+    }
+  } catch (err) {
+    console.error(err);
+  } finally {
+    setOpenLesson(null);
+  }
+};
 
 const handleEnrollFree = async () => {
   if (!auth.id || !course?.id) { 
@@ -453,7 +494,12 @@ const handleEnrollFree = async () => {
 
                                 {canWatch ? (
                                   l.video_url ? (
-                                    <a href={l.video_url}  className="btn btn-sm btn-primary border-0 animate__animated animate__pulse">Study</a>
+                                  <button
+                                   className="btn btn-sm btn-primary border-0 animate__animated animate__pulse"
+                                   onClick={() => handleOpenLesson(l)}
+                                    >
+                                    Study
+                                    </button>
                                   ) : (
                                    null
                                   )
@@ -585,6 +631,13 @@ const handleEnrollFree = async () => {
         apiBase="http://localhost:5000"
         paymentsPrefix="/payments"
       />
+      <LessonModal
+  open={!!openLesson}
+  lesson={openLesson}
+  onClose={handleCloseLesson}
+  onMarkCompleted={handleMarkCompleted}
+/>
+
    </div>
   );
 }
