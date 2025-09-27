@@ -109,9 +109,9 @@ export default function UserDialog({ onClose }: UserDialogProps) {
         <div className="profile-photo-section">
           <div className="profile-photo-wrapper">
             <img
-              src={user.avatarUrl || "/default-avatar.png"}
+              src={user.avatarUrl || "https://thumbs.dreamstime.com/b/icono-de-perfil-avatar-predeterminado-imagen-vectorial-usuario-medios-sociales-209162840.jpg"}
               className="profile-photo"
-              alt="Avatar"
+              alt=""
               onClick={() => setPreviewOpen(true)}
             />
             <input
@@ -124,13 +124,13 @@ export default function UserDialog({ onClose }: UserDialogProps) {
             <h2
               style={{
                 fontSize: "36px",
-                marginLeft: "100px",
+                marginLeft: "150px",
                 textAlign: "center",
-                width: "200px",
-                marginTop: "20px",
+               
+                marginTop: "60",  
               }}
             >
-              {user.firstName} {user.lastName}
+              {user.firstName }{user.lastName}
             </h2>
             <label htmlFor="file-upload" className="upload-label">
               Choose Photo
@@ -154,7 +154,7 @@ export default function UserDialog({ onClose }: UserDialogProps) {
               />
             </div>
             <div className="form-group">
-              <label htmlFor="lastName">Last Name</label>
+              <label htmlFor="lastName" style={{marginRight:"10px"}}>Last Name</label>
               <input
                 id="lastName"
                 className="form-input"
@@ -176,6 +176,16 @@ export default function UserDialog({ onClose }: UserDialogProps) {
                 onChange={(e) =>
                   setUser({ ...user, age: Number(e.target.value) })
                 }
+              />
+            </div>
+            <div className="form-group">
+              <label htmlFor="phoneNumber">phoneNumber</label>
+              <input
+                id="phoneNumber"
+                type="text"
+                className="form-input"
+                placeholder="phoneNumber"
+                
               />
             </div>
             <div className="form-group">
