@@ -125,6 +125,20 @@ const [openLesson, setOpenLesson] = useState<Lesson | null>(null);
 const handleOpenLesson = (lesson: Lesson) => setOpenLesson(lesson);
 const handleCloseLesson = () => setOpenLesson(null);
 const [issuing, setIssuing] = useState(false);
+const [cert, setCert] = useState<any>(null);
+
+useEffect(() => {
+  if (!auth.id || !course?.id) return;
+
+  axios
+    .get(`${API_BASE}/certificates/user/${auth.id}`, { headers: authHeader() })
+    .then((res) => {
+      const list = res.data?.data || [];
+      const found = list.find((c: any) => Number(c.course_id) === Number(course.id));
+      setCert(found || null);
+    })
+    .catch(() => setCert(null));
+}, [auth.id, course?.id]);
 
 const handleIssueCertificate = async () => {
   if (!auth.id || !course?.id) {
@@ -138,12 +152,17 @@ const handleIssueCertificate = async () => {
       { user_id: auth.id, course_id: course.id },
       { headers: authHeader() }
     );
-    const pdfUrl = data?.data?.pdf_url;
-  console.log(data)
-    if (pdfUrl) {
-      window.open(pdfUrl, "_blank");
+
+    const c = data?.data; 
+    if (c?.certificate_no) {
+      setCert(c); 
+      router.push(`/certificates/${c.certificate_no}`);
     } else {
-      alert("Certificate already exists");
+      if (cert?.certificate_no) {
+        router.push(`/certificates/${cert.certificate_no}`);
+      } else {
+        alert(data?.message || "Certificate already exists");
+      }
     }
   } catch (e:any) {
     alert(e?.response?.data?.message || "Failed to issue certificate");
@@ -410,14 +429,23 @@ const handleEnrollFree = async () => {
                                </small>
 
                                {progress.progressPercent >= 100 && (
-                               <button
-                              className="btn btn-success border-0 animate__animated animate__pulse"
-                             disabled={issuing}
-                              onClick={handleIssueCertificate}
-                                  >
-                               {issuing ? "Issuing..." : "Get Certificate"}
-                              </button>
-                               )}
+                               cert?.certificate_no ? (
+                              <button
+                              className="btn btn-primary border-0"
+                              onClick={() => router.push(`/certificates/${cert.certificate_no}`)}
+                                >
+                              Show Certificate
+                            </button>
+                            ) : (
+                           <button
+                            className="btn btn-success border-0 animate__animated animate__pulse"
+                            disabled={issuing}
+                            onClick={handleIssueCertificate}
+                              >
+                           {issuing ? "Issuing..." : "Get Certificate"}
+                             </button>
+                            )
+                            )}
                             </div>
                       )   : (
                 <>
