@@ -40,3 +40,15 @@ CREATE TABLE  course_progress (
   is_completed BOOLEAN NOT NULL DEFAULT FALSE,
   UNIQUE (user_id, lesson_id)
 );
+
+CREATE TABLE certificates (
+  id              SERIAL PRIMARY KEY,
+  user_id         BIGINT NOT NULL,
+  course_id       BIGINT NOT NULL,
+  certificate_no  VARCHAR(50) NOT NULL UNIQUE,
+  issued_at       TIMESTAMP NOT NULL DEFAULT NOW(),
+  pdf_url         TEXT NOT NULL,
+  user_full_name  TEXT NOT NULL,
+  course_title    TEXT NOT NULL,
+  CONSTRAINT uq_user_course UNIQUE (user_id, course_id)
+);
