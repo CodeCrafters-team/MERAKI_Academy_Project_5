@@ -229,7 +229,7 @@ const html = `
                       .then(() =>
                         page.pdf({
                           path: filePath,
-                          format: "A4",
+                          format: "A5",
                           printBackground: true,
                         })
                       )
@@ -305,5 +305,26 @@ const getUserCertificates = (req, res) => {
     .catch((err) => res.status(500).json({ success: false, message: "Server error", error: err.message }));
 };
 
+const getCertificateFile = (req, res) => {
+  const { certNo } = req.params;
+  const filePath = path.resolve(__dirname, "..", "uploads", "certificates", `${certNo}.pdf`);
 
-module.exports = { issueCertificate, getCertificate, verifyCertificate , getUserCertificates };
+  if (!fs.existsSync(filePath)) {
+    return res.status(404).json({ success: false, message: "PDF not found" });
+  }
+
+  res.setHeader("Content-Type", "application/pdf");
+  res.setHeader("Content-Disposition", `inline; filename="${certNo}.pdf"`);
+
+  const stream = fs.createReadStream(filePath);
+  stream.pipe(res);
+  stream.on("error", (err) => {
+    console.error("Stream error:", err);
+    if (!res.headersSent) {
+      res.status(500).json({ success: false, message: "Could not read file" });
+    }
+  });
+};
+
+
+module.exports = { issueCertificate, getCertificate, verifyCertificate , getUserCertificates ,getCertificateFile};
