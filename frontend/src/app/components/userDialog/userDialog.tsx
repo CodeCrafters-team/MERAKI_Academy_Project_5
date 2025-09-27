@@ -122,13 +122,7 @@ export default function UserDialog({ onClose }: UserDialogProps) {
               style={{ display: "none" }}
             />
             <h2
-              style={{
-                fontSize: "36px",
-                marginLeft: "150px",
-                textAlign: "center",
-               
-                marginTop: "60",  
-              }}
+             
             >
               {user.firstName }{user.lastName}
             </h2>
@@ -154,7 +148,7 @@ export default function UserDialog({ onClose }: UserDialogProps) {
               />
             </div>
             <div className="form-group">
-              <label htmlFor="lastName" style={{marginRight:"10px"}}>Last Name</label>
+              <label htmlFor="lastName" >Last Name</label>
               <input
                 id="lastName"
                 className="form-input"
