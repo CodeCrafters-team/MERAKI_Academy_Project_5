@@ -1,4 +1,4 @@
-import { pool } from "../models/db";
+const { pool } = require("../models/db");
  const getAllQuizzes = async (req, res) => {
   try {
     const result = await pool.query("SELECT * FROM quizzes");

@@ -1,11 +1,11 @@
-import express from "express"
+const express=require("express")
 
-import {getUserResults, getUserResultById} from "../controllers/userResult";
+const{getUserResults, getUserResultById} =require("../controllers/userResult")
 
 
 const userResultRouter=express.Router()
 
-userResultRouter.get("/:userId",getUserResults)
+userResultRouter.get("/user/:userId",getUserResults)
 userResultRouter.get("/detail/:resultId",getUserResultById)
 
 

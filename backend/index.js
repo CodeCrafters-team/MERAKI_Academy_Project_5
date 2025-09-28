@@ -62,7 +62,7 @@ app.use("/contact", contactRouter);
 app.use("/payments", paymentsRouter); 
 app.use("/quizzes", quizzRouter); 
 
-
+app.use("/results",userResultRouter)
 
 app.use((req, res) => res.status(404).json("NO content at this path"));
 

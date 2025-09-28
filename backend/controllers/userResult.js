@@ -1,4 +1,4 @@
-import { pool } from "../models/db";
+const { pool } = require("../models/db");
 
 
 

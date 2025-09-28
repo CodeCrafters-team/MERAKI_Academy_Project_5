@@ -1,13 +1,13 @@
-import express from "express"
+const express=require("express")
 
-import { getAllQuizzes,getQuizById,submitQuiz } from "../controllers/quizzes";
+const { getAllQuizzes,getQuizById,submitQuiz }=require("../controllers/quizzes")
 
 
 const quizzRouter=express.Router()
 
 quizzRouter.get("/quizzes",getAllQuizzes)
 quizzRouter.get("/:id",getQuizById)
-quizzRouter.get("/:id/submit",submitQuiz)
+quizzRouter.post("/:id/submit",submitQuiz)
 
 
 
