@@ -7,9 +7,11 @@ interface AuthState {
 }
 
 const initialState: AuthState = {
-  token: null,
-  userId: null,
-  avatarUrl: null,
+  token: typeof window !== "undefined" ? localStorage.getItem("token") : null,
+  userId: typeof window !== "undefined" && localStorage.getItem("userId")
+    ? Number(localStorage.getItem("userId"))
+    : null,
+  avatarUrl: typeof window !== "undefined" ? localStorage.getItem("avatar") : null,
 };
 
 const authSlice = createSlice({
@@ -29,8 +31,10 @@ const authSlice = createSlice({
       localStorage.setItem("avatar", action.payload.avatarUrl);
     },
     loginSuccess: (state, action) => {
+  console.log("LOGIN PAYLOAD:", action.payload);
+
   localStorage.setItem("token", action.payload.token);
-  localStorage.setItem("userId", String(action.payload.userId)); 
+  localStorage.setItem("userId", String(action.payload.userId));
   localStorage.setItem("avatar", action.payload.avatarUrl);
 
   state.token = action.payload.token;

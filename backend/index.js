@@ -63,7 +63,6 @@ app.use("/contact", contactRouter);
 
 
 
-
 app.use((req, res) => res.status(404).json("NO content at this path"));
 
 io.on("connection", (socket) => {

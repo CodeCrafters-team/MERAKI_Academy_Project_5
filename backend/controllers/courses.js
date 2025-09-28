@@ -198,6 +198,44 @@ const getCourseById = async (req, res) => {
     });
   }
 };
+
+const updateCourse = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { title, description, price } = req.body;
+
+    const result = await pool.query(
+      `UPDATE courses
+       SET title = $1,
+           description = $2,
+           price = $3,
+           updated_at = NOW()
+       WHERE id = $4
+       RETURNING *`,
+      [title, description, price, id]
+    );
+
+    if (result.rows.length === 0) {
+      return res.status(404).json({
+        success: false,
+        message: "Course Not Found",
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      message: "Course Updated Successfully",
+      data: result.rows[0],
+    });
+  } catch (err) {
+    res.status(500).json({
+      success: false,
+      message: "Server Error",
+      error: err.message,
+    });
+  }
+};
+
     
 
-module.exports={getAllCourses,getCourseById,createCourse,deleteCourse , getCoursesByCategoryId}
+module.exports={getAllCourses,getCourseById,createCourse,deleteCourse , getCoursesByCategoryId , updateCourse}
