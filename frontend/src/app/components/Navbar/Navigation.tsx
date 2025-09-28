@@ -57,7 +57,7 @@ export default function Navbar() {
     setTimeout(() => {
       setSheetOpen(false);
       setClosing(false);
-    }, 400); // مدة الأنيمشن
+    }, 400); 
   };
 
   return (
