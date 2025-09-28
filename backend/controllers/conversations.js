@@ -94,6 +94,7 @@ const listMyConversations = (req, res) => {
       mc.other_user_id,
       u.first_name as other_user_first_name,
       u.last_name as other_user_last_name,
+      u.avatar_url as other_user_avatar_url,
       COALESCE(u2.unread_count, 0) AS unread_count,
       lm.id   AS last_message_id,
       lm.text AS last_message_text,
