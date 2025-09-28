@@ -2,25 +2,25 @@ const { pool } = require("../models/db");
 
 const getAllCourses = async (req, res) => {
   try {
-   const result = await pool.query(`
-  SELECT 
-    courses.id,
-    courses.title,
-    courses.description,
-    courses.cover_url,
-    courses.price,
-    courses.is_published,
-    courses.created_at,
-    courses.updated_at,
-    users.id ,
-    users.avatar_url,
-    users.first_name ,
-    users.last_name  ,
-    users.email      
-  FROM courses
-  JOIN users ON courses.created_by = users.id
-  ORDER BY courses.id ASC
-`);
+    const result = await pool.query(`
+      SELECT 
+        courses.id,
+        courses.title,
+        courses.description,
+        courses.cover_url,
+        courses.price,
+        courses.is_published,
+        courses.created_at,
+        courses.updated_at,
+        users.id,
+        users.avatar_url,
+        users.first_name,
+        users.last_name,
+        users.email
+      FROM courses
+      JOIN users ON courses.created_by = users.id
+      ORDER BY courses.id ASC
+    `);
 
     if (!result.rows) {
       res.status(404).json({
@@ -34,20 +34,17 @@ const getAllCourses = async (req, res) => {
       data: result.rows,
     });
   } catch (err) {
-    res
-      .status(500)
-      .json({
-        success: false,
-        message: "Server Error",
-        error:err.message ,
-      });
+    res.status(500).json({
+      success: false,
+      message: "Server Error",
+      error: err.message,
+    });
   }
 };
 
 const getCourseById = async (req, res) => {
   try {
     const { id } = req.params;
-
     const sql = `
       SELECT 
         c.id,
@@ -60,26 +57,23 @@ const getCourseById = async (req, res) => {
         c.created_by,
         c.created_at,
         c.updated_at,
-        u.first_name ,
-        u.last_name  ,
-        u.email      ,
-        u.avatar_url ,
+        u.first_name,
+        u.last_name,
+        u.email,
+        u.avatar_url,
         u.bio
       FROM courses c
       LEFT JOIN users u ON u.id = c.created_by
       WHERE c.id = $1
       LIMIT 1
     `;
-
     const result = await pool.query(sql, [id]);
-
     if (result.rows.length === 0) {
       return res.status(404).json({
         success: false,
         message: "Course Not Found",
       });
     }
-
     res.status(200).json({
       success: true,
       message: "Fetched Course Successfully",
@@ -94,68 +88,63 @@ const getCourseById = async (req, res) => {
   }
 };
 
+const createCourse = async (req, res) => {
+  try {
+    const { category_id, title, description, cover_url, price, is_published, created_by } = req.body;
+    const result = await pool.query(
+      `INSERT INTO courses (category_id, title, description, cover_url, price, is_published, created_by)
+       VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *`,
+      [
+        category_id || null,
+        title,
+        description || null,
+        cover_url || null,
+        price || 0,
+        is_published || false,
+        created_by || null,
+      ]
+    );
+    res.status(201).json({
+      success: true,
+      message: "Course Created Successfully",
+      data: result.rows[0],
+    });
+  } catch (err) {
+    res.status(500).json({
+      success: false,
+      message: "Server Error",
+      error: err.message,
+    });
+  }
+};
 
-  const createCourse = async (req, res) => {
-    try {
-      const { category_id, title, description, cover_url, price, is_published, created_by } = req.body;
-  
-      const result = await pool.query(
-        `INSERT INTO courses (category_id, title, description, cover_url, price, is_published, created_by)
-         VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *`,
-        [
-          category_id || null,
-          title,
-          description || null,
-          cover_url || null,
-          price || 0,
-          is_published || false,
-          created_by || null,
-        ]
-      );
-  
-      res.status(201).json({
-        success: true,
-        message: "Course Created Successfully",
-        data: result.rows[0],
-      });
-    } catch (err) {
-      res.status(500).json({
+const deleteCourse = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const result = await pool.query("DELETE FROM courses WHERE id = $1 RETURNING *", [id]);
+    if (result.rows.length === 0) {
+      return res.status(404).json({
         success: false,
-        message: "Server Error",
-        error: err.message,
+        message: "Course Not Found",
       });
     }
-  };  
+    res.status(200).json({
+      success: true,
+      message: "Course Deleted Successfully",
+      data: result.rows[0],
+    });
+  } catch (err) {
+    res.status(500).json({
+      success: false,
+      message: "Server Error",
+      error: err.message,
+    });
+  }
+};
 
-  const deleteCourse = async (req, res) => {
-    try {
-      const { id } = req.params;
-      const result = await pool.query("DELETE FROM courses WHERE id = $1 RETURNING *", [id]);
-  
-      if (result.rows.length === 0) {
-        return res.status(404).json({
-          success: false,
-          message: "Course Not Found",
-        });
-      }
-  
-      res.status(200).json({
-        success: true,
-        message: "Course Deleted Successfully",
-        data: result.rows[0], 
-      });
-    } catch (err) {
-      res.status(500).json({
-        success: false,
-        message: "Server Error",
-        error:   err.message,
-      });
-    }
-  };
-  const getCoursesByCategoryId = async (req, res) => {
+const getCoursesByCategoryId = async (req, res) => {
   try {
     const { category_id } = req.params;
-
     const result = await pool.query(
       `SELECT 
         courses.id,
@@ -177,14 +166,12 @@ const getCourseById = async (req, res) => {
       ORDER BY courses.id ASC`,
       [category_id]
     );
-
     if (result.rows.length === 0) {
       return res.status(404).json({
         success: false,
         message: "No Courses Found For This Category",
       });
     }
-
     res.status(200).json({
       success: true,
       message: "Fetched Courses By Category Successfully",
@@ -238,4 +225,90 @@ const updateCourse = async (req, res) => {
 
     
 
-module.exports={getAllCourses,getCourseById,createCourse,deleteCourse , getCoursesByCategoryId , updateCourse}
+
+
+const getTrendingCourses = async (req, res) => {
+  try {
+    const result = await pool.query(`
+      SELECT * FROM courses
+      WHERE is_published = true
+      ORDER BY created_at DESC
+      LIMIT 8
+    `);
+    res.status(200).json({ success: true, data: result.rows });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+};
+
+const getMostSellingCourses = async (req, res) => {
+  try {
+    const result = await pool.query(`
+      SELECT * FROM courses
+      WHERE is_published = true
+      ORDER BY id DESC
+      LIMIT 8
+    `);
+    res.status(200).json({ success: true, data: result.rows });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+};
+
+const getCoursesByInstructor = async (req, res) => {
+  try {
+    const { id } = req.params; 
+
+    const result = await pool.query(`
+      SELECT 
+        courses.id,
+        courses.title,
+        courses.description,
+        courses.cover_url,
+        courses.price,
+        courses.is_published,
+        courses.created_at,
+        courses.updated_at,
+        users.id AS instructor_id,
+        users.avatar_url AS instructor_avatar,
+        users.first_name AS instructor_first_name,
+        users.last_name AS instructor_last_name,
+        users.email AS instructor_email
+      FROM courses
+      JOIN users ON courses.created_by = users.id
+      WHERE courses.created_by = $1
+      ORDER BY courses.id ASC
+    `, [id]);
+
+    if (result.rows.length === 0) {
+      return res.status(404).json({
+        success: false,
+        message: "No Courses Found for this Instructor",
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      message: "Fetched Instructor Courses Successfully",
+      data: result.rows,
+    });
+  } catch (err) {
+    res.status(500).json({
+      success: false,
+      message: "Server Error",
+      error: err.message,
+    });
+  }
+};
+
+module.exports = {
+  getAllCourses,
+  getCourseById,
+  createCourse,
+  deleteCourse,
+  updateCourse,
+  getCoursesByCategoryId,
+  getTrendingCourses,
+  getMostSellingCourses,
+  getCoursesByInstructor
+};
