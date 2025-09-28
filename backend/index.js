@@ -34,6 +34,10 @@ const reviewRouter = require("./routes/reviews")
 const progressRouter = require("./routes/progress")
 const contactRouter = require("./routes/contacts"); 
 const paymentsRouter = require("./routes/payments"); 
+
+const quizzRouter=require("./routes/quizzes")
+const userResultRouter=require("./routes/userResult")
+
 const certificatesRouter = require("./routes/certificates")
 
 
@@ -60,14 +64,14 @@ app.use("/reviews", reviewRouter)
 app.use("/progress", progressRouter)
 app.use("/contact", contactRouter); 
 app.use("/payments", paymentsRouter); 
+app.use("/quizzes", quizzRouter); 
 app.use("/certificates", certificatesRouter); 
 
-
-
-
-
+app.use("/results",userResultRouter)
 
 app.use((req, res) => res.status(404).json("NO content at this path"));
+
+
 
 io.on("connection", (socket) => {
   console.log("User connected:", socket.id);

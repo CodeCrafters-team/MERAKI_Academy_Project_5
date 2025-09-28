@@ -58,9 +58,9 @@ export default function Navbar() {
     setTimeout(() => {
       setSheetOpen(false);
       setClosing(false);
-    }, 400); // مدة الأنيمشن
+    }, 400);  
   };
-
+  
   return (
     <header className="fixed-top">
       <div className={scrolled ? "container my-2 animate__animated animate__fadeInDown" : ""}>
