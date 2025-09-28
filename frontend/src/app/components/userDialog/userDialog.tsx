@@ -34,7 +34,7 @@ export default function UserDialog({ onClose }: UserDialogProps) {
   useEffect(() => {
     document.body.classList.add('modal-open');
     const backdrop = document.createElement('div');
-    backdrop.className = 'modal-backdrop fade show';
+    backdrop.className = 'modal fade show';
     document.body.appendChild(backdrop);
 
     const onEsc = (e: KeyboardEvent) => { if (e.key === 'Escape') onClose(); };
