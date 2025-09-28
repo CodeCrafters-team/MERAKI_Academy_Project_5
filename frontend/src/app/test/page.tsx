@@ -1,12 +1,25 @@
-import React from 'react'
-import CourseSliders from '../components/CourseSlider/courseSlider'
+"use client";
 
-function page() {
+import { useState } from "react";
+import  UserDialog from "../components/userDialog/userDialog"
+
+export default function Page() {
+  const [showProfileModal, setShowProfileModal] = useState(false);
+
   return (
-    <div>
-      <CourseSliders/>
-    </div>
-  )
-}
 
-export default page
+    <div className="container py-5">
+      <button
+        className="btn btn-primary"
+        onClick={() => setShowProfileModal(true)}
+      >
+        Open Profile Modal
+      </button>
+
+      {showProfileModal && (
+        <UserDialog onClose={() => setShowProfileModal(false)} />
+      )}
+
+    </div>
+  );
+}

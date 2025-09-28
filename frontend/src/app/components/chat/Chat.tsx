@@ -104,9 +104,9 @@ export default function Chat() {
     try {
       const conv = await startConversation(toUserId);
       if (conv?._id) {
+        await refreshConversations();
         selectConversation(conv._id);
         setMobileView(true);
-        refreshConversations();
       }
     } catch {
       alert("Failed to start conversation");
@@ -118,6 +118,11 @@ export default function Chat() {
     [conversations, activeId]
   );
   const otherUser = activeConv?.other || null;
+  useEffect(() => {
+    if (otherUser) {
+      console.log('otherUser:', otherUser);
+    }
+  }, [otherUser]);
 
   return (
     <div className="container-fluid mb-5" style={{ maxWidth: 1200 }}>

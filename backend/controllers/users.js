@@ -382,6 +382,52 @@ const resetPassword = (req, res) => {
         .json({ success: false, message: "Server error", error: err.message });
     });
 };
+const updateUser = (req, res) => {
+  const { id } = req.params;
+  const { firstName, lastName, age, email, avatarUrl } = req.body;
+
+  const sql = `
+    UPDATE users
+    SET first_name = $1,
+        last_name = $2,
+        age = $3,
+        email = $4,
+        avatar_url = $5
+    WHERE id = $6
+    RETURNING id, first_name AS "firstName", last_name AS "lastName", age, email, avatar_url AS "avatarUrl"
+  `;
+
+  pool
+    .query(sql, [firstName, lastName, age, email, avatarUrl, id])
+    .then(({ rows }) => {
+      if (rows.length === 0) {
+        return res.status(404).json({ success: false, message: "User not found" });
+      }
+      res.status(200).json(rows[0]);
+    })
+    .catch((err) => {
+      console.error(err);
+      res.status(500).json({ success: false, message: "Server error", error: err.message });
+    });
+};
+const deleteUser = (req, res) => {
+  const { id } = req.params;
+
+  const sql = `DELETE FROM users WHERE id = $1 RETURNING id`;
+
+  pool
+    .query(sql, [id])
+    .then(({ rows }) => {
+      if (rows.length === 0) {
+        return res.status(404).json({ success: false, message: "User not found" });
+      }
+      res.status(200).json({ success: true, message: "User deleted successfully" });
+    })
+    .catch((err) => {
+      console.error(err);
+      res.status(500).json({ success: false, message: "Server error", error: err.message });
+    });
+};
 
 module.exports = {
   register,
@@ -391,4 +437,7 @@ module.exports = {
   forgotPassword,
   verifyResetCode,
   resetPassword,
+  updateUser,
+  deleteUser
+
 };

@@ -186,6 +186,47 @@ const getCoursesByCategoryId = async (req, res) => {
   }
 };
 
+const updateCourse = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { title, description, price } = req.body;
+
+    const result = await pool.query(
+      `UPDATE courses
+       SET title = $1,
+           description = $2,
+           price = $3,
+           updated_at = NOW()
+       WHERE id = $4
+       RETURNING *`,
+      [title, description, price, id]
+    );
+
+    if (result.rows.length === 0) {
+      return res.status(404).json({
+        success: false,
+        message: "Course Not Found",
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      message: "Course Updated Successfully",
+      data: result.rows[0],
+    });
+  } catch (err) {
+    res.status(500).json({
+      success: false,
+      message: "Server Error",
+      error: err.message,
+    });
+  }
+};
+
+    
+
+
+
 const getTrendingCourses = async (req, res) => {
   try {
     const result = await pool.query(`
@@ -214,12 +255,60 @@ const getMostSellingCourses = async (req, res) => {
   }
 };
 
+const getCoursesByInstructor = async (req, res) => {
+  try {
+    const { id } = req.params; 
+
+    const result = await pool.query(`
+      SELECT 
+        courses.id,
+        courses.title,
+        courses.description,
+        courses.cover_url,
+        courses.price,
+        courses.is_published,
+        courses.created_at,
+        courses.updated_at,
+        users.id AS instructor_id,
+        users.avatar_url AS instructor_avatar,
+        users.first_name AS instructor_first_name,
+        users.last_name AS instructor_last_name,
+        users.email AS instructor_email
+      FROM courses
+      JOIN users ON courses.created_by = users.id
+      WHERE courses.created_by = $1
+      ORDER BY courses.id ASC
+    `, [id]);
+
+    if (result.rows.length === 0) {
+      return res.status(404).json({
+        success: false,
+        message: "No Courses Found for this Instructor",
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      message: "Fetched Instructor Courses Successfully",
+      data: result.rows,
+    });
+  } catch (err) {
+    res.status(500).json({
+      success: false,
+      message: "Server Error",
+      error: err.message,
+    });
+  }
+};
+
 module.exports = {
   getAllCourses,
   getCourseById,
   createCourse,
   deleteCourse,
+  updateCourse,
   getCoursesByCategoryId,
   getTrendingCourses,
   getMostSellingCourses,
+  getCoursesByInstructor
 };

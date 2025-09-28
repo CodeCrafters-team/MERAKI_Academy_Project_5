@@ -20,32 +20,39 @@ const dispatch = useDispatch();
   const router = useRouter();
 
   const handleLogin = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
 
-    axios
-      .post(`http://localhost:5000/users/login`, { email, password })
-      .then((result) => {
-        setLoading(true);
-        if (result.data) {
-          const { token, avatarUrl } = result.data; 
-  dispatch(loginSuccess({ token, avatarUrl }));
-          console.log(result.data);
-          setMessage("Login successful");
-          setStatus(true);
-        setTimeout(() => router.push('/'), 800);
+  e.preventDefault();
 
-        } else {
-          throw new Error();
-        }
-      })
-      .catch((error) => {
-        setStatus(false);
-        if (error.response && error.response.data) {
-          return setMessage(error.response.data.message);
-        }
-        setMessage("Error happened while Login, please try again");
-      }).finally(() => setLoading(false));
-  };
+  axios.post(`http://localhost:5000/users/login`, { email, password })
+    .then(({ data }) => {
+      setLoading(true);
+
+      if (!data) throw new Error();
+
+      const { token, user } = data; 
+      console.log(user)
+
+      dispatch(loginSuccess({
+        token,
+        userId: user.id,
+        firstName: user.firstName ?? null,
+        lastName:  user.lastName  ?? null,
+        age:       user.age ,
+        email:     user.email ?? null,
+        avatarUrl :user.avatarUrl, 
+      }));
+
+      setMessage("Login successful");
+      setStatus(true);
+      setTimeout(() => router.push('/'), 800);
+    })
+    .catch((error) => {
+      setStatus(false);
+      if (error.response?.data) return setMessage(error.response.data.message);
+      setMessage("Error happened while Login, please try again");
+    })
+    .finally(() => setLoading(false));
+  }
 
   
 
