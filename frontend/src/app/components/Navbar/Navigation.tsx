@@ -18,6 +18,7 @@ export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [search, setSearch] = useState("");
   const [results, setResults] = useState<typeof courses>([]);
+
   const router = useRouter();
   const dispatch = useDispatch();
   const { token, avatarUrl } = useSelector((state: RootState) => state.auth);
@@ -131,25 +132,28 @@ export default function Navbar() {
                   Login
                 </button>
               ) : (
+
                 <div className="d-flex align-items-center gap-3 ms-lg-3">
                   <i className="bi bi-bell-fill fs-5" style={{ cursor: "pointer", color: "#77B0E4" }}></i>
                   <i className="bi bi-envelope-fill" style={{ color: "#77B0E4", fontSize: "1.5rem", cursor: "pointer" }}
                     onClick={() => router.push("/chat")}
                   ></i>
 
-                  <img
-                    src={avatarUrl || "https://cdn-icons-png.flaticon.com/512/149/149071.png"}
-                    alt="avatar"
-                    className="rounded-circle"
-                    style={{ width: "40px", height: "40px", cursor: "pointer" }}
-                    onClick={() => setSheetOpen(true)}
-                  />
+<img 
+  src={avatar || "https://cdn-icons-png.flaticon.com/512/149/149071.png"}
+  alt="avatar"
+  style={{ width: "35px", height: "35px", borderRadius: "50%" }}
+  onClick={() => setSheetOpen(true)}
+/>
+
                 </div>
+                )
               )}
             </div>
           </div>
         </nav>
       </div>
+
 
       {sheetOpen && (
         <>
@@ -225,6 +229,7 @@ export default function Navbar() {
           </div>
         </>
       )}
+
 
     </header>
   );

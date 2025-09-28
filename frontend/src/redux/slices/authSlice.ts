@@ -12,6 +12,7 @@ interface AuthState {
 
 const initialState: AuthState = {
   token: typeof window !== "undefined" ? localStorage.getItem("token") : null,
+
   userId: typeof window !== "undefined" && localStorage.getItem("userId") ? Number(localStorage.getItem("userId")) : null,
   firstName: typeof window !== "undefined" ? localStorage.getItem("firstName") : null,
   lastName: typeof window !== "undefined" ? localStorage.getItem("lastName") : null,
@@ -64,7 +65,7 @@ const authSlice = createSlice({
       state.lastName = action.payload.lastName;
       state.age = action.payload.age;
       state.email = action.payload.email;
-      state.avatarUrl = action.payload.avatarUrl  || "https://cdn-icons-png.flaticon.com/512/149/149071.png";
+      state.avatarUrl = action.payload.avatarUrl ;
 
       localStorage.setItem("token", action.payload.token);
       localStorage.setItem("userId", String(action.payload.userId));
