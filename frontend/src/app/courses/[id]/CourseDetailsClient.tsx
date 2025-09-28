@@ -124,6 +124,52 @@ const [openLesson, setOpenLesson] = useState<Lesson | null>(null);
 
 const handleOpenLesson = (lesson: Lesson) => setOpenLesson(lesson);
 const handleCloseLesson = () => setOpenLesson(null);
+const [issuing, setIssuing] = useState(false);
+const [cert, setCert] = useState<any>(null);
+
+useEffect(() => {
+  if (!auth.id || !course?.id) return;
+
+  axios
+    .get(`${API_BASE}/certificates/user/${auth.id}`, { headers: authHeader() })
+    .then((res) => {
+      const list = res.data?.data || [];
+      const found = list.find((c: any) => Number(c.course_id) === Number(course.id));
+      setCert(found || null);
+    })
+    .catch(() => setCert(null));
+}, [auth.id, course?.id]);
+
+const handleIssueCertificate = async () => {
+  if (!auth.id || !course?.id) {
+    router.push("/login");
+    return;
+  }
+  try {
+    setIssuing(true);
+    const { data } = await axios.post(
+      `${API_BASE}/certificates/issue`,
+      { user_id: auth.id, course_id: course.id },
+      { headers: authHeader() }
+    );
+
+    const c = data?.data; 
+    if (c?.certificate_no) {
+      setCert(c); 
+      router.push(`/certificates/${c.certificate_no}`);
+    } else {
+      if (cert?.certificate_no) {
+        router.push(`/certificates/${cert.certificate_no}`);
+      } else {
+        alert(data?.message || "Certificate already exists");
+      }
+    }
+  } catch (e:any) {
+    alert(e?.response?.data?.message || "Failed to issue certificate");
+  } finally {
+    setIssuing(false);
+  }
+};
 
 const handleMarkCompleted = async (id: number) => {
   if (!auth.id) { router.push("/login"); return; }
@@ -372,15 +418,36 @@ const handleEnrollFree = async () => {
               {checkingEnroll ? (
                 <button className="btn btn-light" disabled>Checking...</button>
               ) : isEnrolled ? (
-                <div className="d-flex flex-column gap-2">
-                  <div className="d-flex align-items-center justify-content-between">
-                    <strong>Progress</strong>
-                    <span>{progress.progressPercent}%</span>
-                  </div>
-                  <ProgressBar percent={progress.progressPercent} />
-                  <small className="text-muted">{progress.completedLessons}/{progress.totalLessons} lessons</small>
-                </div>
-              ) : (
+                     <div className="d-flex flex-column gap-2">
+                       <div className="d-flex align-items-center justify-content-between">
+                           <strong>Progress</strong>
+                           <span>{progress.progressPercent}%</span>
+                                </div>
+                             <ProgressBar percent={progress.progressPercent} />
+                              <small className="text-muted">
+                            {progress.completedLessons}/{progress.totalLessons} lessons
+                               </small>
+
+                               {progress.progressPercent >= 100 && (
+                               cert?.certificate_no ? (
+                              <button
+                              className="btn btn-primary border-0"
+                              onClick={() => router.push(`/certificates/${cert.certificate_no}`)}
+                                >
+                              Show Certificate
+                            </button>
+                            ) : (
+                           <button
+                            className="btn btn-success border-0 animate__animated animate__pulse"
+                            disabled={issuing}
+                            onClick={handleIssueCertificate}
+                              >
+                           {issuing ? "Issuing..." : "Get Certificate"}
+                             </button>
+                            )
+                            )}
+                            </div>
+                      )   : (
                 <>
                   <h3 style={{ color: "green" }} className="fw-bold animate__animated animate__fadeInDown">{fmtMoney(course.price)}</h3>
                   <div className="d-grid gap-2">
