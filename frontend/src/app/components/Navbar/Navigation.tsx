@@ -49,6 +49,7 @@ export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [search, setSearch] = useState("");
   const [results, setResults] = useState<typeof courses>([]);
+
   const router = useRouter();
   const dispatch = useDispatch();
   const { token, avatarUrl } = useSelector((state: RootState) => state.auth);
@@ -86,14 +87,16 @@ export default function Navbar() {
   };
 
   const handleCloseSheet = () => {
+
     // setClosing(true);
     setSheetOpen(false);
     setClosing(false);
     // setTimeout(() => {
 
     // }, 400);
-  };
 
+  };
+  
   return (
     <header className="fixed-top">
       <div
@@ -260,6 +263,7 @@ export default function Navbar() {
                   Login
                 </button>
               ) : (
+
                 <div className="d-flex align-items-center gap-3 ms-lg-3">
                   <i
                     className="bi bi-bell-fill fs-5"
@@ -275,6 +279,7 @@ export default function Navbar() {
                     onClick={() => router.push("/chat")}
                   ></i>
 
+
                   <img
                     src={
                       avatarUrl ||
@@ -285,12 +290,23 @@ export default function Navbar() {
                     style={{ width: "40px", height: "40px", cursor: "pointer" }}
                     onClick={() => setSheetOpen(true)}
                   />
+
+<img 
+  src={avatar || "https://cdn-icons-png.flaticon.com/512/149/149071.png"}
+  alt="avatar"
+  style={{ width: "35px", height: "35px", borderRadius: "50%" }}
+  onClick={() => setSheetOpen(true)}
+/>
+
+
                 </div>
+                )
               )}
             </div>
           </div>
         </nav>
       </div>
+
 
       {sheetOpen && (
         <>
@@ -379,7 +395,10 @@ export default function Navbar() {
           
           <UserDialog onClose={() => setShowProfileModal(false)} />
 
+
       )}
+
+
     </header>
   );
 }

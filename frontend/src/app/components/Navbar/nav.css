@@ -1,7 +1,7 @@
 .tooltip {
   position: relative;
   display: inline-block;
-  border-bottom: 1px dotted black;
+  border-bottom: 1px dotted rgb(252, 249, 239);
   cursor: pointer;
 }
 

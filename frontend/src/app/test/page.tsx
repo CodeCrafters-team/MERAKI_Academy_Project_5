@@ -1,12 +1,13 @@
 "use client";
 
 import { useState } from "react";
-import UserDialog from "../components/userDialog/userDialog"; // عدّل المسار حسب مكان الملف
+import  UserDialog from "../components/userDialog/userDialog"
 
 export default function Page() {
   const [showProfileModal, setShowProfileModal] = useState(false);
 
   return (
+
     <div className="container py-5">
       <button
         className="btn btn-primary"
@@ -18,6 +19,7 @@ export default function Page() {
       {showProfileModal && (
         <UserDialog onClose={() => setShowProfileModal(false)} />
       )}
+
     </div>
   );
 }
