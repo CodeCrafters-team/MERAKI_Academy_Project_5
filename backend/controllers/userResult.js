@@ -6,7 +6,7 @@ import { pool } from "../models/db";
  const getUserResults = async (req, res) => {
   const { userId } = req.params;
 
-  /* ur = اختصارuser_quiz_results
+  /* note:  ur = اختصارuser_quiz_results
    q=اختصار quizzes*/
   try {
     const results = await pool.query(
@@ -24,7 +24,7 @@ import { pool } from "../models/db";
 
  const getUserResultById = async (req, res) => {
   const { resultId } = req.params;
- /* ua = اختصارuser_answers
+ /* note :  ua = اختصارuser_answers
    q=اختصار quizzes*/
   try {
     const result = await pool.query(
@@ -41,7 +41,7 @@ import { pool } from "../models/db";
       `SELECT ua.id, ua.question_id, ua.answer_id, a.answer_text, a.is_correct, q.question_text
        FROM user_answers ua
        JOIN answers a ON ua.answer_id = a.id
-       JOIN questions q ON ua.question_id = q.id
+       JOIN questions qs ON ua.question_id = qs.id
        WHERE ua.user_quiz_result_id = $1`,
       [resultId]
     );

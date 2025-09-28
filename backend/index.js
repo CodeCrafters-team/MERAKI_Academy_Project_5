@@ -35,7 +35,7 @@ const progressRouter = require("./routes/progress")
 const contactRouter = require("./routes/contacts"); 
 const paymentsRouter = require("./routes/payments"); 
 const quizzRouter=require("./routes/quizzes")
-
+const userResultRouter=require("./routes/userResult")
 
 
 
