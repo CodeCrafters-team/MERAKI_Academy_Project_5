@@ -140,6 +140,7 @@ export default function Navbar() {
                     style={{ width: "40px", height: "40px", cursor: "pointer" }}
                     onClick={() => setSheetOpen(true)}
                   />
+
                 </div>
               )}
             </div>
