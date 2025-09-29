@@ -164,7 +164,6 @@ const deleteLesson = async (req, res) => {
     }
   };
 
-const { pool } = require("../models/db");
 
 const updateLesson = async (req, res) => {
   try {
