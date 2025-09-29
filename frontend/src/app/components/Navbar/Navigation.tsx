@@ -291,16 +291,8 @@ export default function Navbar() {
                     onClick={() => setSheetOpen(true)}
                   />
 
-<img 
-  src={avatar || "https://cdn-icons-png.flaticon.com/512/149/149071.png"}
-  alt="avatar"
-  style={{ width: "35px", height: "35px", borderRadius: "50%" }}
-  onClick={() => setSheetOpen(true)}
-/>
-
 
                 </div>
-                )
               )}
             </div>
           </div>
