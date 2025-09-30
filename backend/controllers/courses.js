@@ -189,41 +189,55 @@ const getCoursesByCategoryId = async (req, res) => {
 const updateCourse = async (req, res) => {
   try {
     const { id } = req.params;
-    const { title, description, price } = req.body;
+    let { title, description, price, cover_url, is_published, category_id } = req.body;
 
-    const result = await pool.query(
-      `UPDATE courses
-       SET title = $1,
-           description = $2,
-           price = $3,
-           updated_at = NOW()
-       WHERE id = $4
-       RETURNING *`,
-      [title, description, price, id]
-    );
+    if (price !== undefined) {
+      price = Number(price);
+      if (Number.isNaN(price) || price < 0) {
+        return res.status(400).json({ success: false, message: "Invalid price" });
+      }
+    }
+    if (is_published !== undefined) {
+      is_published = !!is_published;
+    }
 
-    if (result.rows.length === 0) {
-      return res.status(404).json({
-        success: false,
-        message: "Course Not Found",
-      });
+    const sql = `
+      UPDATE courses
+      SET
+        title        = COALESCE($1, title),
+        description  = COALESCE($2, description),
+        price        = COALESCE($3, price),
+        cover_url    = COALESCE($4, cover_url),
+        is_published = COALESCE($5, is_published),
+        category_id  = COALESCE($6, category_id),
+        updated_at   = NOW()
+      WHERE id = $7
+      RETURNING *;
+    `;
+
+    const { rows } = await pool.query(sql, [
+      title ?? null,
+      description ?? null,
+      price ?? null,
+      cover_url ?? null,
+      is_published ?? null,
+      category_id ?? null,
+      id,
+    ]);
+
+    if (rows.length === 0) {
+      return res.status(404).json({ success: false, message: "Course Not Found" });
     }
 
     res.status(200).json({
       success: true,
       message: "Course Updated Successfully",
-      data: result.rows[0],
+      data: rows[0],
     });
   } catch (err) {
-    res.status(500).json({
-      success: false,
-      message: "Server Error",
-      error: err.message,
-    });
+    res.status(500).json({ success: false, message: "Server Error", error: err.message });
   }
 };
-
-    
 
 
 

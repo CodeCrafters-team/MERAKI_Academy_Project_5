@@ -16,7 +16,10 @@ interface UserDialogProps {
 export default function UserDialog({ onClose }: UserDialogProps) {
   const dispatch = useDispatch();
   const auth = useSelector((state: RootState) => state.auth);
-  const userId = auth.userId;
+  const userId = Number(auth.userId)
+  console.log(auth)
+  console.log(userId);
+  
 
   const [user, setUser] = useState(auth);
   const [imageFile, setImageFile] = useState<File | null>(null);
