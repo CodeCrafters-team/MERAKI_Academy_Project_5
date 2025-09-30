@@ -68,7 +68,7 @@ const authSlice = createSlice({
       state.avatarUrl = action.payload.avatarUrl ;
 
       localStorage.setItem("token", action.payload.token);
-      localStorage.setItem("userId", String(action.payload.userId));
+      localStorage.setItem("userId",action.payload.userId);
       localStorage.setItem("firstName", action.payload.firstName);
       localStorage.setItem("lastName", action.payload.lastName);
       localStorage.setItem("age", String(action.payload.age));
