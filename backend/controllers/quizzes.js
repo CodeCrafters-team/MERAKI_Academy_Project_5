@@ -1,17 +1,43 @@
 const { pool } = require("../models/db");
- const getAllQuizzes = async (req, res) => {
+
+const getAllQuizzes = async (req, res) => {
   try {
-    const result = await pool.query("SELECT * FROM quizzes");
+    const result = await pool.query(`
+      SELECT q.*, c.title AS course_title, c.id AS course_id
+      FROM quizzes q
+      LEFT JOIN courses c ON q.course_id = c.id
+    `);
     res.json(result.rows);
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
 };
 
- const getQuizById = async (req, res) => {
+const getQuizzesByCourse = async (req, res) => {
+  const { courseId } = req.params;
+  try {
+    const result = await pool.query(`
+      SELECT q.*, c.title AS course_title
+      FROM quizzes q
+      LEFT JOIN courses c ON q.course_id = c.id
+      WHERE q.course_id = $1
+    `, [courseId]);
+
+    res.json(result.rows);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
+
+const getQuizById = async (req, res) => {
   const { id } = req.params;
   try {
-    const quiz = await pool.query("SELECT * FROM quizzes WHERE id = $1", [id]);
+    const quiz = await pool.query(`
+      SELECT q.*, c.title AS course_title, c.id AS course_id
+      FROM quizzes q
+      LEFT JOIN courses c ON q.course_id = c.id
+      WHERE q.id = $1
+    `, [id]);
 
     if (quiz.rows.length === 0) {
       return res.status(404).json({ error: "Quiz not found" });
@@ -39,8 +65,10 @@ const { pool } = require("../models/db");
   }
 };
 
- const submitQuiz = async (req, res) => {
-  const { userId, quizId, answers } = req.body; 
+const submitQuiz = async (req, res) => {
+  const userId = req.user.id;
+  const { quizId, answers } = req.body; 
+
   try {
     const result = await pool.query(
       "INSERT INTO user_quiz_results (user_id, quiz_id, score) VALUES ($1, $2, 0) RETURNING id",
@@ -78,5 +106,4 @@ const { pool } = require("../models/db");
   }
 };
 
-
-module.exports={getAllQuizzes,getQuizById,submitQuiz}
+module.exports = {  getAllQuizzes,  getQuizzesByCourse,  getQuizById,  submitQuiz};

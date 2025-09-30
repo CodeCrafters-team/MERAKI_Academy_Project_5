@@ -1,25 +1,11 @@
-"use client";
+import React from 'react'
 
-import { useState } from "react";
-import  UserDialog from "../components/userDialog/userDialog"
-
-export default function Page() {
-  const [showProfileModal, setShowProfileModal] = useState(false);
-
+export default function page() {
   return (
+    <div>page
 
-    <div className="container py-5">
-      <button
-        className="btn btn-primary"
-        onClick={() => setShowProfileModal(true)}
-      >
-        Open Profile Modal
-      </button>
 
-      {showProfileModal && (
-        <UserDialog onClose={() => setShowProfileModal(false)} />
-      )}
-
+      
     </div>
-  );
+  )
 }

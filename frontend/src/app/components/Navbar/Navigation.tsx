@@ -128,6 +128,8 @@ export default function Navbar() {
                     alt={course.title}
                     style={{ width: "50px", height: "50px", objectFit: "cover", borderRadius: "50%", marginRight: "10px" }}
                   />
+
+
                   <b>{course.title}</b>
                 </li>
               ))}
@@ -175,6 +177,7 @@ export default function Navbar() {
           <li><a href="/about" className="nav-link fw-bold">About</a></li>
           <li><a href="/contact" className="nav-link fw-bold">Contact</a></li>
         </ul>
+
       </div>
 
       {sheetOpen && (
