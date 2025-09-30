@@ -1,9 +1,9 @@
 "use client"
 import React from 'react'
 import Lottie from 'lottie-react'
-import animationData from '../../../../public/animations/xPnyakTZXq.json'
+import animationData from '../../../../public/animations/mYV7QVEbgd.json'
 
-const LottiePlayer = () => {
+const ContactSection = () => {
   return (
     <div>
       <Lottie 
@@ -15,4 +15,4 @@ const LottiePlayer = () => {
   )
 }
 
-export default LottiePlayer
+export default ContactSection

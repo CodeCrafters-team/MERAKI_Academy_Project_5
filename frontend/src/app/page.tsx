@@ -1,5 +1,6 @@
 import React from "react";
-import LottiePlayer from "./components/LottiePlayer/LottiePlayer";
+import HeroSection from "./components/LottiePlayer/HeroSection";
+import ContactSection from "./components/LottiePlayer/ContactSection";
 
 export default function Page() {
   return (
@@ -27,11 +28,29 @@ export default function Page() {
 
           <div className="col-md-6 order-1 order-md-2 mb-4 mb-md-0 text-center">
             <div>
-              <LottiePlayer />
+              <HeroSection />
             </div>
           </div>
         </div>
       </section>
+<section className="container py-5">
+  <div className="row align-items-center g-5">
+    <div className="col-12 col-lg-6 text-center">
+      <ContactSection />
+    </div>
+
+    <div className="col-12 col-lg-6">
+      <h2 className="fw-bold mb-3">Need Help? Get in Touch!</h2>
+      <p className="text-muted mb-4">
+        Our support team is here to assist you with any questions or issues. 
+        Reach out and we’ll respond as soon as possible.
+      </p>
+      <a href="/contact" className="btn btn-primary btn-lg px-4 border-0">
+        Contact Us
+      </a>
+    </div>
+  </div>
+</section>
     </>
   );
 }
