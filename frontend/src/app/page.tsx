@@ -2,7 +2,7 @@ import React from "react";
 import HeroSection from "./components/LottiePlayer/HeroSection";
 import ContactSection from "./components/LottiePlayer/ContactSection";
 import JoinSection from "./components/LottiePlayer/JoinSection";
-import TestimonialsSection from "./components/ourteam";
+import TestimonialsSection from "./components/OurStudents";
 
 export default function Page() {
   
