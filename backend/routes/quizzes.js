@@ -1,13 +1,13 @@
 const express=require("express")
-
+const authentication = require("../middleware/authentication");
 const { getAllQuizzes,getQuizById,submitQuiz }=require("../controllers/quizzes")
 
 
 const quizzRouter=express.Router()
 
-quizzRouter.get("/quizzes",getAllQuizzes)
+quizzRouter.get("/",getAllQuizzes)
 quizzRouter.get("/:id",getQuizById)
-quizzRouter.post("/:id/submit",submitQuiz)
+quizzRouter.post("/:id/submit", authentication,submitQuiz)
 
 
 
