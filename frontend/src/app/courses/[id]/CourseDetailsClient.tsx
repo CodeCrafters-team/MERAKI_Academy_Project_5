@@ -5,7 +5,7 @@ import axios from "axios";
 import CheckoutModal from "../../components/CheckoutModal/CheckoutModal";
 import "react-credit-cards-2/dist/es/styles-compiled.css";
 import LessonModal from "@/app/components/LessonModal/index";
-
+import QuizInline from "@/app/components/Quize";
 
 const THEME = { primary: "#77b0e4", secondary: "#f6a531" };
 const API_BASE =  "http://localhost:5000";
@@ -513,6 +513,9 @@ const handleEnrollFree = async () => {
             <li className="nav-item">
               <a className="nav-link animate__animated animate__fadeInUp animate__delay-3s" data-bs-toggle="tab" href="#reviews">Reviews</a>
             </li>
+              <li className="nav-item">
+    <a className="nav-link animate__animated animate__fadeInUp animate__delay-4s" data-bs-toggle="tab" href="#quiz">Quiz</a>
+  </li>
           </ul>
 
           <div className="tab-content border border-top-0 p-3 rounded-bottom shadow-sm animate__animated animate__fadeInUp">
@@ -520,6 +523,15 @@ const handleEnrollFree = async () => {
               <h5 className="mb-2 animate__animated animate__fadeInDown">About this course</h5>
               <p className="mb-0 animate__animated animate__fadeInUp">{course.description}</p>
             </div>
+<div className="tab-pane fade" id="quiz">
+  <div className="p-3">
+
+    <h4 className="mb-3">
+      Quiz #{course.id} - {course.title}
+    </h4>
+    <QuizInline courseId={course.id.toString()} />
+  </div>
+</div>
 
             <div className="tab-pane fade animate__animated animate__fadeIn" id="curriculum">
               {modules.map((m, i) => {
