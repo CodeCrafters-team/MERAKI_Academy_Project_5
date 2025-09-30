@@ -3,6 +3,7 @@ import HeroSection from "./components/LottiePlayer/HeroSection";
 import ContactSection from "./components/LottiePlayer/ContactSection";
 import JoinSection from "./components/LottiePlayer/JoinSection";
 import TestimonialsSection from "./components/OurStudents";
+import { CourseSlider } from "./components/CourseSlider/courseSlider";
 
 export default function Page() {
   
@@ -54,6 +55,22 @@ export default function Page() {
           </div>
         </div>
       </section>
+    <section className="container py-5">
+  <CourseSlider
+    title="Popular Courses"
+    endpoint="http://localhost:5000/courses"
+  />
+
+  <div className="text-center mt-4">
+    <a
+      href="/categories"
+      className="btn btn-primary btn-lg rounded-pill px-4 border-0"
+    >
+      View All Courses
+    </a>
+  </div>
+</section>
+
 <section className="container py-5">
   <div className="row align-items-center">
     <div className="col-md-6 order-2 order-md-1 text-center text-md-start">
