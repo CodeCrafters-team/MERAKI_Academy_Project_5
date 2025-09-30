@@ -1,4 +1,5 @@
-'use client';
+"use client";
+
 import React from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation, Pagination, Autoplay, A11y } from "swiper/modules";
@@ -48,26 +49,33 @@ export default function TestimonialsSwiper() {
           autoplay={{ delay: 4000, disableOnInteraction: false }}
           loop
           breakpoints={{
-            768: { slidesPerView: 2 },   
-            1200: { slidesPerView: 3 }, 
+            768: { slidesPerView: 2 },
+            1200: { slidesPerView: 3 },
           }}
           style={{ paddingBottom: 32 }}
         >
           {items.map((t, i) => (
-            <SwiperSlide  key={i}>
-              <div className="bg-white p-4 rounded-3 shadow-sm h-100 text-center">
+            <SwiperSlide key={i}>
+              <div className="bg-white p-4 rounded-3 shadow-sm h-100 d-flex flex-column text-center">
                 <img
                   src={t.img}
                   alt={t.name}
-                  width={80}
-                  height={80}
+                  width={90}
+                  height={90}
+                  loading="lazy"
                   className="border rounded-circle p-2 mx-auto mb-3"
                   style={{ objectFit: "cover" }}
                 />
-                <h5 className="mb-4">{t.name}</h5>
-                <div className="bg-light p-4 rounded-3">
+                <h5 className="mb-3 fw-bold">{t.name}</h5>
+
+                <div
+                  className="bg-light rounded-3 px-4 mx-auto d-flex align-items-center justify-content-center"
+                  style={{ minHeight: 150, maxWidth: 520 }}
+                >
                   <p className="mb-0">{t.quote}</p>
                 </div>
+
+                <div className="mt-auto" />
               </div>
             </SwiperSlide>
           ))}

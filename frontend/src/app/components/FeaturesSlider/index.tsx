@@ -13,7 +13,7 @@ const features = [
   {
     icon: "bi-mortarboard-fill",
     title: "Skilled Instructors",
-    desc: "Learn from certified experts with real industry knowledge worldwide.",
+    desc: "Learn from certified experts with real industry knowledge.",
   },
   {
     icon: "bi-globe",

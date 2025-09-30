@@ -5,9 +5,9 @@ import JoinSection from "./components/LottiePlayer/JoinSection";
 import TestimonialsSection from "./components/OurStudents";
 import { CourseSlider } from "./components/CourseSlider/courseSlider";
 import FeaturesSlider from "./components/FeaturesSlider";
+import InstructorsSection from "./components/InstructorsSlider";
 
 export default function Page() {
-  
   return (
     <>
       <section className="container py-5">
@@ -32,15 +32,67 @@ export default function Page() {
           </div>
 
           <div className="col-md-6 order-1 order-md-2 mb-4 mb-md-0 text-center">
-            <div>
-              <HeroSection />
-            </div>
+            <HeroSection />
           </div>
         </div>
-
-          <FeaturesSlider/>
-
       </section>
+
+      <section className="container py-5">
+        <FeaturesSlider />
+      </section>
+
+      <section className="container py-5">
+        <CourseSlider
+          title="Popular Courses"
+          endpoint="http://localhost:5000/courses"
+        />
+        <div className="text-center mt-4">
+          <a
+            href="/categories"
+            className="btn btn-primary btn-lg px-4 border-0"
+          >
+            View All Courses
+          </a>
+        </div>
+      </section>
+
+      <section className="container py-5">
+        <InstructorsSection />
+      </section>
+
+      <section className="container py-5">
+        <div className="row align-items-center">
+          <div className="col-md-6 order-2 order-md-1 text-center text-md-start">
+            <h2 className="fw-bold mb-3">Become an Instructor</h2>
+            <p
+              className="lead text-muted mb-4 mx-auto mx-md-0"
+              style={{ maxWidth: "520px" }}
+            >
+              Share your knowledge and inspire learners around the world. Join
+              our network of expert instructors and start teaching online with
+              ease.
+            </p>
+            <div className="d-flex justify-content-center justify-content-md-start gap-3">
+              <a
+                href="https://forms.gle/wTME4Wqy9BHLAYRL9"
+                target="_blank"
+                className="btn btn-primary btn-lg px-4 border-0"
+              >
+                Join Now
+              </a>
+            </div>
+          </div>
+
+          <div className="col-md-6 order-1 order-md-2 mb-4 mb-md-0 text-center">
+            <JoinSection />
+          </div>
+        </div>
+      </section>
+
+      <section className="container py-5">
+        <TestimonialsSection />
+      </section>
+
       <section className="container py-5">
         <div className="row align-items-center g-5">
           <div className="col-12 col-lg-6 text-center">
@@ -59,49 +111,6 @@ export default function Page() {
           </div>
         </div>
       </section>
-    <section className="container py-5">
-  <CourseSlider
-    title="Popular Courses"
-    endpoint="http://localhost:5000/courses"
-  />
-
-  <div className="text-center mt-4">
-    <a
-      href="/categories"
-      className="btn btn-primary btn-lg  px-4 border-0"
-    >
-      View All Courses
-    </a>
-  </div>
-</section>
-
-<section className="container py-5">
-  <div className="row align-items-center">
-    <div className="col-md-6 order-2 order-md-1 text-center text-md-start">
-      <h2 className="fw-bold mb-3">Become an Instructor</h2>
-      <p
-        className="lead text-muted mb-4 mx-auto mx-md-0"
-        style={{ maxWidth: "520px" }}
-      >
-        Share your knowledge and inspire learners around the world. Join our
-        network of expert instructors and start teaching online with ease.
-      </p>
-      <div className="d-flex justify-content-center justify-content-md-start gap-3">
-        <a href="https://forms.gle/wTME4Wqy9BHLAYRL9" target="_blank" className="btn btn-primary btn-lg px-4 border-0">
-          Join Now
-        </a>
-      </div>
-    </div>
-
-    <div className="col-md-6 order-1 order-md-2 mb-4 mb-md-0 text-center">
-      <JoinSection />
-    </div>
-  </div>
-  
-</section>
-<section> 
-  <TestimonialsSection/>
-</section>
     </>
   );
 }
