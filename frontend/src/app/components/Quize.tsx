@@ -1,8 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { quizzes, Question } from "../components/data/quizzes";
 import { useRouter } from "next/navigation";
+import { BsCheckSquareFill } from "react-icons/bs";
 
 interface QuizProps {
   courseId: string;
@@ -17,10 +18,25 @@ export default function QuizPage({ courseId }: QuizProps) {
   const [answers, setAnswers] = useState<number[]>([]);
   const [selected, setSelected] = useState<number | null>(null);
   const [showResult, setShowResult] = useState(false);
+  const [nextAvailableTime, setNextAvailableTime] = useState<number | null>(null);
+  const [timeLeft, setTimeLeft] = useState<string>("");
 
   if (quizData.length === 0) {
     return <div className="alert alert-info text-center">No quiz available for this course.</div>;
   }
+
+  const handleStart = () => {
+    const lastAttempt = localStorage.getItem(`quiz-${courseId}-lastAttempt`);
+    if (lastAttempt) {
+      const nextTime = parseInt(lastAttempt) + 7 * 24 *60 *60 * 60 * 1000; 
+      if (Date.now() < nextTime) {
+        setNextAvailableTime(nextTime);
+        return; 
+      }
+    }
+    setNextAvailableTime(null);
+    setStart(true);
+  };
 
   const handleAnswer = (index: number) => {
     if (selected !== null) return;
@@ -39,6 +55,36 @@ export default function QuizPage({ courseId }: QuizProps) {
     }
   };
 
+ 
+  useEffect(() => {
+    if (showResult) {
+      localStorage.setItem(`quiz-${courseId}-lastAttempt`, Date.now().toString());
+    }
+  }, [showResult, courseId]);
+
+  useEffect(() => {
+    if (!nextAvailableTime) return;
+
+    const interval = setInterval(() => {
+      const diff = nextAvailableTime - Date.now();
+      if (diff <= 0) {
+        clearInterval(interval);
+        setNextAvailableTime(null);
+        setTimeLeft("");
+        return;
+      }
+
+      const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+      const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+      const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+      const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+
+      setTimeLeft(`${days}d ${hours}h ${minutes}m ${seconds}s`);
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, [nextAvailableTime]);
+
   const score = answers.reduce((acc, ans, i) => {
     if (ans === quizData[i].correctAnswer) return acc + 1;
     return acc;
@@ -46,13 +92,19 @@ export default function QuizPage({ courseId }: QuizProps) {
 
   return (
     <div className="p-3">
-
       {!start && !showResult && (
         <div className="text-center">
-            <p className="mb-3 text-danger">
-      ⚠️ You will only earn the certificate if you get a perfect score. Otherwise, you may need to study more!
-    </p>
-          <button className="btn btn-primary" onClick={() => setStart(true)}>
+          <p className="mb-3 text-danger ">
+            <BsCheckSquareFill /> You will only earn the certificate if you get a perfect score. Otherwise, you may need to try the quiz after 1 week from now!
+          </p>
+
+          {nextAvailableTime && timeLeft && (
+            <div className="alert alert-warning">
+              ⏳ You can retake this quiz after: <strong>{timeLeft}</strong>
+            </div>
+          )}
+
+          <button className="btn btn-primary" onClick={handleStart} disabled={!!nextAvailableTime}>
             Start Quiz
           </button>
         </div>
@@ -112,14 +164,12 @@ export default function QuizPage({ courseId }: QuizProps) {
               <h5 className="text-danger">
                 You need a perfect score to earn the certificate.
               </h5>
-             <button
-      className="btn btn-secondary"
-      onClick={() => router.push(`/courses/${courseId}#overview`)
-    }
-      
-    >
-      Exit Quiz
-    </button>
+              <button
+                className="btn btn-secondary"
+                onClick={() => router.push(`/courses/${courseId}#overview`)}
+              >
+                Exit Quiz
+              </button>
             </div>
           )}
 
