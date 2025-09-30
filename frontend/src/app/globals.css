@@ -1,16 +1,15 @@
-*{
+* {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
   scroll-behavior: smooth;
 }
 
-
 .btn-primary {
-  background: linear-gradient(90deg, #4ab0ff, #4ab0ff, #f69d01 , #f69d01);
-  background-size: 300% ;
-  background-position: left center ; 
+  background: linear-gradient(90deg, #4ab0ff, #4ab0ff, #f69d01, #f69d01);
+  background-size: 300%;
+  background-position: left center;
   transition: background-position 1.5s ease-in-out;
 }
 
@@ -18,13 +17,12 @@
   background-position: right center;
 }
 
- a {
+a {
   color: #000000;
   text-decoration: none;
   transition: color 0.5s ease-in-out;
-
 }
- a:hover {
+a:hover {
   color: #646464;
 }
 /* .card{
@@ -35,34 +33,41 @@
 transform: scale(1.09);
 } */
 
-        .nav-tabs .nav-link {
-          color: #000 !important;             
-        }
-        .nav-tabs .nav-link:hover {
-          color: #000 !important;
-        }
-        .nav-tabs .nav-link.active {
-          color: #f69d01 !important;
-          border-color: #f69d01 #f69d01 #fff !important;
-          font-weight: 700 !important;
-        }
-   
+.nav-tabs .nav-link {
+  color: #000 !important;
+}
+.nav-tabs .nav-link:hover {
+  color: #000 !important;
+}
+.nav-tabs .nav-link.active {
+  color: #f69d01 !important;
+  border-color: #f69d01 #f69d01 #fff !important;
+  font-weight: 700 !important;
+}
 
-        .cert-shell {
-          border-radius: 1rem;
-          overflow: hidden; 
-          background: #fff;
-        }
-        .cert-frame {
-          width: 100%;
-          height: 540px;       
-          border: 0;
-          display: block;
-          background: #fff;   
-        }
-        @media (max-width: 576px) {
-          .cert-frame {
-            height: 430px;   
-          }
-        }
-      
+.cert-shell {
+  border-radius: 1rem;
+  overflow: hidden;
+  background: #fff;
+}
+.cert-frame {
+  width: 100%;
+  height: 540px;
+  border: 0;
+  display: block;
+  background: #fff;
+}
+.accordion-button:not(.collapsed) {
+  background-color: transparent !important;
+  color: inherit !important;
+  box-shadow: none !important;
+}
+.accordion-button:focus {
+  box-shadow: none !important;
+  border-color: transparent !important;
+}
+@media (max-width: 576px) {
+  .cert-frame {
+    height: 430px;
+  }
+}
