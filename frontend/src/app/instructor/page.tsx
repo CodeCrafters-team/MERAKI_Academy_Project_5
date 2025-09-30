@@ -70,9 +70,9 @@ export default function Page() {
       .then((res) => {
         const list = res.data?.data || [];
         const sorted = [...list].sort((a, b) => {
-          const aKey = a.created_at ? new Date(a.created_at).getTime() : a.course_id;
-          const bKey = b.created_at ? new Date(b.created_at).getTime() : b.course_id;
-          return bKey - aKey;
+          const earningA = Number(a.price || 0) * Number(a.student_count || 0);
+          const earningB = Number(b.price || 0) * Number(b.student_count || 0);
+          return earningB - earningA;
         });
         setCourses(sorted);
       })

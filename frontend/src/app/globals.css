@@ -66,6 +66,15 @@ transform: scale(1.09);
   box-shadow: none !important;
   border-color: transparent !important;
 }
+.hover-grow {
+  transform-origin: center;
+  transition: scale 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+}
+.hover-grow:hover {
+  scale: 1.05;
+  box-shadow: 0 .5rem 1rem rgba(0,0,0,.15);
+}
+
 @media (max-width: 576px) {
   .cert-frame {
     height: 430px;

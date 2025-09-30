@@ -3,12 +3,14 @@
 import React, { useEffect, useRef, useState } from "react";
 import axios from "axios";
 import { Swiper, SwiperSlide } from "swiper/react";
-import { Navigation } from "swiper/modules";
+import { Navigation, Pagination, Autoplay, A11y } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/navigation";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "animate.css";
 import "./courseSlider.css";
+import Link from "next/link";
+import AnimateInView from "../AnimateInView/index";
 
 interface Course {
   id: number;
@@ -17,8 +19,25 @@ interface Course {
   cover_url: string;
   price: number;
 }
+const fmtMoney = (v: number | string | null) => {
+  if (v == null || v === "" || v === 0) return "Free";
+  const n = typeof v === "string" ? Number(v) : v;
+  if (Number.isNaN(n)) return "Free";
+  return new Intl.NumberFormat("en-US", {
+    style: "currency",
+    currency: "USD",
+    minimumFractionDigits: 2,
+  }).format(n);
+};
 
-function CourseSlider({ title, endpoint }: { title: string; endpoint: string }) {
+export function CourseSlider({
+  title,
+  endpoint,
+}: {
+  title: string;
+  endpoint: string;
+}) {
+  const THEME = { primary: "#77b0e4", secondary: "#f6a531" };
   const cardsRef = useRef<(HTMLDivElement | null)[]>([]);
   const [courses, setCourses] = useState<Course[]>([]);
   const [loading, setLoading] = useState(true);
@@ -28,8 +47,11 @@ function CourseSlider({ title, endpoint }: { title: string; endpoint: string }) 
     axios
       .get(endpoint)
       .then((res) => {
-        const data =
-          Array.isArray(res.data) ? res.data : (res.data && Array.isArray(res.data.data) ? res.data.data : []);
+        const data = Array.isArray(res.data)
+          ? res.data
+          : res.data && Array.isArray(res.data.data)
+          ? res.data.data
+          : [];
         setCourses(data);
         setLoading(false);
       })
@@ -52,62 +74,104 @@ function CourseSlider({ title, endpoint }: { title: string; endpoint: string }) 
 
   return (
     <div className="container my-5">
-      <h2
-        className="fw-bold mb-4 text-center animate__animated animate__fadeInUp"
-        style={{ color: "#77B0E4" }}
-      >
-        {title}
-      </h2>
+                        <AnimateInView animation="animate__fadeInUp animate__slow">
+      
+    <div className="text-center">
+          <h1 className="mb-5 fw-bold">Popular Courses</h1>
+        </div>
 
+                        </AnimateInView>      
       {loading ? (
         <p className="text-center">Loading...</p>
       ) : !Array.isArray(courses) || courses.length === 0 ? (
         <p className="text-center text-muted">No courses found.</p>
       ) : (
         <Swiper
-          slidesPerView={3}
-          spaceBetween={30}
-          navigation={true}
-          loop={false}
-          modules={[Navigation]}
+          modules={[Navigation, Pagination, Autoplay, A11y]}
+          slidesPerView={4}
+          spaceBetween={24}
+          autoplay={{ delay: 4000, disableOnInteraction: false }}
+          loop
           breakpoints={{
             320: { slidesPerView: 1 },
             768: { slidesPerView: 2 },
             1024: { slidesPerView: 4 },
           }}
         >
-          {courses.map((course, i) => (
-            <SwiperSlide key={course.id}>
-              <div
-                ref={(el) => (cardsRef.current[i] = el)}
-                className="card course-card h-100 d-flex flex-column shadow-sm"
+            {courses.map((course) => (
+              <SwiperSlide
+                key={course.id}
+                className="col-sm-6 col-md-4 col-xl-3"
               >
-                <img src={course.cover_url} className="card-img-top" alt={course.title} />
-                <div className="card-body d-flex flex-column flex-grow-1">
-                  <h5 className="card-title">{course.title}</h5>
-                  <p className="card-text flex-grow-1">{course.description}</p>
-                  <button className="btn btn-primary btn-buy mt-auto border-0" style={{ backgroundColor: "#77B0E4" }}>
-                    لمعرفة المزيد اضغط
-                  </button>
+                            <AnimateInView animation="animate__fadeInUp  animate__slow ">
+                
+                <div
+                  className="card h-100 border-0 shadow-sm"
+                  style={{ borderRadius: 16 }}
+                >
+                  <div
+                    style={{
+                      background: THEME.primary,
+                      height: 140,
+                      borderTopLeftRadius: 16,
+                      borderTopRightRadius: 16,
+                      position: "relative",
+                      overflow: "hidden",
+                    }}
+                  >
+                    {course.cover_url && (
+                      <img
+                        src={course.cover_url}
+                        alt={course.title}
+                        style={{
+                          width: "100%",
+                          height: "100%",
+                          objectFit: "cover",
+                          mixBlendMode: "multiply",
+                        }}
+                      />
+                    )}
+                  </div>
+                  <div className="card-body">
+                    <h6 className="mb-1 fw-bold">{course.title}</h6>
+                    <p
+                      className="text-muted small mb-3"
+                      style={{ minHeight: 40 }}
+                    >
+                      {course.description
+                        ? course.description.slice(0, 40) +
+                          (course.description.length > 40 ? "..." : "")
+                        : "No description."}
+                    </p>
+                    <div className="d-flex align-items-center justify-content-between">
+                      <span className="fw-bold" style={{ color: "green" }}>
+                        {fmtMoney(course.price)}
+                      </span>
+                      <Link
+                        href={`/courses/${course.id}`}
+                        className="btn btn-primary btn-sm border-0"
+                        style={{ color: "#fff", borderRadius: 10 }}
+                      >
+                        View
+                      </Link>
+                    </div>
+                  </div>
                 </div>
-                <div className="card-footer text-center fw-semibold" style={{ color: "#F6A531" }}>
-                  Price: ${course.price}
-                </div>
-              </div>
-            </SwiperSlide>
-          ))}
+                            </AnimateInView>
+              </SwiperSlide>
+            ))}
         </Swiper>
       )}
     </div>
   );
 }
 
-export default function CourseSliders() {
-  return (
-    <>
-      <CourseSlider title="Our Courses" endpoint="http://localhost:5000/courses" />
-      <CourseSlider title="Trending Now" endpoint="http://localhost:5000/courses/trending" />
-      <CourseSlider title="Most Selling" endpoint="http://localhost:5000/courses/most-selling" />
-    </>
-  );
-}
+// export default function CourseSliders() {
+//   return (
+//     <>
+//       <CourseSlider title="Our Courses" endpoint="http://localhost:5000/courses" />
+//       <CourseSlider title="Trending Now" endpoint="http://localhost:5000/courses/trending" />
+//       <CourseSlider title="Most Selling" endpoint="http://localhost:5000/courses/most-selling" />
+//     </>
+//   );
+// }
