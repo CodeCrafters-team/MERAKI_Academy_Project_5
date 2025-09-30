@@ -2,6 +2,7 @@ import React from "react";
 import HeroSection from "./components/LottiePlayer/HeroSection";
 import ContactSection from "./components/LottiePlayer/ContactSection";
 import JoinSection from "./components/LottiePlayer/JoinSection";
+import TestimonialsSection from "./components/ourteam";
 
 export default function Page() {
   
@@ -76,6 +77,9 @@ export default function Page() {
     </div>
   </div>
   
+</section>
+<section> 
+  <TestimonialsSection/>
 </section>
     </>
   );
