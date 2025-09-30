@@ -7,6 +7,7 @@ import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
 import "bootstrap/dist/css/bootstrap.min.css";
+import AnimateInView from "../AnimateInView";
 
 export default function FeaturesSlider() {
 const features = [
@@ -55,9 +56,12 @@ const features = [
     <section
       className="container py-5"
     >
+                  <AnimateInView animation="animate__fadeInUp animate__slow">
+      
     <div className="text-center">
           <h1 className="mb-5 fw-bold">Platform Features</h1>
         </div>
+                  </AnimateInView>
 
 
       <Swiper
@@ -73,8 +77,10 @@ const features = [
         }}
       >
         {features.map((f, i) => (
+          
           <SwiperSlide key={i}>
-            <div className=" ">
+            <AnimateInView animation="animate__fadeInUp  animate__slow ">
+            <div>
             <div className="text-center p-5 h-100 bg-white rounded-3 shadow-sm hover-grow border ">
               <div className="mb-3 fs-1" style={{ color: "#77B0E4" }}>
                 <i className={`bi ${f.icon}`}></i>
@@ -82,9 +88,11 @@ const features = [
               <h5 className="fw-bold mb-3">{f.title}</h5>
               <p className="text-muted mb-0">{f.desc}</p>
             </div></div>
+                  </AnimateInView>
           </SwiperSlide>
         ))}
       </Swiper>
+
     </section>
   );
 }

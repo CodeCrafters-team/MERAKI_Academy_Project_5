@@ -6,6 +6,7 @@ import TestimonialsSection from "./components/OurStudents";
 import { CourseSlider } from "./components/CourseSlider/courseSlider";
 import FeaturesSlider from "./components/FeaturesSlider";
 import InstructorsSection from "./components/InstructorsSlider";
+import AnimateInView from "./components/AnimateInView";
 
 export default function Page() {
   return (
@@ -13,31 +14,36 @@ export default function Page() {
       <section className="container py-5">
         <div className="row align-items-center">
           <div className="col-md-6 order-2 order-md-1 text-center text-md-start">
-            <h1 className="fw-bold mb-3">Learn from Experts, Anytime.</h1>
-            <p
-              className="lead text-muted mb-4 mx-auto mx-md-0"
-              style={{ maxWidth: "520px" }}
-            >
-              Join live and recorded interactive classes, track your progress,
-              and build job-ready skills with hands-on learning.
-            </p>
-            <div className="d-flex justify-content-center justify-content-md-start gap-3">
-              <a
-                href="#get-started"
-                className="btn btn-primary btn-lg px-4 border-0"
+            <AnimateInView animation="animate__fadeInTopLeft animate__slow">
+              <h1 className="fw-bold mb-3">Learn from Experts, Anytime.</h1>
+              <p
+                className="lead text-muted mb-4 mx-auto mx-md-0"
+                style={{ maxWidth: "520px" }}
               >
-                Get Started
-              </a>
-            </div>
+                Join live and recorded interactive classes, track your progress,
+                and build job-ready skills with hands-on learning.
+              </p>
+              <div className="d-flex justify-content-center justify-content-md-start gap-3">
+                <a
+                  href="#get-started"
+                  className="btn btn-primary btn-lg px-4 border-0"
+                >
+                  Get Started
+                </a>
+              </div>
+            </AnimateInView>
           </div>
-
           <div className="col-md-6 order-1 order-md-2 mb-4 mb-md-0 text-center">
-            <HeroSection />
+            <AnimateInView animation="animate__fadeInTopRight animate__slow">
+
+              <HeroSection />
+            </AnimateInView>
           </div>
         </div>
       </section>
 
       <section className="container py-5">
+
         <FeaturesSlider />
       </section>
 
@@ -63,6 +69,8 @@ export default function Page() {
       <section className="container py-5">
         <div className="row align-items-center">
           <div className="col-md-6 order-2 order-md-1 text-center text-md-start">
+            <AnimateInView animation="animate__fadeInTopLeft animate__slow">
+
             <h2 className="fw-bold mb-3">Become an Instructor</h2>
             <p
               className="lead text-muted mb-4 mx-auto mx-md-0"
@@ -81,10 +89,13 @@ export default function Page() {
                 Join Now
               </a>
             </div>
+            </AnimateInView>
           </div>
 
           <div className="col-md-6 order-1 order-md-2 mb-4 mb-md-0 text-center">
+            <AnimateInView animation="animate__fadeInTopRight animate__slow">
             <JoinSection />
+            </AnimateInView>
           </div>
         </div>
       </section>
@@ -96,10 +107,13 @@ export default function Page() {
       <section className="container py-5">
         <div className="row align-items-center g-5">
           <div className="col-12 col-lg-6 text-center">
+            <AnimateInView animation="animate__fadeInTopLeft animate__slow">
             <ContactSection />
+            </AnimateInView>
           </div>
 
           <div className="col-12 col-lg-6">
+            <AnimateInView animation="animate__fadeInTopRight animate__slow">
             <h2 className="fw-bold mb-3">Need Help? Get in Touch!</h2>
             <p className="text-muted mb-4">
               Our support team is here to assist you with any questions or
@@ -108,6 +122,7 @@ export default function Page() {
             <a href="/contact" className="btn btn-primary btn-lg px-4 border-0">
               Contact Us
             </a>
+            </AnimateInView>  
           </div>
         </div>
       </section>

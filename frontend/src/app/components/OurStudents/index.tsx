@@ -6,6 +6,7 @@ import { Navigation, Pagination, Autoplay, A11y } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
+import AnimateInView from "../AnimateInView/index";
 
 const items = [
   {
@@ -37,10 +38,15 @@ const items = [
 export default function TestimonialsSwiper() {
   return (
     <section className="container-xxl py-5">
+      
       <div className="container">
+                        <AnimateInView animation="animate__fadeInUp animate__slow">
         <div className="text-center">
           <h1 className="mb-5 fw-bold">Our Students Say!</h1>
         </div>
+      </AnimateInView>
+        
+      
 
         <Swiper
           modules={[Navigation, Pagination, Autoplay, A11y]}
@@ -56,6 +62,7 @@ export default function TestimonialsSwiper() {
         >
           {items.map((t, i) => (
             <SwiperSlide key={i}>
+                        <AnimateInView animation="animate__fadeInUp animate__slow">
               <div className="bg-white p-4 rounded-3 shadow-sm h-100 d-flex flex-column text-center">
                 <img
                   src={t.img}
@@ -77,6 +84,7 @@ export default function TestimonialsSwiper() {
 
                 <div className="mt-auto" />
               </div>
+              </AnimateInView>
             </SwiperSlide>
           ))}
         </Swiper>

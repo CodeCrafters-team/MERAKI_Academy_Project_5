@@ -7,6 +7,7 @@ import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
 import "bootstrap/dist/css/bootstrap.min.css";
+import AnimateInView from "../AnimateInView";
 
 export default function InstructorsSection() {
   const THEME = { primary: "#77B0E4" };
@@ -37,12 +38,15 @@ export default function InstructorsSection() {
 
   return (
     <section className="container py-5">
+                        <AnimateInView animation="animate__fadeInUp animate__slow">
+      
       <div className="text-center mb-5">
         <h1 className="fw-bold" >
           Meet Our Instructors
         </h1>
 
       </div>
+                        </AnimateInView>
 
       <Swiper
         modules={[Navigation, Pagination, Autoplay, A11y]}
@@ -59,6 +63,7 @@ export default function InstructorsSection() {
       >
         {instructors.map((inst, i) => (
           <SwiperSlide key={i}>
+            <AnimateInView animation="animate__fadeInUp  animate__slow ">
             <div className="card h-100 border-0 shadow-sm rounded-3 overflow-hidden">
               <div className="position-relative" style={{ height: 280 }}>
                 <img
@@ -101,6 +106,7 @@ export default function InstructorsSection() {
                 <p className="text-muted mb-0 small">{inst.title}</p>
               </div>
             </div>
+                </AnimateInView>
           </SwiperSlide>
         ))}
       </Swiper>

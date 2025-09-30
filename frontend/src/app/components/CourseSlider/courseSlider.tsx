@@ -10,6 +10,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import "animate.css";
 import "./courseSlider.css";
 import Link from "next/link";
+import AnimateInView from "../AnimateInView/index";
 
 interface Course {
   id: number;
@@ -73,10 +74,13 @@ export function CourseSlider({
 
   return (
     <div className="container my-5">
+                        <AnimateInView animation="animate__fadeInUp animate__slow">
+      
     <div className="text-center">
           <h1 className="mb-5 fw-bold">Popular Courses</h1>
         </div>
 
+                        </AnimateInView>      
       {loading ? (
         <p className="text-center">Loading...</p>
       ) : !Array.isArray(courses) || courses.length === 0 ? (
@@ -99,6 +103,8 @@ export function CourseSlider({
                 key={course.id}
                 className="col-sm-6 col-md-4 col-xl-3"
               >
+                            <AnimateInView animation="animate__fadeInUp  animate__slow ">
+                
                 <div
                   className="card h-100 border-0 shadow-sm"
                   style={{ borderRadius: 16 }}
@@ -151,6 +157,7 @@ export function CourseSlider({
                     </div>
                   </div>
                 </div>
+                            </AnimateInView>
               </SwiperSlide>
             ))}
         </Swiper>
