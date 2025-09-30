@@ -49,6 +49,9 @@ export default function QuizPage({ courseId }: QuizProps) {
 
       {!start && !showResult && (
         <div className="text-center">
+            <p className="mb-3 text-danger">
+      ⚠️ You will only earn the certificate if you get a perfect score. Otherwise, you may need to study more!
+    </p>
           <button className="btn btn-primary" onClick={() => setStart(true)}>
             Start Quiz
           </button>
