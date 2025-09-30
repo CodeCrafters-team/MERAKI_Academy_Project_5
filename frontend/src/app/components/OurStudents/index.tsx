@@ -10,28 +10,24 @@ const items = [
   {
     img: "https://themewagon.github.io/elearning/img/testimonial-1.jpg",
     name: "Sara Ahmed",
-    role: "UI/UX Designer",
     quote:
       "The courses are clear and practical. I built a real portfolio and improved my confidence quickly.",
   },
   {
     img: "https://themewagon.github.io/elearning/img/testimonial-2.jpg",
     name: "Omar Ali",
-    role: "Frontend Developer",
     quote:
       "Live sessions + recordings = perfect combo. Mentors were super helpful whenever I got stuck.",
   },
   {
     img: "https://themewagon.github.io/elearning/img/testimonial-3.jpg",
     name: "Lina Youssef",
-    role: "Data Analyst",
     quote:
       "Structured content and hands-on projects made the learning journey smooth and enjoyable.",
   },
   {
     img: "https://themewagon.github.io/elearning/img/testimonial-4.jpg",
     name: "Khaled Samir",
-    role: "Mobile Engineer",
     quote:
       "I upskilled fast and landed interviews. Highly recommend these courses to anyone serious about learning.",
   },
@@ -58,7 +54,7 @@ export default function TestimonialsSwiper() {
           style={{ paddingBottom: 32 }}
         >
           {items.map((t, i) => (
-            <SwiperSlide key={i}>
+            <SwiperSlide  key={i}>
               <div className="bg-white p-4 rounded-3 shadow-sm h-100 text-center">
                 <img
                   src={t.img}
@@ -68,8 +64,7 @@ export default function TestimonialsSwiper() {
                   className="border rounded-circle p-2 mx-auto mb-3"
                   style={{ objectFit: "cover" }}
                 />
-                <h5 className="mb-0">{t.name}</h5>
-                <p className="text-muted">{t.role}</p>
+                <h5 className="mb-4">{t.name}</h5>
                 <div className="bg-light p-4 rounded-3">
                   <p className="mb-0">{t.quote}</p>
                 </div>

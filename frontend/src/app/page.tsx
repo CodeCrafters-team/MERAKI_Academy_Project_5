@@ -4,6 +4,7 @@ import ContactSection from "./components/LottiePlayer/ContactSection";
 import JoinSection from "./components/LottiePlayer/JoinSection";
 import TestimonialsSection from "./components/OurStudents";
 import { CourseSlider } from "./components/CourseSlider/courseSlider";
+import FeaturesSlider from "./components/FeaturesSlider";
 
 export default function Page() {
   
@@ -36,6 +37,9 @@ export default function Page() {
             </div>
           </div>
         </div>
+
+          <FeaturesSlider/>
+
       </section>
       <section className="container py-5">
         <div className="row align-items-center g-5">
@@ -64,7 +68,7 @@ export default function Page() {
   <div className="text-center mt-4">
     <a
       href="/categories"
-      className="btn btn-primary btn-lg rounded-pill px-4 border-0"
+      className="btn btn-primary btn-lg  px-4 border-0"
     >
       View All Courses
     </a>

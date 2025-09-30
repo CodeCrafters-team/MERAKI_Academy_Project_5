@@ -68,11 +68,10 @@ transform: scale(1.09);
 }
 .hover-grow {
   transform-origin: center;
-  transition: transform 180ms ease, box-shadow 180ms ease;
-  will-change: transform;
+  transition: scale 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
 }
 .hover-grow:hover {
-  transform: scale(1.03);
+  scale: 1.05;
   box-shadow: 0 .5rem 1rem rgba(0,0,0,.15);
 }
 
