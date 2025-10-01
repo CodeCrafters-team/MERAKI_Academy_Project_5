@@ -59,7 +59,12 @@ const getEnrollmentsByUser = async (req, res) => {
   try {
     const { user_id } = req.params
 
-    const result = await pool.query(  `SELECT * FROM enrollments WHERE user_id = $1`,[user_id]);
+    const result = await pool.query(`
+      SELECT e.*, c.title as course_title, c.cover_url
+      FROM enrollments e
+      JOIN courses c ON e.course_id = c.id
+      WHERE e.user_id = $1
+    `, [user_id]);
 
     if (result.rows.length === 0) {
       return res.status(404).json({
