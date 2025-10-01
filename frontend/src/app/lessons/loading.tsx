@@ -1,10 +1,15 @@
-export default function Loading() {
+import React from 'react'
+import Loading from '../components/LottiePlayer/Loading'
+
+export default function page() {
   return (
-    <div className="d-flex justify-content-center align-items-center py-5">
-      <div className="spinner-border text-primary" role="status">
-        <embed src="https://template.canva.com/EAFZoV7nVJk/1/document_2560w-9IvKwHfzyVs.mp4"></embed>
-        <span className="visually-hidden">Loading...</span>
+    <div   className="d-flex justify-content-center align-items-center"
+      style={{ minHeight: '100vh' }} >
+<div role="status" style={{ alignItems: 'center', width :"50rem" }}>
+  <span>
+<Loading />
+</span>
       </div>
     </div>
-  );
+  )
 }
