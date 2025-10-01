@@ -12,7 +12,11 @@ const app = express();
 const httpServer = createServer(app);
 
 const io = new Server(httpServer, {
-  cors: { origin: "*", methods: ["GET", "POST"] },
+  cors: {
+    origin: "http://localhost:3000",
+    methods: ["GET", "POST"],
+    credentials: true
+  },
 });
 
 require("./socket").init(io);
@@ -43,7 +47,10 @@ const certificatesRouter = require("./routes/certificates")
 
 
 
-app.use(cors());
+app.use(cors({
+  origin: "http://localhost:3000",
+  credentials: true
+}));
 app.use(express.json());
 setupGoogleStrategy();
 app.use(passport.initialize());
@@ -69,39 +76,64 @@ app.use("/certificates", certificatesRouter);
 
 app.use("/results",userResultRouter)
 
-app.use((req, res) => res.status(404).json("NO content at this path"));
 
 
 
 io.on("connection", (socket) => {
   console.log("User connected:", socket.id);
-
+  
   socket.on("login", (userId) => {
     console.log("User logged in:", userId);
     socket.userId = Number(userId);
     socket.join(`user_${userId}`);
   });
-
+  
   socket.on("join_conversation", (conversationId) => {
     console.log("User joined conversation:", conversationId);
     socket.join(`conversation_${conversationId}`);
   });
-
+  
   socket.on("leave_conversation", (conversationId) => {
     console.log("User left conversation:", conversationId);
     socket.leave(`conversation_${conversationId}`);
   });
-
+  
   socket.on("disconnect", () => {
     console.log("User disconnected:", socket.id);
   });
 });
-//*******************************************************//
-app.use(cors({
-  origin: "http://localhost:3000",
-  credentials: true,
-}));
+const OpenAI = require("openai");
+const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+app.post("/ai/chat", async (req, res) => {
+  try {
+    const { messages, socketId } = req.body || {};
+    if (!Array.isArray(messages) || !socketId) {
+      return res.status(400).json({ error: "error" });
+    }
 
+    res.status(202).json({ ok: true });
+
+    const stream = await openai.chat.completions.create({
+      model: "gpt-4o-mini",   
+      stream: true,           
+      temperature: 0.7,
+      messages,               
+    });
+    
+    for await (const chunk of stream) {
+      const token = chunk?.choices?.[0]?.delta?.content || "";
+      if (token) io.to(socketId).emit("ai:delta", token);
+    }
+    
+    io.to(socketId).emit("ai:done", { ok: true });
+  } catch (err) {
+    console.error("AI Chat Error:", err?.response?.data || err.message || err);
+    const sid = req.body?.socketId;
+    if (sid) io.to(sid).emit("ai:error", { message: "error" });
+    if (!res.headersSent) res.status(500).json({ error: "AI error" });
+  }
+});
+//*******************************************************//
 app.use(passport.initialize());
 app.use("/auth", authRoutes);
 
@@ -110,6 +142,7 @@ app.get("/", (req, res) => {
 });
 
 
+app.use((req, res) => res.status(404).json("NO content at this path"));
 
 
 httpServer.listen(PORT, () => {
