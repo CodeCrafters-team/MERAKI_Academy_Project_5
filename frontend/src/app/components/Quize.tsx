@@ -7,9 +7,12 @@ import { BsCheckSquareFill } from "react-icons/bs";
 
 interface QuizProps {
   courseId: string;
+  onIssueCertificate?: () => void;
+  issuing?: boolean;
+  cert?: any;
 }
 
-export default function QuizPage({ courseId }: QuizProps) {
+export default function QuizPage({ courseId, onIssueCertificate, issuing, cert }: QuizProps) {
   const router = useRouter();
   const quizData: Question[] = quizzes[courseId] || [];
 
@@ -21,8 +24,29 @@ export default function QuizPage({ courseId }: QuizProps) {
   const [nextAvailableTime, setNextAvailableTime] = useState<number | null>(null);
   const [timeLeft, setTimeLeft] = useState<string>("");
 
+
   if (quizData.length === 0) {
-    return <div className="alert alert-info text-center">No quiz available for this course.</div>;
+    return (
+      <div className="text-center">
+        <div className="alert alert-info">No quiz available for this course.</div>
+        {cert?.certificate_no ? (
+          <button
+            className="btn btn-primary border-0 mt-3"
+            onClick={() => window.location.href = `/certificates/${cert.certificate_no}`}
+          >
+            Show Certificate
+          </button>
+        ) : (
+          <button
+            className="btn btn-success mt-3"
+            disabled={!!issuing}
+            onClick={onIssueCertificate}
+          >
+            {issuing ? "Issuing..." : "Get Certificate"}
+          </button>
+        )}
+      </div>
+    );
   }
 
   const handleStart = () => {
@@ -151,13 +175,22 @@ export default function QuizPage({ courseId }: QuizProps) {
           {score === quizData.length ? (
             <div className="mt-3">
               <h5 className="text-success">Congratulations! You earned a certificate 🎓</h5>
-              <a
-                href={`/certificate/${courseId}`} 
-                className="btn btn-success mt-2"
-                target="_blank"
-              >
-                Download Certificate
-              </a>
+              {cert?.certificate_no ? (
+                <button
+                  className="btn btn-primary mt-2 border-0"
+                  onClick={() => window.location.href = `/certificates/${cert.certificate_no}`}
+                >
+                  Show Certificate
+                </button>
+              ) : (
+                <button
+                  className="btn btn-success mt-2"
+                  disabled={!!issuing}
+                  onClick={onIssueCertificate}
+                >
+                  {issuing ? "Issuing..." : "Get Certificate"}
+                </button>
+              )}
             </div>
           ) : (
             <div className="mt-3">

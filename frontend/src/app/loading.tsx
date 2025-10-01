@@ -1,5 +1,5 @@
 import React from 'react'
-import Loading from '../components/LottiePlayer/Loading'
+import Loading from './components/LottiePlayer/Loading'
 
 export default function page() {
   return (

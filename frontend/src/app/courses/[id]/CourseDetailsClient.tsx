@@ -428,24 +428,6 @@ const handleEnrollFree = async () => {
                             {progress.completedLessons}/{progress.totalLessons} lessons
                                </small>
 
-                               {progress.progressPercent >= 100 && (
-                               cert?.certificate_no ? (
-                              <button
-                              className="btn btn-primary border-0"
-                              onClick={() => router.push(`/certificates/${cert.certificate_no}`)}
-                                >
-                              Show Certificate
-                            </button>
-                            ) : (
-                           <button
-                            className="btn btn-success border-0 animate__animated animate__pulse"
-                            disabled={issuing}
-                            onClick={handleIssueCertificate}
-                              >
-                           {issuing ? "Issuing..." : "Get Certificate"}
-                             </button>
-                            )
-                            )}
                             </div>
                       )   : (
                 <>
@@ -513,9 +495,11 @@ const handleEnrollFree = async () => {
             <li className="nav-item">
               <a className="nav-link animate__animated animate__fadeInUp animate__delay-3s" data-bs-toggle="tab" href="#reviews">Reviews</a>
             </li>
-              <li className="nav-item">
-    <a className="nav-link animate__animated animate__fadeInUp animate__delay-4s" data-bs-toggle="tab" href="#quiz">Quiz</a>
-  </li>
+              {progress.progressPercent >= 100 && (
+                <li className="nav-item">
+                  <a className="nav-link animate__animated animate__fadeInUp animate__delay-4s" data-bs-toggle="tab" href="#quiz">Quiz</a>
+                </li>
+              )}
           </ul>
 
           <div className="tab-content border border-top-0 p-3 rounded-bottom shadow-sm animate__animated animate__fadeInUp">
@@ -523,15 +507,21 @@ const handleEnrollFree = async () => {
               <h5 className="mb-2 animate__animated animate__fadeInDown">About this course</h5>
               <p className="mb-0 animate__animated animate__fadeInUp">{course.description}</p>
             </div>
-<div className="tab-pane fade" id="quiz">
-  <div className="p-3">
-
-    <h4 className="mb-3">
-      Quiz #{course.id} - {course.title}
-    </h4>
-    <QuizInline courseId={course.id.toString()} />
+{progress.progressPercent >= 100 && (
+  <div className="tab-pane fade" id="quiz">
+    <div className="p-3">
+      <h4 className="mb-3">
+        Quiz #{course.id} - {course.title}
+      </h4>
+      <QuizInline 
+        courseId={course.id.toString()} 
+        onIssueCertificate={handleIssueCertificate}
+        issuing={issuing}
+        cert={cert}
+      />
+    </div>
   </div>
-</div>
+)}
 
             <div className="tab-pane fade animate__animated animate__fadeIn" id="curriculum">
               {modules.map((m, i) => {
