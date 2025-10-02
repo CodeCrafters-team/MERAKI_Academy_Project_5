@@ -98,9 +98,9 @@ export function CourseSlider({
             1024: { slidesPerView: 4 },
           }}
         >
-            {courses.map((course) => (
+            {courses.map((course ,id) => (
               <SwiperSlide
-                key={course.id}
+                key={id}
                 className="col-sm-6 col-md-4 col-xl-3"
               >
                             <AnimateInView animation="animate__fadeInUp  animate__slow ">
