@@ -8,6 +8,7 @@ import 'bootstrap-icons/font/bootstrap-icons.css';
 import './globals.css';
 import 'animate.css/animate.min.css';
 import SimpleFooter from './components/footer/page';
+import ChatWidget from './components/AiChat';
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
@@ -17,6 +18,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 
   <Navbar/>
 
+    <ChatWidget />
         <div style={{ marginTop: '4em' }}>
         {children}
         </div>

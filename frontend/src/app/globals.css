@@ -71,6 +71,11 @@ transform: scale(1.09);
   box-shadow: none !important;
   border-color: transparent !important;
 }
+textarea:focus,
+input:focus {
+  box-shadow: none !important;
+  outline: none !important;
+}
 .hover-grow {
   transform-origin: center;
   transition: scale 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
