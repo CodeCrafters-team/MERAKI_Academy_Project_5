@@ -8,6 +8,9 @@ interface AuthState {
   age: number | null;
   email: string | null;
   avatarUrl: string | null;
+  phoneNumber: string | null;
+  country: string | null
+
 }
 
 const initialState: AuthState = {
@@ -19,6 +22,9 @@ const initialState: AuthState = {
   age: typeof window !== "undefined" && localStorage.getItem("age") ? Number(localStorage.getItem("age")) : null,
   email: typeof window !== "undefined" ? localStorage.getItem("email") : null,
   avatarUrl: typeof window !== "undefined" ? localStorage.getItem("avatar") : null,
+  phoneNumber: typeof window !== "undefined" ? localStorage.getItem("phoneNumber") : null,
+  country: typeof window !== "undefined" ? localStorage.getItem("country") : null,
+
 };
 
 const authSlice = createSlice({
@@ -34,6 +40,9 @@ const authSlice = createSlice({
         age?: number;
         email?: string;
         avatarUrl?: string;
+        phoneNumber?: string;
+        country?: string;
+
       }>
     ) => {
       if (action.payload.firstName) {
@@ -56,25 +65,42 @@ const authSlice = createSlice({
         state.avatarUrl = action.payload.avatarUrl;
         localStorage.setItem("avatar", action.payload.avatarUrl);
       }
+      if (action.payload.phoneNumber) {
+        state.phoneNumber = action.payload.phoneNumber;
+        localStorage.setItem("phoneNumber", action.payload.phoneNumber);
+      }
+      if (action.payload.country) {
+        state.country = action.payload.country;
+        localStorage.setItem("country", action.payload.country);
+      }
+
+
+
     },
 
     loginSuccess: (state, action) => {
-    state.token = action.payload.token;
+      state.token = action.payload.token;
       state.userId = action.payload.userId;
       state.firstName = action.payload.firstName;
       state.lastName = action.payload.lastName;
       state.age = action.payload.age;
       state.email = action.payload.email;
-      state.avatarUrl = action.payload.avatarUrl ;
+      state.avatarUrl = action.payload.avatarUrl;
+      state.phoneNumber = action.payload.phoneNumber;
+      state.country = action.payload.country;
+
 
       localStorage.setItem("token", action.payload.token);
-      localStorage.setItem("userId",action.payload.userId);
+      localStorage.setItem("userId", action.payload.userId);
       localStorage.setItem("firstName", action.payload.firstName);
       localStorage.setItem("lastName", action.payload.lastName);
       localStorage.setItem("age", String(action.payload.age));
       localStorage.setItem("email", action.payload.email);
-      localStorage.setItem("avatar", action.payload.avatarUrl)
-},
+      localStorage.setItem("avatar", action.payload.avatarUrl);
+      localStorage.setItem("phoneNumber", action.payload.phoneNumber);
+      localStorage.setItem("country", action.payload.country)
+
+    },
 
 
     logout: (state) => {
@@ -84,7 +110,11 @@ const authSlice = createSlice({
       state.lastName = null;
       state.age = null;
       state.email = null;
+      state.country = null;
+      state.phoneNumber = null;
+
       state.avatarUrl = null;
+
       localStorage.clear();
     },
 
@@ -96,6 +126,10 @@ const authSlice = createSlice({
       state.age = null;
       state.email = null;
       state.avatarUrl = null;
+      state.phoneNumber = null;
+      state.country = null;
+
+
       localStorage.clear();
     },
   },
@@ -105,7 +139,7 @@ const authSlice = createSlice({
 
 
 
-export const { logout ,loginSuccess , updateProfile,deleteAccount} = authSlice.actions;
+export const { logout, loginSuccess, updateProfile, deleteAccount } = authSlice.actions;
 export default authSlice.reducer;
 
 

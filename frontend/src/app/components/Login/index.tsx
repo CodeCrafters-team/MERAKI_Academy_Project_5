@@ -40,6 +40,9 @@ const dispatch = useDispatch();
         age:       user.age ,
         email:     user.email ?? null,
         avatarUrl :user.avatarUrl, 
+        phoneNumber:user.phone_number?? null,
+                country:user.country?? null,
+
       }));
 
       setMessage("Login successful");
