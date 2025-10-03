@@ -77,6 +77,8 @@ const login = (req, res) => {
       u.first_name AS "firstName",
       u.last_name  AS "lastName",
       u.avatar_url AS "avatarUrl",
+       u.phone_number ,
+        u.country ,
       u.is_active  AS "isActive",
       u.role_id    AS "roleId",
       r.name       AS "roleName",
@@ -139,6 +141,8 @@ const login = (req, res) => {
             firstName: user.firstName,
             lastName: user.lastName,
             avatarUrl: user.avatarUrl,
+            phoneNumber: user.phone_number,
+            country: user.country,
             roleId: user.roleId,
             roleName: user.roleName,
             permissions: user.permissions,
@@ -208,6 +212,8 @@ const getUserById = (req, res) => {
       u.is_active  AS "isActive",
       u.created_at AS "createdAt",
       u.role_id    AS "roleId",
+      u.phoneNumber   ,
+      u.country   ,
       r.name       AS "roleName",
       r.permissions
     FROM users u
@@ -384,21 +390,24 @@ const resetPassword = (req, res) => {
 };
 const updateUser = (req, res) => {
   const { id } = req.params;
-  const { firstName, lastName, age, email, avatarUrl } = req.body;
+  const { firstName, lastName, age, email, avatarUrl,phoneNumber,country } = req.body;
 
   const sql = `
-    UPDATE users
-    SET first_name = $1,
-        last_name = $2,
-        age = $3,
-        email = $4,
-        avatar_url = $5
-    WHERE id = $6
-    RETURNING id, first_name AS "firstName", last_name AS "lastName", age, email, avatar_url AS "avatarUrl"
+   UPDATE users
+SET
+  first_name   = COALESCE($1, first_name),
+  last_name    = COALESCE($2, last_name),
+  age          = COALESCE($3, age),
+  email        = COALESCE($4, email),
+  avatar_url   = COALESCE($5, avatar_url),
+  phone_number = COALESCE($6, phone_number),
+  country      = COALESCE($7, country)
+WHERE id = $8
+RETURNING *
   `;
 
   pool
-    .query(sql, [firstName, lastName, age, email, avatarUrl, id])
+    .query(sql, [firstName, lastName, age, email, avatarUrl,phoneNumber,country, id])
     .then(({ rows }) => {
       if (rows.length === 0) {
         return res.status(404).json({ success: false, message: "User not found" });

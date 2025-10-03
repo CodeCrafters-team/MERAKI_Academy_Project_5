@@ -5,6 +5,7 @@ import { useSelector, useDispatch } from "react-redux";
 import "animate.css";
 import axios from "axios";
 import { updateProfile } from "@/redux/slices/authSlice";
+import { number } from "motion/react";
 
 
 
@@ -52,11 +53,22 @@ export default function ProfilePage() {
   const user = useSelector((state: any) => state.auth);
   const [avatarUrl, setAvatarUrl] = useState(user.avatarUrl || "");
   const [imageFile, setImageFile] = useState<File | null>(null);
+    const [age, setAge] = useState(0);
+        const [phone_number, setphone_number] = useState("");
+        const [country, setcountry] = useState("");
+
+console.log(user.firstName);
+
   const [editProfileData, setEditProfileData] = useState({
     firstName: user.firstName || "",
     lastName: user.lastName || "",
     avatarUrl: user.avatarUrl || "",
     email: user.email || "",
+    phonenumber:user.phoneNumber ,
+      country:user.country || "",
+      age:user.age ,
+      
+
   });
   const CLOUD_NAME = "dkgru3hra";
   const UPLOAD_PRESET = "project-4";
@@ -67,6 +79,7 @@ export default function ProfilePage() {
   const [certificates, setCertificates] = useState<any[]>([]);
   const [courses, setCourses] = useState<any[]>([]);
   const [progress, setProgress] = useState<{[courseId: number]: number}>({});
+console.log(user);
 
   useEffect(() => {
     if (!user.userId) return;
@@ -233,22 +246,56 @@ export default function ProfilePage() {
       </Modal>
       <Modal show={showEditInfo} onClose={() => setShowEditInfo(false)}>
         <h5 className="mb-3">Edit Personal Info</h5>
-        <form onSubmit={e => { e.preventDefault(); setShowEditInfo(false); }}>
-          <div className="mb-3">
-            <label className="form-label">Mobile Number</label>
-            <input className="form-control" defaultValue={user.phone || ""} />
-          </div>
-          <div className="mb-3">
-            <label className="form-label">Country</label>
-            <input className="form-control" defaultValue={user.country || "Jordan"} />
-          </div>
+        <form   onSubmit={async e => {
+            e.preventDefault();
+            setSaving(true);
+            setError(null);
+           try{
+              await axios.put(
+                `${API}/users/${user.userId}`,
+                {
+                 phoneNumber:phone_number,
+                country:country,
+                age:age ,
+                  email: editProfileData.email,
+                },
+                { headers: { Authorization: `Bearer ${user.token}` } }
+              );
+              dispatch(updateProfile({
+                 phoneNumber:phone_number,
+                country:country,
+                age:age ,
+                email:editProfileData.email,
+              }));
+              setShowEditProfile(false);
+            } catch (err) {
+              setError("Failed to update profile");
+            } finally {
+              setSaving(false);
+            }
+            
+          }}>
+        
           <div className="mb-3">
             <label className="form-label">Email</label>
             <input className="form-control" defaultValue={user.email || ""} />
           </div>
+          <div className="mb-3">
+            <label className="form-label">Country</label>
+            <input  className="form-control" onChange={(e)=>{setcountry(String (e.target.value))}} />
+          </div>
+          <div className="mb-3">
+            <label className="form-label">Phone Number</label>
+            <input className="form-control" onChange={(e)=>{setphone_number(String (e.target.value))}} />
+          </div>
+          <div className="mb-3">
+            <label className="form-label">Age</label>
+            <input type="number" className="form-control"onChange={(e)=>{setAge(Number (e.target.value))}}     />
+          </div>
           <button className="btn btn-primary w-100" type="submit">Save</button>
         </form>
       </Modal>
+      
               <div className="p-4">
                 <h5 className="fw-semibold mb-3 d-flex align-items-center gap-2">
                   <i className="bi bi-person"></i>
@@ -263,11 +310,15 @@ export default function ProfilePage() {
                   </li>
                   <li className="d-flex align-items-center gap-3 py-2 text-muted">
                     <i className="bi bi-telephone"></i>
-                    <span>{user.phone || "Add your mobile number"}</span>
+                    <span>{user.phoneNumber || "Add your mobile number"}</span>
                   </li>
                   <li className="d-flex align-items-center gap-3 py-2">
                     <i className="bi bi-geo-alt"></i>
                     <span>{user.country || "Jordan"}</span>
+                  </li>
+                  <li className="d-flex align-items-center gap-3 py-2">
+                 <i className="bi bi-cake"></i>
+                    <span>{user.age}</span>
                   </li>
                 </ul>
               </div>
@@ -299,7 +350,7 @@ export default function ProfilePage() {
                           </span>
                         </div>
                         <div className="position-absolute" style={{ right: 10, bottom: 10 }}>
-                          <a href={cert.pdf_url} target="_blank" rel="noopener noreferrer" className="badge bg-light text-dark border">View</a>
+                          <a href={`/certificates/${cert.certificate_no}`} target="_blank" rel="noopener noreferrer" className="badge bg-light text-dark border">View</a>
                         </div>
                       </div>
                     </div>
