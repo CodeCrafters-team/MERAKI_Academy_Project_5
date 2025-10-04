@@ -315,9 +315,7 @@ export default function ProfilePage() {
             </div>
           </div>
 
-          {/* Right Column: Certificates & Courses */}
           <div className="col-12 col-lg-8">
-            {/* Certificates Card */}
             <div className="shadow-sm" style={cardStyle}>
               <div className="p-4">
                 <h5 className="fw-semibold mb-4 d-flex align-items-center gap-2">
