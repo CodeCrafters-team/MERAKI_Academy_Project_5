@@ -19,7 +19,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   <Navbar/>
 
     <ChatWidget />
-        <div>
+        <div style={{ marginTop: '4em' }}>
         {children}
         </div>
         <SimpleFooter/>
