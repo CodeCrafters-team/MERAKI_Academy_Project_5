@@ -42,8 +42,11 @@ const dispatch = useDispatch();
         avatarUrl :user.avatarUrl, 
         phoneNumber:user.phone_number?? null,
                 country:user.country?? null,
+                
 
       }));
+
+      localStorage.setItem("role", user.roleName);
 
       setMessage("Login successful");
       setStatus(true);
