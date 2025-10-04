@@ -438,6 +438,55 @@ const deleteUser = (req, res) => {
     });
 };
 
+const setUserRole = (req, res) => {
+  const { id } = req.params;
+  const { roleId } = req.body;
+
+  if (!id || !roleId) {
+    return res.status(400).json({ success: false, message: "user id and roleId required" });
+  }
+
+  const sql = `UPDATE users SET role_id = $1 WHERE id = $2 RETURNING id, role_id AS "roleId"`;
+
+  pool
+    .query(sql, [roleId, id])
+    .then(({ rows }) => {
+      if (rows.length === 0) {
+        return res.status(404).json({ success: false, message: "User not found" });
+      }
+      res.status(200).json({ success: true, message: "Role updated", user: rows[0] });
+    })
+    .catch((err) => {
+      console.error("setUserRole error:", err.message);
+      res.status(500).json({ success: false, message: "Server error", error: err.message });
+    });
+};
+
+// set user active status (ban/unban)
+const setUserActive = (req, res) => {
+  const { id } = req.params;
+  const { isActive } = req.body;
+
+  if (!id || typeof isActive !== "boolean") {
+    return res.status(400).json({ success: false, message: "user id and boolean isActive required" });
+  }
+
+  const sql = `UPDATE users SET is_active = $1 WHERE id = $2 RETURNING id, is_active AS "isActive"`;
+
+  pool
+    .query(sql, [isActive, id])
+    .then(({ rows }) => {
+      if (rows.length === 0) {
+        return res.status(404).json({ success: false, message: "User not found" });
+      }
+      res.status(200).json({ success: true, message: "Status updated", user: rows[0] });
+    })
+    .catch((err) => {
+      console.error("setUserActive error:", err.message);
+      res.status(500).json({ success: false, message: "Server error", error: err.message });
+    });
+};
+
 module.exports = {
   register,
   login,
@@ -447,6 +496,8 @@ module.exports = {
   verifyResetCode,
   resetPassword,
   updateUser,
-  deleteUser
-
+  deleteUser,
+  setUserRole,
+  setUserActive
 };
+

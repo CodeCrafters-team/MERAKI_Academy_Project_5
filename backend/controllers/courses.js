@@ -315,9 +315,9 @@ const getCoursesByInstructor = async (req, res) => {
   }
 };
 
-const getAllCoursesForAdmin = async (pool, options = {}) => {
-  const { limit = null, offset = null } = options;
 
+const getAllCoursesForAdmin = async (req, res) => {
+  const { limit = null, offset = null } = req.query;
   let sql = `
     SELECT
       c.id                     AS course_id,
@@ -359,9 +359,8 @@ const getAllCoursesForAdmin = async (pool, options = {}) => {
     GROUP BY
       c.id, c.title, c.description, c.cover_url, c.price, c.is_published, c.created_at, c.updated_at,
       creator.id, creator.first_name, creator.last_name, creator.email
-    ORDER BY c.id
+    ORDER BY (c.price * COUNT(DISTINCT e.user_id)) DESC
   `;
-
 
   const params = [];
   if (limit !== null) {
@@ -375,23 +374,27 @@ const getAllCoursesForAdmin = async (pool, options = {}) => {
 
   try {
     const { rows } = await pool.query(sql, params);
-
+    let total = null;
     if (limit !== null) {
       const countRes = await pool.query('SELECT COUNT(*)::int AS total FROM courses');
-      const total = countRes.rows[0] ? countRes.rows[0].total : 0;
-      return { rows, total };
+      total = countRes.rows[0] ? countRes.rows[0].total : 0;
     }
-
-
-    return { rows };
+    res.status(200).json({
+      success: true,
+      message: "Fetched Courses For Admin Successfully",
+      data: rows,
+      total,
+    });
   } catch (err) {
-  
     console.error('getAllCoursesForAdmin error:', err);
-    throw err;
+    res.status(500).json({
+      success: false,
+      message: "Server Error",
+      error: err.message,
+    });
   }
 };
 
-module.exports = { getAllCoursesForAdmin };
 
 module.exports = {
   getAllCourses,
