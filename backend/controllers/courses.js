@@ -11,9 +11,7 @@ const getAllCourses = async (req, res) => {
         courses.price,
         courses.is_published,
         courses.created_at,
-        courses.updated_at,
-        users.id,
-        users.avatar_url,
+        courses.updated_at,        users.avatar_url,
         users.first_name,
         users.last_name,
         users.email

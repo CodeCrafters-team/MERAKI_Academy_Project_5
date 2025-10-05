@@ -47,6 +47,7 @@ export function CourseSlider({
     axios
       .get(endpoint)
       .then((res) => {
+        console.log("res" , res);
         const data = Array.isArray(res.data)
           ? res.data
           : res.data && Array.isArray(res.data.data)
@@ -71,6 +72,7 @@ export function CourseSlider({
       });
     }
   }, [loading]);
+  
 
   return (
     <div className="container my-5">
@@ -98,9 +100,9 @@ export function CourseSlider({
             1024: { slidesPerView: 4 },
           }}
         >
-            {courses.map((course ,id) => (
+            {courses.map((course ,idx) => (
               <SwiperSlide
-                key={id}
+                key={idx}
                 className="col-sm-6 col-md-4 col-xl-3"
               >
                             <AnimateInView animation="animate__fadeInUp  animate__slow ">
@@ -126,8 +128,8 @@ export function CourseSlider({
                         style={{
                           width: "100%",
                           height: "100%",
-                          objectFit: "cover",
-                          mixBlendMode: "multiply",
+                          objectFit: "cover"
+,
                         }}
                       />
                     )}
@@ -147,6 +149,7 @@ export function CourseSlider({
                       <span className="fw-bold" style={{ color: "green" }}>
                         {fmtMoney(course.price)}
                       </span>
+
                       <Link
                         href={`/courses/${course.id}`}
                         className="btn btn-primary btn-sm border-0"

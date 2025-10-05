@@ -2,6 +2,7 @@
 
 import React, { useState } from "react";
 import "./style.css";
+import ContactSection from "../components/LottiePlayer/ContactSection";
 
 const Contact = () => {
   const [firstName, setFirstName] = useState("");
@@ -49,6 +50,14 @@ const Contact = () => {
 
   return (
     <div className="ContactPage" style={{ background: "#f2f4f7" }}>
+        <div className="left-side">
+        <h3>
+          We would love to hear from you <br />
+          Send us your thoughts anytime
+        </h3>
+        <div  className="m-5" style={{width:"45rem"}}><ContactSection /></div>
+      
+      </div>
       <div className="animate__animated animate__fadeInLeft Form">
         <p className="Title animate__animated animate__fadeInDown animate__slow">
           Contact Us
@@ -89,7 +98,7 @@ const Contact = () => {
           />
 
           <button
-            className="register-btn animate__animated animate__fadeInUp animate__slow"
+            className="register-btn  animate__animated animate__fadeInUp animate__slow"
             type="submit"
             disabled={loading}
           >
@@ -105,17 +114,7 @@ const Contact = () => {
         )}
       </div>
 
-      <div className="left-side">
-        <h3>
-          We would love to hear from you <br />
-          Send us your thoughts anytime
-        </h3>
-        <img
-          style={{ width: "30em" }}
-          src="/assets/contact.svg"/*بنحط الصورة بعدين*/ 
-          alt="Contact us"
-        />
-      </div>
+    
     </div>
   );
 };
