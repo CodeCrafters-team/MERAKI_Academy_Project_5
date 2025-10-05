@@ -10,7 +10,7 @@ import AnimateInView from "../AnimateInView/index";
 
 const items = [
   {
-    img: "https://themewagon.github.io/elearning/img/testimonial-1.jpg",
+    img: "https://images.pexels.com/photos/5212675/pexels-photo-5212675.jpeg",
     name: "Sara Ahmed",
     quote:
       "The courses are clear and practical. I built a real portfolio and improved my confidence quickly.",
@@ -22,14 +22,14 @@ const items = [
       "Live sessions + recordings = perfect combo. Mentors were super helpful whenever I got stuck.",
   },
   {
-    img: "https://themewagon.github.io/elearning/img/testimonial-3.jpg",
+    img: "https://images.pexels.com/photos/6981008/pexels-photo-6981008.jpeg",
     name: "Lina Youssef",
     quote:
       "Structured content and hands-on projects made the learning journey smooth and enjoyable.",
   },
   {
-    img: "https://themewagon.github.io/elearning/img/testimonial-4.jpg",
-    name: "Khaled Samir",
+    img: "https://images.pexels.com/photos/5908758/pexels-photo-5908758.jpeg",
+    name: "Sela Samir",
     quote:
       "I upskilled fast and landed interviews. Highly recommend these courses to anyone serious about learning.",
   },
