@@ -315,6 +315,87 @@ const getCoursesByInstructor = async (req, res) => {
   }
 };
 
+
+const getAllCoursesForAdmin = async (req, res) => {
+  const { limit = null, offset = null } = req.query;
+  let sql = `
+    SELECT
+      c.id                     AS course_id,
+      c.title                  AS course_title,
+      c.description,
+      c.cover_url,
+      c.price,
+      c.is_published,
+      c.created_at,
+      c.updated_at,
+      creator.id               AS creator_id,
+      creator.first_name       AS creator_first_name,
+      creator.last_name        AS creator_last_name,
+      creator.email            AS creator_email,
+      COUNT(DISTINCT e.user_id) AS student_count,
+      COUNT(r.id)              AS review_count,
+      COALESCE(ROUND(AVG(r.rating)::numeric, 2), 0) AS avg_rating,
+      COALESCE(
+        JSON_AGG(
+          JSON_BUILD_OBJECT(
+            'id', r.id,
+            'user_id', r.user_id,
+            'rating', r.rating,
+            'comment', r.comment,
+            'created_at', r.created_at,
+            'first_name', rev_user.first_name,
+            'last_name',  rev_user.last_name,
+            'avatar_url', rev_user.avatar_url
+          )
+          ORDER BY r.created_at DESC
+        ) FILTER (WHERE r.id IS NOT NULL),
+        '[]'
+      ) AS reviews
+    FROM courses c
+    JOIN users creator         ON creator.id = c.created_by
+    LEFT JOIN enrollments e    ON e.course_id = c.id
+    LEFT JOIN reviews r        ON r.course_id = c.id
+    LEFT JOIN users rev_user   ON rev_user.id = r.user_id
+    GROUP BY
+      c.id, c.title, c.description, c.cover_url, c.price, c.is_published, c.created_at, c.updated_at,
+      creator.id, creator.first_name, creator.last_name, creator.email
+    ORDER BY (c.price * COUNT(DISTINCT e.user_id)) DESC
+  `;
+
+  const params = [];
+  if (limit !== null) {
+    params.push(limit);
+    sql += ` LIMIT $${params.length}`;
+  }
+  if (offset !== null) {
+    params.push(offset);
+    sql += ` OFFSET $${params.length}`;
+  }
+
+  try {
+    const { rows } = await pool.query(sql, params);
+    let total = null;
+    if (limit !== null) {
+      const countRes = await pool.query('SELECT COUNT(*)::int AS total FROM courses');
+      total = countRes.rows[0] ? countRes.rows[0].total : 0;
+    }
+    res.status(200).json({
+      success: true,
+      message: "Fetched Courses For Admin Successfully",
+      data: rows,
+      total,
+    });
+  } catch (err) {
+    console.error('getAllCoursesForAdmin error:', err);
+    res.status(500).json({
+      success: false,
+      message: "Server Error",
+      error: err.message,
+    });
+  }
+};
+
+
 module.exports = {
   getAllCourses,
   getCourseById,
@@ -324,5 +405,6 @@ module.exports = {
   getCoursesByCategoryId,
   getTrendingCourses,
   getMostSellingCourses,
-  getCoursesByInstructor
+  getCoursesByInstructor ,  
+  getAllCoursesForAdmin
 };

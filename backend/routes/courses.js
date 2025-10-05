@@ -8,7 +8,8 @@ const {
   getTrendingCourses,
   getMostSellingCourses,
   getCoursesByInstructor,
-  updateCourse
+  updateCourse,
+  getAllCoursesForAdmin
 } = require("../controllers/courses");
 
 const coursesRouter = express.Router();
@@ -22,6 +23,8 @@ coursesRouter.get("/instructor/:id", getCoursesByInstructor);
 coursesRouter.post("/", createCourse);
 coursesRouter.put("/:id", updateCourse);
 coursesRouter.delete("/:id", deleteCourse);
+coursesRouter.get("/admin/all", getAllCoursesForAdmin);
+
 
 
 module.exports = coursesRouter;

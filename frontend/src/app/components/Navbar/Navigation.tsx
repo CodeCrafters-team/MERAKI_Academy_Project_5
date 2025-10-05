@@ -4,7 +4,7 @@ import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import type { RootState } from "../../../redux/store";
 import { logout } from "../../../redux/slices/authSlice";
-import { useRouter } from "next/navigation";
+import { useRouter , usePathname } from "next/navigation";
 import UserDialog from "../userDialog/userDialog";
 
 const courses = [
@@ -49,6 +49,10 @@ export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [search, setSearch] = useState("");
   const [results, setResults] = useState<typeof courses>([]);
+    const pathname = usePathname();   
+    if (pathname && pathname.startsWith("/admin")) {
+    return null;
+  }
 
   const router = useRouter();
   const dispatch = useDispatch();
