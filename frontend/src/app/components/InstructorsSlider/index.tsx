@@ -14,24 +14,24 @@ export default function InstructorsSection() {
 
   const instructors = [
     {
-      name: "Emily Davis",
+      name: "Davis Miller",
       title: "UI/UX Designer",
-      img: "https://images.unsplash.com/photo-1607746882042-944635dfe10e?w=800&h=600&fit=crop",
+      img: "https://images.rawpixel.com/image_social_landscape/cHJpdmF0ZS9sci9pbWFnZXMvd2Vic2l0ZS8yMDI0LTAyL21vdGFybzdfcG9ydHJhaXRfb2ZfY29uZmlkZW50X2NhdWNhc2lhbl9tYWxlX3RlYWNoZXJfaW5fY2xhc3Nyb19iZDVkNmI2Ny0wMDk1LTQxMTQtYmYxMy0zZjI5NjEzODE3ODdfMS5qcGc.jpg",
     },
     {
       name: "Ahmed Ali",
       title: "Cybersecurity Specialist",
-      img: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=800&h=600&fit=crop",
+      img: "https://www.shutterstock.com/image-photo/portrait-young-teacher-near-whiteboard-260nw-1656704701.jpg",
     },
     {
       name: "Lisa Brown",
       title: "Marketing Strategist",
-      img: "https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?w=800&h=600&fit=crop",
+      img: "https://www.ziprecruiter.com/svc/fotomat/public-ziprecruiter/cms/609701210OnlineInstructor.jpg=ws1280x960",
     },
     {
       name: "Sarah Johnson",
       title: "Web Development Instructor",
-      img: "https://images.unsplash.com/photo-1524504388940-b1c1722653e1?w=800&h=600&fit=crop",
+      img: "https://png.pngtree.com/thumb_back/fw800/background/20220314/pngtree-professional-portrait-of-female-teachers-image_1048455.jpg",
     },
   ];
 
