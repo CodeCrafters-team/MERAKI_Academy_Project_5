@@ -1,12 +1,9 @@
-
 "use client"
 import { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import "animate.css";
 import axios from "axios";
 import { updateProfile } from "@/redux/slices/authSlice";
-import { number } from "motion/react";
-
 
 
 function Modal({ show, onClose, children }: { show: boolean; onClose: () => void; children: React.ReactNode }) {
@@ -23,14 +20,13 @@ function Modal({ show, onClose, children }: { show: boolean; onClose: () => void
   );
 }
 
-
 const ProgressBar = ({ percent }: { percent: number }) => (
   <div className="w-100" style={{ background: "#eee", borderRadius: 8 }}>
     <div
       className="animate__animated animate__fadeIn"
       style={{
         width: `${Math.min(100, Math.max(0, percent))}%`,
-        background: "linear-gradient(90deg,   #f69d01 ,#4ab0ff)",
+        background: "linear-gradient(90deg, #f69d01 ,#4ab0ff)",
         height: 10,
         borderRadius: 8,
         transition: "width .3s",
@@ -38,7 +34,6 @@ const ProgressBar = ({ percent }: { percent: number }) => (
     />
   </div>
 );
-
 
 const API = "http://localhost:5000";
 
@@ -53,23 +48,17 @@ export default function ProfilePage() {
   const user = useSelector((state: any) => state.auth);
   const [avatarUrl, setAvatarUrl] = useState(user.avatarUrl || "");
   const [imageFile, setImageFile] = useState<File | null>(null);
-    const [age, setAge] = useState(0);
-        const [phone_number, setphone_number] = useState("");
-        const [country, setcountry] = useState("");
-
-console.log(user.firstName);
+  const [age, setAge] = useState(user.age || 0);
+  const [phone_number, setphone_number] = useState(user.phoneNumber || "");
+  const [country, setcountry] = useState(user.country || "");
 
   const [editProfileData, setEditProfileData] = useState({
     firstName: user.firstName || "",
     lastName: user.lastName || "",
     avatarUrl: user.avatarUrl || "",
     email: user.email || "",
-    phonenumber:user.phoneNumber ,
-      country:user.country || "",
-      age:user.age ,
-      
-
   });
+
   const CLOUD_NAME = "dkgru3hra";
   const UPLOAD_PRESET = "project-4";
   const [saving, setSaving] = useState(false);
@@ -79,7 +68,6 @@ console.log(user.firstName);
   const [certificates, setCertificates] = useState<any[]>([]);
   const [courses, setCourses] = useState<any[]>([]);
   const [progress, setProgress] = useState<{[courseId: number]: number}>({});
-console.log(user);
 
   useEffect(() => {
     if (!user.userId) return;
@@ -139,10 +127,10 @@ console.log(user);
                     </span>
                   </div>
                   <div className="text-muted mt-1">{user.role || "Student"}</div>
-                  {error && <div className="text-danger small mt-1">{error}</div>}
                 </div>
               </div>
             </div>
+
             <div className="shadow-sm position-relative mt-4" style={cardStyle}>
               <button
                 className="btn btn-sm btn-secondary position-absolute"
@@ -152,150 +140,154 @@ console.log(user);
               >
                 <i className="bi bi-pencil-square"></i>
               </button>
-      <Modal show={showEditProfile} onClose={() => setShowEditProfile(false)}>
-        <h5 className="mb-3">Edit Profile</h5>
-        <form
-          onSubmit={async e => {
-            e.preventDefault();
-            setSaving(true);
-            setError(null);
-            let uploadedUrl = editProfileData.avatarUrl;
-            try {
-              if (imageFile) {
-                const formData = new FormData();
-                formData.append("file", imageFile);
-                formData.append("upload_preset", UPLOAD_PRESET);
-                const res = await axios.post(
-                  `https://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/upload`,
-                  formData
-                );
-                uploadedUrl = res.data.secure_url;
-              }
-              await axios.put(
-                `${API}/users/${user.userId}`,
-                {
-                  firstName: editProfileData.firstName,
-                  lastName: editProfileData.lastName,
-                  avatarUrl: uploadedUrl,
-                  email: editProfileData.email,
-                },
-                { headers: { Authorization: `Bearer ${user.token}` } }
-              );
-              setAvatarUrl(uploadedUrl);
-              dispatch(updateProfile({
-                firstName: editProfileData.firstName,
-                lastName: editProfileData.lastName,
-                avatarUrl: uploadedUrl,
-              }));
-              setShowEditProfile(false);
-            } catch (err) {
-              setError("Failed to update profile");
-            } finally {
-              setSaving(false);
-            }
-          }}
-        >
-          <div className="mb-3 d-flex flex-column align-items-center gap-2">
-            <img
-              src={imageFile ? URL.createObjectURL(imageFile) : (editProfileData.avatarUrl || "https://thumbs.dreamstime.com/b/icono-de-perfil-avatar-predeterminado-imagen-vectorial-usuario-medios-sociales-209162840.jpg")}
-              alt="avatar preview"
-              className="rounded-circle border"
-              style={{ width: 80, height: 80, objectFit: "cover" }}
-            />
-            <label htmlFor="avatar-upload-modal" className="btn btn-outline-secondary btn-sm mt-1">
-              <i className="bi bi-camera"></i> Choose Photo
-              <input
-                id="avatar-upload-modal"
-                type="file"
-                accept="image/*"
-                style={{ display: "none" }}
-                onChange={e => {
-                  if (!e.target.files || !e.target.files[0]) return;
-                  setImageFile(e.target.files[0]);
-                  setEditProfileData(data => ({ ...data, avatarUrl: URL.createObjectURL(e.target.files![0]) }));
-                }}
-              />
-            </label>
-          </div>
-          <div className="mb-3">
-            <label className="form-label">First Name</label>
-            <input
-              className="form-control"
-              value={editProfileData.firstName}
-              onChange={e => setEditProfileData(data => ({ ...data, firstName: e.target.value }))}
-            />
-          </div>
-          <div className="mb-3">
-            <label className="form-label">Last Name</label>
-            <input
-              className="form-control"
-              value={editProfileData.lastName}
-              onChange={e => setEditProfileData(data => ({ ...data, lastName: e.target.value }))}
-            />
-          </div>
-          <input
-            type="hidden"
-            value={editProfileData.email}
-            readOnly
-          />
-          {error && <div className="alert alert-danger py-2">{error}</div>}
-          <button className="btn btn-primary w-100" type="submit" disabled={saving}>
-            {saving ? <span className="spinner-border spinner-border-sm" /> : "Save"}
-          </button>
-        </form>
-      </Modal>
-      <Modal show={showEditInfo} onClose={() => setShowEditInfo(false)}>
-        <h5 className="mb-3">Edit Personal Info</h5>
-        <form   onSubmit={async e => {
-            e.preventDefault();
-            setSaving(true);
-            setError(null);
-           try{
-              await axios.put(
-                `${API}/users/${user.userId}`,
-                {
-                 phoneNumber:phone_number,
-                country:country,
-                age:age ,
-                  email: editProfileData.email,
-                },
-                { headers: { Authorization: `Bearer ${user.token}` } }
-              );
-              dispatch(updateProfile({
-                 phoneNumber:phone_number,
-                country:country,
-                age:age ,
-                email:editProfileData.email,
-              }));
-              setShowEditProfile(false);
-            } catch (err) {
-              setError("Failed to update profile");
-            } finally {
-              setSaving(false);
-            }
-            
-          }}>
-        
-          <div className="mb-3">
-            <label className="form-label">Email</label>
-            <input className="form-control" defaultValue={user.email || ""} />
-          </div>
-          <div className="mb-3">
-            <label className="form-label">Country</label>
-            <input  className="form-control" onChange={(e)=>{setcountry(String (e.target.value))}} />
-          </div>
-          <div className="mb-3">
-            <label className="form-label">Phone Number</label>
-            <input className="form-control" onChange={(e)=>{setphone_number(String (e.target.value))}} />
-          </div>
-          <div className="mb-3">
-            <label className="form-label">Age</label>
-            <input type="number" className="form-control"onChange={(e)=>{setAge(Number (e.target.value))}}     />
-          </div>
-          <button className="btn btn-primary w-100" type="submit">Save</button>
-        </form>
-      </Modal>
-      
+
+              <Modal show={showEditProfile} onClose={() => setShowEditProfile(false)}>
+                <h5 className="mb-3">Edit Profile</h5>
+                <form
+                  onSubmit={async e => {
+                    e.preventDefault();
+                    setSaving(true);
+                    setError(null);
+                    let uploadedUrl = editProfileData.avatarUrl;
+                    try {
+                      if (imageFile) {
+                        const formData = new FormData();
+                        formData.append("file", imageFile);
+                        formData.append("upload_preset", UPLOAD_PRESET);
+                        const res = await axios.post(
+                          `https://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/upload`,
+                          formData
+                        );
+                        uploadedUrl = res.data.secure_url;
+                      }
+                      await axios.put(
+                        `${API}/users/${user.userId}`,
+                        {
+                          firstName: editProfileData.firstName,
+                          lastName: editProfileData.lastName,
+                          avatarUrl: uploadedUrl,
+                          email: editProfileData.email,
+                        },
+                        { headers: { Authorization: `Bearer ${user.token}` } }
+                      );
+                      setAvatarUrl(uploadedUrl);
+                      dispatch(updateProfile({
+                        firstName: editProfileData.firstName,
+                        lastName: editProfileData.lastName,
+                        avatarUrl: uploadedUrl,
+                      }));
+                      setShowEditProfile(false);
+                    } catch (err) {
+                      setError("Failed to update profile");
+                    } finally {
+                      setSaving(false);
+                    }
+                  }}
+                >
+                  <div className="mb-3 d-flex flex-column align-items-center gap-2">
+                    <img
+                      src={imageFile ? URL.createObjectURL(imageFile) : (editProfileData.avatarUrl || "https://thumbs.dreamstime.com/b/icono-de-perfil-avatar-predeterminado-imagen-vectorial-usuario-medios-sociales-209162840.jpg")}
+                      alt="avatar preview"
+                      className="rounded-circle border"
+                      style={{ width: 80, height: 80, objectFit: "cover" }}
+                    />
+                    <label htmlFor="avatar-upload-modal" className="btn btn-outline-secondary btn-sm mt-1">
+                      <i className="bi bi-camera"></i> Choose Photo
+                      <input
+                        id="avatar-upload-modal"
+                        type="file"
+                        accept="image/*"
+                        style={{ display: "none" }}
+                        onChange={e => {
+                          if (!e.target.files || !e.target.files[0]) return;
+                          setImageFile(e.target.files[0]);
+                          setEditProfileData(data => ({ ...data, avatarUrl: URL.createObjectURL(e.target.files![0]) }));
+                        }}
+                      />
+                    </label>
+                  </div>
+
+                  <div className="mb-3">
+                    <label className="form-label">First Name</label>
+                    <input
+                      className="form-control"
+                      value={editProfileData.firstName}
+                      onChange={e => setEditProfileData(data => ({ ...data, firstName: e.target.value }))}
+                    />
+                  </div>
+                  <div className="mb-3">
+                    <label className="form-label">Last Name</label>
+                    <input
+                      className="form-control"
+                      value={editProfileData.lastName}
+                      onChange={e => setEditProfileData(data => ({ ...data, lastName: e.target.value }))}
+                    />
+                  </div>
+                  <input type="hidden" value={editProfileData.email} readOnly />
+
+                  <button className="btn btn-primary w-100" type="submit" disabled={saving}>
+                    {saving ? <span className="spinner-border spinner-border-sm" /> : "Save"}
+                  </button>
+                  {error && <div className="text-danger small mt-2">{error}</div>}
+                </form>
+              </Modal>
+
+              <Modal show={showEditInfo} onClose={() => setShowEditInfo(false)}>
+                <h5 className="mb-3">Edit Personal Info</h5>
+                <form
+                  onSubmit={async e => {
+                    e.preventDefault();
+                    setSaving(true);
+                    setError(null);
+                    try {
+                      await axios.put(
+                        `${API}/users/${user.userId}`,
+                        {
+                          phoneNumber: phone_number,
+                          country: country,
+                          age: age,
+                          email: editProfileData.email,
+                        },
+                        { headers: { Authorization: `Bearer ${user.token}` } }
+                      );
+                      dispatch(updateProfile({
+                        phoneNumber: phone_number,
+                        country: country,
+                        age: age,
+                        email: editProfileData.email,
+                      }));
+                      setShowEditInfo(false);
+                    } catch (err) {
+                      setError("Failed to update profile");
+                    } finally {
+                      setSaving(false);
+                    }
+                  }}
+                >
+                  <div className="mb-3">
+                    <label className="form-label">Email</label>
+                    <input className="form-control" defaultValue={user.email || ""} readOnly />
+                  </div>
+                  <div className="mb-3">
+                    <label className="form-label">Country</label>
+                    <input className="form-control" onChange={e => setcountry(e.target.value)} value={country} />
+                  </div>
+                  <div className="mb-3">
+                    <label className="form-label">Phone Number</label>
+                    <input className="form-control" onChange={e => setphone_number(e.target.value)} value={phone_number} />
+                  </div>
+                  <div className="mb-3">
+                    <label className="form-label">Age</label>
+                    <input type="number" className="form-control" onChange={e => setAge(Number(e.target.value))} value={age} />
+                  </div>
+
+                  <button className="btn btn-primary w-100" type="submit" disabled={saving}>
+                    {saving ? <span className="spinner-border spinner-border-sm" /> : "Save"}
+                  </button>
+                  {error && <div className="text-danger small mt-2">{error}</div>}
+                </form>
+              </Modal>
+
               <div className="p-4">
                 <h5 className="fw-semibold mb-3 d-flex align-items-center gap-2">
                   <i className="bi bi-person"></i>
@@ -304,9 +296,7 @@ console.log(user);
                 <ul className="list-unstyled mb-0">
                   <li className="d-flex align-items-center gap-3 py-2">
                     <i className="bi bi-envelope"></i>
-                    <a href={`mailto:${user.email}`} className="text-decoration-none">
-                      {user.email}
-                    </a>
+                    <a href={`mailto:${user.email}`} className="text-decoration-none">{user.email}</a>
                   </li>
                   <li className="d-flex align-items-center gap-3 py-2 text-muted">
                     <i className="bi bi-telephone"></i>
@@ -317,13 +307,14 @@ console.log(user);
                     <span>{user.country || "Jordan"}</span>
                   </li>
                   <li className="d-flex align-items-center gap-3 py-2">
-                 <i className="bi bi-cake"></i>
+                    <i className="bi bi-cake"></i>
                     <span>{user.age}</span>
                   </li>
                 </ul>
               </div>
             </div>
           </div>
+
           <div className="col-12 col-lg-8">
             <div className="shadow-sm" style={cardStyle}>
               <div className="p-4">
@@ -331,7 +322,7 @@ console.log(user);
                   <i className="bi bi-file-earmark-text"></i>
                   <span>My Certifications</span>
                 </h5>
-                <div className="row g-3">
+                <div className="row g-2">
                   {certificates.length === 0 && <div className="text-muted">No certificates yet.</div>}
                   {certificates.map((cert) => (
                     <div className="col-md-6" key={cert.id}>
@@ -358,27 +349,22 @@ console.log(user);
                 </div>
               </div>
             </div>
+
             <div className="shadow-sm mt-4" style={cardStyle}>
               <div className="p-4">
                 <div className="d-flex align-items-center justify-content-between mb-2">
                   <h5 className="fw-semibold mb-0 d-flex align-items-center gap-2">
-                    <i className="bi bi-journal-text "></i>
+                    <i className="bi bi-journal-text"></i>
                     <span>My Courses</span>
                   </h5>
                 </div>
                 <div className="row g-3">
-                  {courses.length === 0 && <div className="text-muted">No courses enrolled.</div>}
-                  {courses?.map((c) => (
-                    <div className="col-md-6" key={c.course_id}>
-                      <div className="border rounded p-3 h-100 d-flex flex-column gap-2">
-                        {c.cover_url && (
-                          <img src={c.cover_url} alt={c.course_title || c.title} style={{ width: "100%", aspectRatio: "1/1", objectFit: "cover", borderRadius: 12, maxHeight: 260 }} />
-                        )}
-                        <div className="fw-semibold mb-1">{c.course_title || c.title}</div>
-                        <div className="small text-muted mb-2">Enrolled at: {c.enrolled_at ? new Date(c.enrolled_at).toLocaleDateString() : "-"}</div>
-                        <ProgressBar percent={progress[c.course_id] || 0} />
-                        <div className="small mt-1 mb-2">Progress: {progress[c.course_id] || 0}%</div>
-                        <a href={`/courses/${c.course_id}`} className="btn btn-sm btn-primary mt-auto align-self-end">Go to Course</a>
+                  {courses.length === 0 && <div className="text-muted">No courses yet.</div>}
+                  {courses.map((course) => (
+                    <div className="col-12" key={course.course_id}>
+                      <div className="d-flex flex-column gap-2">
+                        <span className="fw-semibold">{course.title}</span>
+                        <ProgressBar percent={progress[course.course_id] || 0} />
                       </div>
                     </div>
                   ))}
