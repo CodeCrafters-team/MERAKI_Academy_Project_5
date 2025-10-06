@@ -393,6 +393,29 @@ const getAllCoursesForAdmin = async (req, res) => {
   }
 };
 
+const searchCourses = async (req, res) => {
+  try {
+    const { q } = req.query;
+
+    if (!q || q.trim() === "") {
+      return res.status(400).json({ success: false, message: "Search query is required" });
+    }
+
+    const searchTerm = `%${q}%`; 
+
+    const result = await pool.query(
+      `SELECT * FROM courses
+       WHERE title ILIKE $1 OR description ILIKE $1
+       LIMIT 10`,
+      [searchTerm]
+    );
+
+    res.status(200).json({ success: true, data: result.rows });
+  } catch (error) {
+    res.status(500).json({ success: false, message: "Server Error", error: error.message });
+  }
+};
+
 
 module.exports = {
   getAllCourses,
@@ -404,5 +427,6 @@ module.exports = {
   getTrendingCourses,
   getMostSellingCourses,
   getCoursesByInstructor ,  
-  getAllCoursesForAdmin
+  getAllCoursesForAdmin,
+  searchCourses
 };
