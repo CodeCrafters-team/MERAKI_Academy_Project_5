@@ -12,7 +12,6 @@ import "./nav.css";
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [search, setSearch] = useState("");
-  // Define a Course type for search results
   type Course = {
     id: string | number;
     title: string;
@@ -54,7 +53,6 @@ export default function Navbar() {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  // search logic (connected to backend)
 const handleSearch = async (e: React.ChangeEvent<HTMLInputElement>) => {
   const value = e.target.value;
   setSearch(value);
@@ -116,7 +114,6 @@ const triggerSearch = async () => {
         }`}
       >
         <div className="container-fluid">
-          {/* Logo */}
           <a className="navbar-brand fw-bold" href="/">
             <img
               src="https://i.postimg.cc/GhSB7m8C/logo.png"
@@ -133,9 +130,7 @@ const triggerSearch = async () => {
             <span className="navbar-toggler-icon"></span>
           </button>
 
-          {/* Navbar links and user/search area */}
           <div className={`collapse navbar-collapse ${isNavOpen ? "show" : ""}`} id="mainNav">
-            {/* Primary Navigation Links */}
             <ul className="navbar-nav ms-4 ms-lg-5 mb-2 mb-lg-0 d-flex gap-3 me-4">
     <li className="nav-item"><a className="nav-link fw-bold" href="/">Home</a></li>
     <li className="nav-item"><a className="nav-link fw-bold" href="/categories">Courses</a></li>
