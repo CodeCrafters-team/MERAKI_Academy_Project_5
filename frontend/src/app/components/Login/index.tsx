@@ -91,6 +91,14 @@ const dispatch = useDispatch();
           <button className="login-btn  animate__animated  animate__fadeInLeft animate__slow" type="submit">
             {loading ? "Logging in..." : "Login"}
           </button>
+            <div className="text-center mt-2">
+  <a
+    href="/forgetpassword"
+    className="forgot-password-link"
+  >
+    Forgot your password?
+  </a>
+</div> 
         </form>
 
         <div className="to-register  animate__animated  animate__fadeInUp animate__slow">
