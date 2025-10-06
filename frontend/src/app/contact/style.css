@@ -44,17 +44,19 @@
     width: 100%;
     padding: 1rem;
     border: none;
-    background: #0070f3;
-    color: #fff;
-    font-size: 1.1rem;
-    font-weight: bold;
-    border-radius: 0.7rem;
-    cursor: pointer;
-    transition: background 0.3s;
+   background: linear-gradient(90deg, #4ab0ff, #4ab0ff, #f69d01, #f69d01);
+  background-size: 300%;
+  background-position: left center;
+  color: #fff;
+  font-size: 1.1rem;
+  font-weight: bold;
+  border-radius: 0.7rem;
+  cursor: pointer;
+  transition: background-position 1.5s ease-in-out;
   }
   
   .register-btn:hover {
-    background: #005bb5;
+  background-position: right center;
   }
   
   .SuccessMessage {

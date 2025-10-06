@@ -84,6 +84,8 @@ module.exports = () => {
                       u.first_name AS "firstName",
                       u.last_name  AS "lastName",
                       u.avatar_url AS "avatarUrl",
+                      u.phone_number AS "phoneNumber",
+                      u.country AS "country",
                       u.is_active  AS "isActive",
                       u.role_id    AS "roleId",
                       r.name       AS "roleName",
@@ -126,6 +128,8 @@ module.exports = () => {
               roleId: userRow.roleId,
               roleName: userRow.roleName,
               permissions: userRow.permissions,
+              phoneNumber: userRow.phoneNumber,
+              country: userRow.country,
             };
 
             return done(null, { user: safeUser, token });

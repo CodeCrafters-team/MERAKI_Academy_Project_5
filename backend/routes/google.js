@@ -12,12 +12,17 @@ router.get("/callback",
     const { user, token } = req.user;
     const FRONTEND_URL =  "http://localhost:3000" ;
 
-    const qs = new URLSearchParams({
-      token,
-      userId: user.id.toString(),
-      avatar: user.avatarUrl || "",
-    }).toString();
-
+const qs = new URLSearchParams({
+  token,
+  userId: user.id.toString(),
+  avatar: user.avatarUrl || "",
+  email: user.email,
+  firstName: user.firstName,
+  lastName: user.lastName,
+  roleName: user.roleName,
+  phoneNumber: user.phoneNumber ,
+  country: user.country ,
+}).toString();
     return res.redirect(`${FRONTEND_URL}/oauth-success?${qs}`);
   }
 );

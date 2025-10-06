@@ -159,7 +159,7 @@ export default function Page() {
                     <span className="bi bi-journal-text align-self-center" />
                   </div>
                   <div>
-                    <div className="text-muted small">Total Course</div>
+                    <div className="text-muted small">Total Courses</div>
                     <div className="fs-4 fw-bold">{courses.length}</div>
                   </div>
                 </div>
@@ -327,26 +327,7 @@ export default function Page() {
                 <label className="form-label">Description</label>
                 <textarea className="form-control" rows={3} value={newDesc} onChange={(e) => setNewDesc(e.target.value)} />
               </div>
-              <div className="row g-3">
-                <div className="col-sm-6">
-                  <label className="form-label">Price</label>
-                  <div className="input-group">
-                    <span className="input-group-text">$</span>
-                    <input
-                      type="number"
-                      min={0}
-                      step="0.5"
-                      className="form-control"
-                      value={newPrice}
-                      onChange={(e) => setNewPrice(Number(e.target.value))}
-                    />
-                  </div>
-                </div>
-                <div className="col-sm-6">
-                  <label className="form-label">Cover URL (optional)</label>
-                  <input className="form-control" value={newCover} onChange={(e) => setNewCover(e.target.value)} />
-                </div>
-              </div>
+            +
             </div>
             <div className="card-footer d-flex justify-content-end gap-2">
               <button className="btn btn-secondary" onClick={() => setAddOpen(false)} disabled={creating}>

@@ -30,7 +30,7 @@ const getAllEnrollment = async (req, res) => {
 
 const getEnrollmentById = async (req, res) => {
   try {
-    const { id } = req.params;
+      const id = Number(req.params.id);
     const result = await pool.query(`SELECT * FROM enrollments WHERE id=$1`, [id]);
 
     if (result.rows.length === 0) {
@@ -173,5 +173,51 @@ const checkEnrollmentForUserCourse = async (req, res) => {
   }
 };
 
+const getWeeklySales = async (req, res) => {
+  try {
+ const q = `
+      WITH w AS (
+     
+        SELECT (date_trunc('week', now()) - interval '1 day') AS s
+      ),
+      d AS (
+      
+        SELECT generate_series(0,6) AS offset
+      )
+      SELECT
+        EXTRACT(DOW FROM (w.s + (d.offset || ' day')::interval))::int AS dow,
+        to_char(w.s + (d.offset || ' day')::interval, 'Dy')                 AS day,
+        COALESCE(SUM(c.price), 0)::float                                    AS amount
+      FROM w
+      CROSS JOIN d
+      LEFT JOIN enrollments e
+        ON e.enrolled_at >= w.s + (d.offset || ' day')::interval
+       AND e.enrolled_at <  w.s + ((d.offset + 1) || ' day')::interval
+      LEFT JOIN courses c ON c.id = e.course_id
+      GROUP BY dow, day, d.offset
+      ORDER BY d.offset;
+    `;
 
-module.exports={getAllEnrollment,getEnrollmentById,getEnrollmentsByUser,createEnrollment,deleteEnrollment , checkEnrollmentForUserCourse}
+    const result = await pool.query(q);
+
+    return res.status(200).json({
+      success: true,
+      message: "Weekly sales fetched successfully",
+      data: result.rows.map(r => ({
+        dow: Number(r.dow),              
+        day: String(r.day),               
+        amount: Number(r.amount) || 0     
+      })),
+    });
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({
+      success: false,
+      message: "Server Error",
+      error: err.message,
+    });
+  }
+};
+
+
+module.exports={getAllEnrollment,getEnrollmentById,getEnrollmentsByUser,createEnrollment,deleteEnrollment , checkEnrollmentForUserCourse ,getWeeklySales}
