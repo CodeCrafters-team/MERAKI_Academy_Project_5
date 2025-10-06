@@ -52,7 +52,7 @@ export default function QuizPage({ courseId, onIssueCertificate, issuing, cert }
   const handleStart = () => {
     const lastAttempt = localStorage.getItem(`quiz-${courseId}-lastAttempt`);
     if (lastAttempt) {
-      const nextTime = parseInt(lastAttempt) + 7 * 24 *60 *60 * 60 * 1000; 
+      const nextTime = parseInt(lastAttempt) + 7 * 24 *60 * 60 * 1000; 
       if (Date.now() < nextTime) {
         setNextAvailableTime(nextTime);
         return; 
@@ -199,7 +199,7 @@ export default function QuizPage({ courseId, onIssueCertificate, issuing, cert }
               </h5>
               <button
                 className="btn btn-secondary"
-                onClick={() => router.push(`/courses/${courseId}#overview`)}
+                onClick={() => window.location.reload()}
               >
                 Exit Quiz
               </button>
