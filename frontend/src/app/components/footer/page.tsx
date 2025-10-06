@@ -1,8 +1,16 @@
+"use client";
+
 import { FaFacebook, FaTwitter, FaInstagram } from "react-icons/fa";
 import React from "react";
 import Link from "next/link";
+import {  usePathname } from "next/navigation";
+
 
 export default function FancyWaveFooter() {
+    const pathname = usePathname();   
+      if (pathname && pathname.startsWith("/admin")) {
+      return null;
+    }
   return (
     <footer className="footer position-relative text-white pt-10 overflow-hidden text-shadow">
       <div className="waves">

@@ -129,7 +129,7 @@ export default function CategoriesGrid() {
                         )}
                       </div>
                       <h5 className="mb-2">{item.name}</h5>
-                      <p className="mb-0 text-muted">15 Courses</p>
+                      <p className="mb-0 text-muted">8 Courses</p>
                     </div>
                   </div>
                 );
