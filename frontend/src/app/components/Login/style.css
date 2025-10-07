@@ -85,7 +85,7 @@
   cursor: pointer;
   color: #fff;
 
-  background: linear-gradient(90deg, #4ab0ff, #f69d01, #4ab0ff);
+  background: linear-gradient(90deg, #4ab0ff, #4ab0ff, #f69d01, #f69d01);
   background-size: 300% 300%;
   background-position: left center; 
   transition: background-position 1.5s ease-in-out;
