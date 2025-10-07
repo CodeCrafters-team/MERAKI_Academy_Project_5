@@ -108,7 +108,8 @@ export default function CategoriesGrid() {
                   onClick={()=>{
                     router.push(`/categories/${item.id}`)
                   }}
-                    className="col-sm-6 col-md-4 col-xl-3 animate__animated animate__fadeInUp"
+                    className="col-sm-6 col-md-4 col-xl-3 animate__animated animate__fadeInUp hover-grow"
+                    style={{ cursor: "pointer" }}
                     key={item.id ?? idx}
                   >
                     <div className="card card-body text-center p-4 shadow">
