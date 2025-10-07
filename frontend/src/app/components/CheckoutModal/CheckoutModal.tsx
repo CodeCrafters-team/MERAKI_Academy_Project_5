@@ -140,13 +140,13 @@ export default function CheckoutModal({
       onAnimationEnd={handleAnimEnd}
       role="dialog"
       aria-modal="true"
-      className={`position-fixed top-0 start-0 w-100 h-100 ${backdropAnim}`}
+      className={`position-fixed top-0 start-0 w-100 h-100 d-flex justify-content-center align-items-center ${backdropAnim}`}
       style={{ background: "rgba(0,0,0,.45)", zIndex: 1050 }}
     >
       <div
         onClick={(e) => e.stopPropagation()}
         className={`bg-white rounded shadow p-3 ${modalAnim}`}
-        style={{ width: 420, maxWidth: "92%", margin: "8% auto" }}
+        style={{ width: 420, maxWidth: "92%" , zIndex: 9999 , marginTop: "4em" }}
       >
         <div className="d-flex align-items-start justify-content-between mb-2">
           <h5 className="mb-0">Checkout</h5>
