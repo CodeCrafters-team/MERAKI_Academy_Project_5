@@ -72,7 +72,7 @@ const ProgressBar = ({ percent }: { percent: number }) => (
   </div>
 );
 
-const API = "http://localhost:5000";
+const API = "https://meraki-academy-project-5-anxw.onrender.com";
 
 type RootAuth = {
   userId: number | null;

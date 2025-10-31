@@ -32,7 +32,7 @@ export default function LessonModal({
   onClose,
   onMarkCompleted,
 }: LessonModalProps) {
-  const API_BASE = "http://localhost:5000";
+  const API_BASE = "https://meraki-academy-project-5-anxw.onrender.com";
 
   const [loading, setLoading] = useState(false);
   const [isCompleted, setIsCompleted] = useState(false);

@@ -4,7 +4,7 @@ import React, { useState, useMemo } from "react";
 import Stepper, { Step } from "../components/Stepper";
 import axios from "axios";
 
-const API_BASE = "http://localhost:5000";
+const API_BASE = "https://meraki-academy-project-5-anxw.onrender.com";
 
 
 function Page() {
@@ -37,7 +37,7 @@ function Page() {
     if (!emailOk) return setEmailErr("Invalid email.");
     setLoading(true);
     axios
-      .post("http://localhost:5000/users/forgot_password", { email })
+      .post("https://meraki-academy-project-5-anxw.onrender.com/users/forgot_password", { email })
       .then((res) => {
         if (res.data?.success) {
           setStep(2);
@@ -59,7 +59,7 @@ function Page() {
     setLoading(true);
 
     axios
-      .post("http://localhost:5000/users/verify_reset_code",{ email, code })
+      .post("https://meraki-academy-project-5-anxw.onrender.com/users/verify_reset_code",{ email, code })
       .then(res => {
         if (res.data?.success) {
           setStep(3);
@@ -82,7 +82,7 @@ function Page() {
     setLoading(true);
 
     axios
-      .put("http://localhost:5000/users/reset_password", { email, newPassword: pw})
+      .put("https://meraki-academy-project-5-anxw.onrender.com/users/reset_password", { email, newPassword: pw})
       .then(res => {
         if (res.data?.success) {
           setStep(4);

@@ -21,7 +21,7 @@ const Contact = () => {
 
     try {
       setLoading(true);
-      const res = await fetch("http://localhost:5000/contact", {
+      const res = await fetch("https://meraki-academy-project-5-anxw.onrender.com/contact", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ firstName, lastName, email, message }),

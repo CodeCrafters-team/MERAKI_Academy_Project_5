@@ -4,7 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 import { useParams } from "next/navigation";
 import axios from "axios";
 
-const API_BASE = "http://localhost:5000";
+const API_BASE = "https://meraki-academy-project-5-anxw.onrender.com";
 
 export default function CertificatePage() {
   const { certNo } = useParams();

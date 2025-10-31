@@ -19,7 +19,7 @@ export default function QuizzesPage() {
     const fetchQuizzes = async () => {
       try {
         const token = localStorage.getItem("token");
-        const res = await axios.get("http://localhost:5000/quizzes", {
+        const res = await axios.get("https://meraki-academy-project-5-anxw.onrender.com/quizzes", {
           headers: token ? { Authorization: `Bearer ${token}` } : undefined,
         });
         setQuizzes(res.data);

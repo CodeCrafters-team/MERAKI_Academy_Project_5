@@ -92,7 +92,7 @@ export default function UserDialog({ onClose }: UserDialogProps) {
       if (avatarUrl) updatedData.avatarUrl = avatarUrl;
 
       await axios.put(
-        `http://localhost:5000/users/${userId}`,
+        `https://meraki-academy-project-5-anxw.onrender.com/users/${userId}`,
         updatedData,
         { headers: { Authorization: `Bearer ${auth.token}` } }
       );
@@ -109,7 +109,7 @@ export default function UserDialog({ onClose }: UserDialogProps) {
 
   const handleDelete = async () => {
     try {
-      await axios.delete(`http://localhost:5000/users/${userId}`, {
+      await axios.delete(`https://meraki-academy-project-5-anxw.onrender.com/users/${userId}`, {
         headers: { Authorization: `Bearer ${auth.token}` },
       });
       dispatch(deleteAccount());

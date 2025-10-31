@@ -1,6 +1,6 @@
 'use client';
 
-const API = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:5000";
+const API = process.env.NEXT_PUBLIC_API_URL ?? "https://meraki-academy-project-5-anxw.onrender.com";
 const auth = () => ({
   Authorization: `Bearer ${localStorage.getItem("token")}`,
   "Content-Type": "application/json", 

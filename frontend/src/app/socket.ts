@@ -5,7 +5,7 @@ let socket: Socket | null = null;
 
 function getSocket(): Socket {
   if (!socket) {
-    socket = io(process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:5000", {
+    socket = io(process.env.NEXT_PUBLIC_API_URL ?? "https://meraki-academy-project-5-anxw.onrender.com", {
       transports: ["websocket"],
       autoConnect: false,
     });

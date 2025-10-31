@@ -95,7 +95,7 @@ export default function Navbar() {
     if (!value.trim()) return setResults([]);
     try {
       const res = await fetch(
-        `http://localhost:5000/courses/search?q=${encodeURIComponent(value)}`
+        `https://meraki-academy-project-5-anxw.onrender.com/courses/search?q=${encodeURIComponent(value)}`
       );
       const data = await res.json();
       setResults(data.success ? data.data.slice(0, 5) : []);
@@ -107,7 +107,7 @@ export default function Navbar() {
     if (!search.trim()) return setResults([]);
     try {
       const res = await fetch(
-        `http://localhost:5000/courses/search?q=${encodeURIComponent(search)}`
+        `https://meraki-academy-project-5-anxw.onrender.com/courses/search?q=${encodeURIComponent(search)}`
       );
       const data = await res.json();
       setResults(data.success ? data.data.slice(0, 5) : []);

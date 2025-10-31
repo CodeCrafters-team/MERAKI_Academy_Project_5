@@ -20,7 +20,7 @@ export default function CheckoutModal({
   onClose,
   userId,
   courseId,
-  apiBase = "http://localhost:5000",
+  apiBase = "https://meraki-academy-project-5-anxw.onrender.com",
   paymentsPrefix = "/payments",
   cPrice
 }: Props) {

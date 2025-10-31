@@ -13,7 +13,7 @@ const Login = () => {
   const [password, setPassword] = useState("");
   const [status, setStatus] = useState(false);
   const [loading,   setLoading]   = useState(false);
-      const GOOGLE_LOGIN_URL = `http://localhost:5000/auth/google/login`;
+      const GOOGLE_LOGIN_URL = `https://meraki-academy-project-5-anxw.onrender.com/auth/google/login`;
 const dispatch = useDispatch();
   
 
@@ -23,7 +23,7 @@ const dispatch = useDispatch();
 
   e.preventDefault();
 
-  axios.post(`http://localhost:5000/users/login`, { email, password })
+  axios.post(`https://meraki-academy-project-5-anxw.onrender.com/users/login`, { email, password })
     .then(({ data }) => {
       setLoading(true);
 

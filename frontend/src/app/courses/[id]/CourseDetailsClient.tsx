@@ -8,7 +8,7 @@ import LessonModal from "@/app/components/LessonModal/index";
 import QuizInline from "@/app/components/Quize";
 
 const THEME = { primary: "#77b0e4", secondary: "#f6a531" };
-const API_BASE = "http://localhost:5000";
+const API_BASE = "https://meraki-academy-project-5-anxw.onrender.com";
 
 type Course = {
   id: number;
@@ -1016,7 +1016,7 @@ export default function CourseDetailsClient({
         userId={auth.id}
         courseId={courseId}
         cPrice={course.price}
-        apiBase="http://localhost:5000"
+        apiBase="https://meraki-academy-project-5-anxw.onrender.com"
         paymentsPrefix="/payments"
       />
 
