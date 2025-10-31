@@ -27,7 +27,7 @@ export default function CategoriesGrid() {
       try {
         setLoading(true);
         const res = await axios.get<ApiResponse<Category[]>>(
-          "http://localhost:5000/categories"
+          "https://meraki-academy-project-5-anxw.onrender.com/categories"
         );
         // @ts-ignore
         setCategories(res.data.data);

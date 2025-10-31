@@ -7,7 +7,7 @@ import { useRouter } from "next/navigation";
 import axios from "axios";
 import Loading from "./loading";
 
-const API_BASE = "http://localhost:5000";
+const API_BASE = "https://meraki-academy-project-5-anxw.onrender.com";
 const THEME = { primary: "#77b0e4", secondary: "#f6a531" };
 
 type Review = {

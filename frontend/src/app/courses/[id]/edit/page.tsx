@@ -7,7 +7,7 @@ import "react-toastify/dist/ReactToastify.css";
 import Loading from "@/app/instructor/loading";
 import Unauthorized from "@/app/unauthorized";
 
-const API_BASE = "http://localhost:5000";
+const API_BASE = "https://meraki-academy-project-5-anxw.onrender.com";
 const CLOUDINARY = { cloudName: "dkgru3hra", uploadPreset: "project-4" };
 
 type Api<T> = { success: boolean; message: string; data: T };

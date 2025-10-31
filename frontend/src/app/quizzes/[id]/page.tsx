@@ -31,7 +31,7 @@ export default function QuizDetailPage() {
     const fetchQuiz = async () => {
       if (!id) return;
       const token = localStorage.getItem("token");
-      const res = await axios.get(`http://localhost:5000/quizzes/${id}`, {
+      const res = await axios.get(`https://meraki-academy-project-5-anxw.onrender.com/quizzes/${id}`, {
         headers: token ? { Authorization: `Bearer ${token}` } : undefined,
       });
       setQuiz(res.data.quiz);

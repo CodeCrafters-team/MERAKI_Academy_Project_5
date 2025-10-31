@@ -50,7 +50,7 @@ export default function Page() {
       <section className="container py-5">
         <CourseSlider
           title="Popular Courses"
-          endpoint="http://localhost:5000/courses"
+          endpoint="https://meraki-academy-project-5-anxw.onrender.com/courses"
         />
         <div className="text-center mt-4">
           <a

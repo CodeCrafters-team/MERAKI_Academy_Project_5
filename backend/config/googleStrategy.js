@@ -9,7 +9,7 @@ require("dotenv").config();
 module.exports = () => {
   const callbackURL =
     process.env.GOOGLE_CALLBACK_URL ||
-    `${process.env.BASE_URL || "http://localhost:5000"}/auth/google/callback`;
+    `${process.env.BASE_URL || "https://meraki-academy-project-5-anxw.onrender.com"}/auth/google/callback`;
 
   passport.use(
     new GoogleStrategy(

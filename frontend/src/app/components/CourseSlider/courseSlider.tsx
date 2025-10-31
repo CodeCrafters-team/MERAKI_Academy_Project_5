@@ -172,9 +172,9 @@ export function CourseSlider({
 // export default function CourseSliders() {
 //   return (
 //     <>
-//       <CourseSlider title="Our Courses" endpoint="http://localhost:5000/courses" />
-//       <CourseSlider title="Trending Now" endpoint="http://localhost:5000/courses/trending" />
-//       <CourseSlider title="Most Selling" endpoint="http://localhost:5000/courses/most-selling" />
+//       <CourseSlider title="Our Courses" endpoint="https://meraki-academy-project-5-anxw.onrender.com/courses" />
+//       <CourseSlider title="Trending Now" endpoint="https://meraki-academy-project-5-anxw.onrender.com/courses/trending" />
+//       <CourseSlider title="Most Selling" endpoint="https://meraki-academy-project-5-anxw.onrender.com/courses/most-selling" />
 //     </>
 //   );
 // }

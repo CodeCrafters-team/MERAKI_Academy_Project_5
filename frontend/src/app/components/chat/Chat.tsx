@@ -8,7 +8,7 @@ import { joinConversation, leaveConversation, onChatMessage, onNewMessage, conne
 
 
 const THEME = "#77b0e4ff";
-const BASE_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:5000";
+const BASE_URL = process.env.NEXT_PUBLIC_API_URL ?? "https://meraki-academy-project-5-anxw.onrender.com";
 
 const toStr = (v:any) => (v==null ? "" : String(v));
 

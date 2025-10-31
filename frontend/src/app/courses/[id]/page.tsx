@@ -1,6 +1,6 @@
 import CourseDetailsClient from "./CourseDetailsClient";
 
-const API_BASE = "http://localhost:5000";
+const API_BASE = "https://meraki-academy-project-5-anxw.onrender.com";
 export const dynamic = "force-dynamic";
 
 type PageProps = { params: Promise<{ id: string }> };

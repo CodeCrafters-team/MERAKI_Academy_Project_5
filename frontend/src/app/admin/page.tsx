@@ -195,7 +195,7 @@ export default function AdminDashboard() {
 
     if (needUsers) {
       setLoading(true);
-      fetch("http://localhost:5000/users")
+      fetch("https://meraki-academy-project-5-anxw.onrender.com/users")
         .then((res) => res.json())
         .then((data) => {
           if (data.success) {
@@ -209,7 +209,7 @@ export default function AdminDashboard() {
 
     if (needCourses) {
       setLoading(true);
-      fetch("http://localhost:5000/courses/admin/all")
+      fetch("https://meraki-academy-project-5-anxw.onrender.com/courses/admin/all")
         .then((res) => res.json())
         .then((data) => {
           if (data.data && Array.isArray(data.data)) {
@@ -223,7 +223,7 @@ export default function AdminDashboard() {
 
     if (activeSection === "contact") {
       setLoading(true);
-      fetch("http://localhost:5000/contact")
+      fetch("https://meraki-academy-project-5-anxw.onrender.com/contact")
         .then((res) => res.json())
         .then((data) => {
           if (data.success && Array.isArray(data.contacts)) {
@@ -240,7 +240,7 @@ export default function AdminDashboard() {
     if (activeSection !== "stats") return;
     const defaultLabels = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
     setWeeklyLoading(true);
-    fetch("http://localhost:5000/enrollments/weekly-sales")
+    fetch("https://meraki-academy-project-5-anxw.onrender.com/enrollments/weekly-sales")
       .then((res) => res.json())
       .then((payload) => {
         const arr: WeeklySalesPoint[] = Array.isArray(payload)
@@ -279,7 +279,7 @@ export default function AdminDashboard() {
     const prev = users;
     setUsers((p) => p.map((u) => (u.id === userId ? { ...u, roleId: newRoleId } : u)));
     const token = typeof window !== "undefined" ? localStorage.getItem("token") : null;
-    fetch(`http://localhost:5000/users/${userId}/role`, {
+    fetch(`https://meraki-academy-project-5-anxw.onrender.com/users/${userId}/role`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
@@ -305,7 +305,7 @@ export default function AdminDashboard() {
     const prev = users;
     setUsers((p) => p.map((u) => (u.id === userId ? { ...u, isActive: false } : u)));
     const token = typeof window !== "undefined" ? localStorage.getItem("token") : null;
-    fetch(`http://localhost:5000/users/${userId}/status`, {
+    fetch(`https://meraki-academy-project-5-anxw.onrender.com/users/${userId}/status`, {
       method: "PUT",
       headers: { "Content-Type": "application/json", ...(token ? { Authorization: `Bearer ${token}` } : {}) },
       body: JSON.stringify({ isActive: false }),
@@ -328,7 +328,7 @@ export default function AdminDashboard() {
     const prev = users;
     setUsers((p) => p.map((u) => (u.id === userId ? { ...u, isActive: true } : u)));
     const token = typeof window !== "undefined" ? localStorage.getItem("token") : null;
-    fetch(`http://localhost:5000/users/${userId}/status`, {
+    fetch(`https://meraki-academy-project-5-anxw.onrender.com/users/${userId}/status`, {
       method: "PUT",
       headers: { "Content-Type": "application/json", ...(token ? { Authorization: `Bearer ${token}` } : {}) },
       body: JSON.stringify({ isActive: true }),
@@ -350,7 +350,7 @@ export default function AdminDashboard() {
   const handleDeleteCourse = (courseId: number) => {
     const prev = courses;
     setCourses((p) => p.filter((c) => c.course_id !== courseId));
-    fetch(`http://localhost:5000/courses/${courseId}`, {
+    fetch(`https://meraki-academy-project-5-anxw.onrender.com/courses/${courseId}`, {
       method: "DELETE",
       headers: { "Content-Type": "application/json" },
     })

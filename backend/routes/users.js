@@ -13,6 +13,7 @@ usersRouter.post("/login", login);
 usersRouter.get("/",  getAllUsers);
 
 usersRouter.get("/:id", getUserById);
+usersRouter.put("/reset_password", resetPassword); 
 usersRouter.put("/:id",authentication, updateUser);        
 usersRouter.delete("/:id",authentication, deleteUser);   
 usersRouter.put("/:id/role", authentication, setUserRole);
@@ -20,5 +21,4 @@ usersRouter.put("/:id/status", authentication, setUserActive);
 
 usersRouter.post("/forgot_password", forgotPassword);
 usersRouter.post("/verify_reset_code", verifyResetCode);
-usersRouter.put("/reset_password", resetPassword);
 module.exports = usersRouter;

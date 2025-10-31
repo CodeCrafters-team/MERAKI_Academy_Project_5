@@ -18,8 +18,8 @@ export default function ChatWidget({
   position = "bottom-right",
   welcome = "Hello! How can I help you?",
   systemPrompt = "Always answer in English, concisely.",
-  socketUrl = "http://localhost:5000",
-  chatEndpoint = "http://localhost:5000/ai/chat",
+  socketUrl = "https://meraki-academy-project-5-anxw.onrender.com",
+  chatEndpoint = "https://meraki-academy-project-5-anxw.onrender.com/ai/chat",
 }: ChatWidgetProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [isTyping, setIsTyping] = useState(false);
