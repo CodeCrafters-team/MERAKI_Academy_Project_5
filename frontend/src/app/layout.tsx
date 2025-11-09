@@ -1,14 +1,14 @@
-
 "use client"
+import dynamic from "next/dynamic";
 
 import { Providers } from './provider';
-import Navbar from './components/Navbar/Navigation';
+const Navbar = dynamic(() => import("./components/Navbar/Navigation"), { ssr: false });
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap-icons/font/bootstrap-icons.css';
 import './globals.css';
 import 'animate.css/animate.min.css';
-import SimpleFooter from './components/footer/page';
-import ChatWidget from './components/AiChat';
+const SimpleFooter = dynamic(() => import("./components/footer/page"), { ssr: false });
+const ChatWidget = dynamic(() => import("./components/AiChat"), { ssr: false });
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
